@@ -120,6 +120,12 @@ case ${WORKLOAD} in
     export TEST_JOB_ITERATIONS=${JOB_ITERATIONS:-5}
     prep_networkpolicy_workload
   ;;
+  networkpolicy-case-amadeus-mgob)
+    WORKLOAD_TEMPLATE=workloads/networkpolicy/case-amadeus-mgob.yml
+    METRICS_PROFILE=${METRICS_PROFILE:-metrics-profiles/metrics-ovn.yaml}
+    export TEST_JOB_ITERATIONS=${JOB_ITERATIONS:-5}
+    prep_networkpolicy_workload
+  ;;
   custom)
   ;;
   *)
