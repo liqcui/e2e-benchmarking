@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+  labels:
+    type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+    anplabel: {{.anplabel}}
+spec:
+  selector:
+    matchLabels:
+       type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+       anplabel: {{.anplabel}}
+  replicas: 1
+  strategy:
+    type: RollingUpdate       
+  template:  
+    metadata:
+      labels:
+        type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+        anplabel: {{.anplabel}}
+    spec:
+      nodeSelector: {{.nodeSelector}}
+      containers:
+      - name: egress-firewall-traffic
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: false
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do
+          curl -Is http://anp-traffic-service.anp-restricted-1.svc.cluster.local:8080 | head -n 1;
+          sleep 2;
+          curl -Is http://anp-traffic-service.anp-open-1.svc.cluster.local:8080 | head -n 1;
+          sleep 2;
+          curl -Is http://anp-traffic-service.anp-test-1.svc.cluster.local:8080 | head -n 1;
+          sleep 2;      
+          curl -Is http://anp-traffic-service.anp-unknown-1.svc.cluster.local:8080 | head -n 1;
+          done

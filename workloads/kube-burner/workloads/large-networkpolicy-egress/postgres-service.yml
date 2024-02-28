@@ -1,0 +1,16 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-{{.Iteration}}-{{.Replica}}
+spec:
+  selector:
+    name: postgres-{{.Iteration}}-{{.Replica}} 
+    anplabel: {{.anplabel}}
+    type: perfdb-{{.Iteration}}-{{.Replica}}  
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  type: ClusterIP
+  sessionAffinity: None

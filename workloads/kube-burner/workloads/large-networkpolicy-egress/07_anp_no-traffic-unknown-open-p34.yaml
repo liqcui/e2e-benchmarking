@@ -1,0 +1,36 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: no-traffic-unknown-open-p34
+spec:
+  priority: 34
+  subject:
+    pods:
+      namespaceSelector:
+        matchLabels:
+          anplabel: anp-unknown
+      podSelector:
+        matchLabels:
+          anplabel: anp-unknown
+  ingress:
+  - name: "deny-all-ingress-from-anp-open"
+    action: "Deny"
+    from:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-open
+        podSelector:
+          matchLabels:
+            anplabel: anp-open
+  egress:
+  - name: "deny-all-egress-to-anp-open"
+    action: "Deny"
+    to:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-open
+        podSelector:
+          matchLabels:
+            anplabel: anp-open

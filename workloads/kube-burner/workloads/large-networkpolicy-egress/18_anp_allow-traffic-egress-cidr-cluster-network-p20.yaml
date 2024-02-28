@@ -1,0 +1,58 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-traffic-egress-cidr-cluster-network-p20
+spec:
+  priority: 20
+  subject:
+    namespaces:
+      matchLabels:
+          anplabel: anp-cidr
+  egress:
+  - name: "pass-egress-to-cluster-network"
+    action: "Pass"
+    ports:
+      - portNumber:
+          port: 9093
+          protocol: TCP
+      - portNumber:
+          port: 9094
+          protocol: TCP    
+    to:
+    - networks:
+      - 10.128.0.0/14
+  - name: "deny-egress-to-cluster-network"
+    action: "Deny"
+    ports:
+      - portNumber:
+          port: 5432
+          protocol: TCP    
+      - portNumber:
+          port: 60000
+          protocol: TCP
+      - portNumber:
+          port: 9099
+          protocol: TCP    
+      - portNumber:
+          port: 9393
+          protocol: UDP    
+    to:
+    - networks:
+      - 10.128.0.0/14
+  - name: "allow-egress-to-cluster-network"
+    action: "Allow"
+    ports:
+      - portNumber:
+          port: 8080
+          protocol: TCP
+      - portRange:
+          start: 9201
+          end: 9205
+          protocol: TCP    
+      - portNumber:
+          port: 53
+          protocol: UDP    
+    to:
+    - networks:
+      - 10.128.0.0/14
+
