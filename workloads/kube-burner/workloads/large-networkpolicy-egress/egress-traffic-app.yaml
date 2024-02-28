@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-ef-{{.Replica}}
+  labels:
+    app: keepalive-detectd-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: {{.anplabel}}-{{.Iteration}}-ef-{{.Replica}}
+      anplabel: {{.anplabel}}
+  template:
+    metadata:
+      labels:
+        type: {{.anplabel}}-{{.Iteration}}-ef-{{.Replica}}
+        anplabel: {{.anplabel}}
+    spec:
+      nodeSelector: {{.nodeSelector}}    
+      containers:
+      - name: keepalive
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL 
+        # command: ["/usr/bin/nc"]
+        # args: ["-l","-p","8080"]
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always            
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do
+              for((i=0;i<=15;i++));
+              do
+              curl -Is http://anp-traffic-service.anp-restricted-${i}.svc.cluster.local:8080 | head -n 1;
+              sleep 1;
+              curl -Is http://anp-traffic-service.anp-cidr-${i}.svc.cluster.local:8080 | head -n 1;
+              sleep 1;
+              curl -Is http://anp-traffic-service.anp-open-${i}.svc.cluster.local:8080 | head -n 1;
+              sleep 1;
+              curl -Is http://anp-traffic-service.anp-test-${i}.svc.cluster.local:8080 | head -n 1;
+              sleep 1;
+              curl -Is http://anp-traffic-service.anp-unknown-${i}.svc.cluster.local:8080 | head -n 1; 
+              done;
+    
+              sleep 5;
+              curl -Is http://www.google.com | head -n 1;
+              sleep 5;
+              ping -c 5 8.8.8.8;
+              sleep 5;
+              curl -Is https://www.digitalocean.com/robots.txt | head -n 1;
+              sleep 5;
+              ping -c 5 8.8.4.4;              
+          done          

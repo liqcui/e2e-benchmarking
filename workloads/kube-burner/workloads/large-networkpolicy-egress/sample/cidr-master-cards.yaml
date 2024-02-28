@@ -1,0 +1,130 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-traffic-cidr-anp-open-network-tenant90-p90
+spec:
+  priority: 90
+  subject:
+    namespaces:
+      matchLabels:
+        customer_tenat: tenant90
+  ingress:
+  - name: "all-ingress-from-same-tenant"  
+    action: Allow   # Allows connection 
+    from:
+    - namespaces:
+        # namespaceSelector:
+        matchLabels:
+          customer_tenat: tenant90    
+  egress:
+  - name: "pass-egress-to-cluster-network"
+    action: "Pass"
+    ports:
+      - portNumber:
+          port: 9093
+          protocol: TCP
+      - portNumber:
+          port: 9094
+          protocol: TCP    
+    to:
+    - networks:
+      - 10.128.0.0/14      
+  - name: "allow-egress-to-anp-open-network-1"
+    action: "Allow"
+    ports:
+      - portNumber:
+          port: 8080
+          protocol: TCP
+      - portRange:
+          start: 9201
+          end: 9205
+          protocol: TCP
+    to:
+    - networks:
+      - 10.128.10.71/32
+      - 10.131.30.75/32
+  - name: "allow-egress-to-anp-open-network-2"
+    action: "Allow"
+    ports:
+      - portNumber:
+          port: 8080
+          protocol: TCP
+      - portRange:
+          start: 9201
+          end: 9205
+          protocol: TCP
+    to:
+    - networks:
+      - 10.130.50.102/32
+      - 10.131.28.76/32
+  - name: "deny-egress-to-anp-open-network-1"
+    action: "Deny"
+    ports:
+      - portNumber:
+          port: 5432
+          protocol: TCP
+      - portNumber:
+          port: 60000
+          protocol: TCP
+      - portNumber:
+          port: 9099
+          protocol: TCP
+      - portNumber:
+          port: 9393
+          protocol: TCP
+    to:
+    - networks:
+      - 10.131.46.76/32
+      - 10.128.34.85/32
+  - name: "deny-egress-to-anp-open-network-2"
+    action: "Deny"
+    ports:
+      - portNumber:
+          port: 5432
+          protocol: TCP
+      - portNumber:
+          port: 60000
+          protocol: TCP
+      - portNumber:
+          port: 9099
+          protocol: TCP
+      - portNumber:
+          port: 9393
+          protocol: TCP
+    to:
+    - networks:
+      - 10.130.40.108/32
+      - 10.130.22.72/32
+  - name: "allow-egress-to-anp-open-network-3"
+    action: "Allow"
+    ports:
+      - portNumber:
+          port: 8080
+          protocol: TCP
+      - portRange:
+          start: 9201
+          end: 9205
+          protocol: TCP
+    to:
+    - networks:
+      - 10.130.24.104/32
+      - 10.129.4.116/32
+  - name: "deny-egress-to-anp-open-network-3"
+    action: "Deny"
+    ports:
+      - portNumber:
+          port: 5432
+          protocol: TCP
+      - portNumber:
+          port: 60000
+          protocol: TCP
+      - portNumber:
+          port: 9099
+          protocol: TCP
+      - portNumber:
+          port: 9393
+          protocol: TCP
+    to:
+    - networks:
+      - 10.129.22.116/32
+      - 10.131.2.102/32

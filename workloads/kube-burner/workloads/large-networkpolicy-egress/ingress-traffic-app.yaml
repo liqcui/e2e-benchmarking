@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-traffic-testing
+  labels:
+    app: ingress-traffic-testing
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: ingress-traffic-testing
+  template:
+    metadata:
+      labels:
+        type: ingress-traffic-testing
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/workload: ""   
+      containers:
+      - name: ingress-keepalive
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: false
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL 
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always            
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do
+              for ingressName in "$INGRESS_ROUTES";
+              do
+                   curl -k -Is https://${ingressName}/ | head -n 3| grep OK;
+                   sleep 1;
+              done;
+          done          

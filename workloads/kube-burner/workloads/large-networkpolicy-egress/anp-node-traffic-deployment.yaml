@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-traffic-clt
+  labels:
+    app: node-traffic-clt
+    anplabel: anp-restricted
+spec:
+  selector:
+    matchLabels:
+      app: node-traffic-clt
+      anplabel: anp-restricted
+  template:
+    metadata:
+      labels:
+        app: node-traffic-clt
+        anplabel: anp-restricted
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/worker: "" 
+      containers:
+      - name: node-traffic-clt
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: false
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do
+              for ipaddr in ${WORKER_NODE_IPs};
+              do
+                  nc -vz $ipaddr 30003 -w 5;
+                  sleep 5;
+              done
+          done
+        startupProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+        periodSeconds: 10
+        failureThreshold: 60

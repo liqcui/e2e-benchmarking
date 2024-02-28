@@ -1,0 +1,16 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: env-overrides
+  namespace: openshift-ovn-kubernetes
+data:
+  _master: | 
+    # This sets the log level for the ovn-kubernetes master process as well as the ovn-dbchecker:
+    OVN_KUBE_LOG_LEVEL=5
+    # You might also/instead want to enable debug logging for northd, nbdb and sbdb on all masters:
+    OVN_LOG_LEVEL=dbg
+  _worker: | 
+    # This sets the log level for the ovn-kubernetes node process:
+    OVN_KUBE_LOG_LEVEL=5
+    # You might also/instead want to enable debug logging for ovn-controller:
+    OVN_LOG_LEVEL=dbg

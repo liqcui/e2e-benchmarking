@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-perfweb-{{.Replica}}
+  labels:
+    type: {{.anplabel}}-{{.Iteration}}-perfweb-{{.Replica}}
+    anplabel: {{.anplabel}}
+    trafficapp: perfweb
+spec:
+  selector:
+    matchLabels:
+       type: {{.anplabel}}-{{.Iteration}}-perfweb-{{.Replica}}
+       anplabel: {{.anplabel}}
+       trafficapp: perfweb
+  replicas: 3
+  strategy:
+    type: RollingUpdate       
+  template:  
+    metadata:
+      labels:
+        type: {{.anplabel}}-{{.Iteration}}-perfweb-{{.Replica}}
+        anplabel: {{.anplabel}}
+        trafficapp: perfweb
+    spec:
+      nodeSelector: {{.nodeSelector}}
+      containers:
+      - name: perfweb-ingress-traffic
+        image: quay.io/openshift-psap-qe/nginx-alpine:multiarch
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL
+        ports:
+          - name: http-port
+            containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10          

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-traffic-httpsvr
+  labels:
+    app: node-traffic-httpsvr
+spec:
+  selector:
+    matchLabels:
+      app: node-traffic-httpsvr
+      app.kubernetes.io/name: httpserver
+  template:
+    metadata:
+      annotations:
+        openshift.io/scc: privileged    
+      labels:
+        app: node-traffic-httpsvr
+        app.kubernetes.io/name: httpserver
+    securityContext: {}
+    dnsPolicy: ClusterFirst        
+    spec:
+      containers:
+      - name: node-traffic-httpsvr
+        image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true        
+        command: [ "python", "-m", "http.server","30001"]
+        ports:
+        - containerPort: 30001
+          hostPort: 30003
+          name: httpport
+          protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /
+            port: 30001
+        periodSeconds: 10
+        failureThreshold: 10
+        readinessProbe:
+          tcpSocket:
+            port: 30001
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 30001
+          initialDelaySeconds: 15
+          periodSeconds: 10                 
+        resources:
+          limits:
+            cpu: 250m
+            memory: 100Mi
+          requests:
+            cpu: 1m
+            memory: 10Mi
+            

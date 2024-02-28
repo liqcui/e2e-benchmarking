@@ -1,0 +1,240 @@
+- apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    name: large-networkpolicy-egress-allow-traffic-inner-ns-{{.podselector_label}}{{.Replica}}-{{.ingress_label}}
+  spec:
+    egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: openshift-ingress
+        podSelector:
+          matchLabels:
+            ingresscontroller.operator.openshift.io/deployment-ingresscontroller: tnz
+      - namespaceSelector: {}
+        podSelector:
+          matchLabels:
+            acs.xxxx.com/securityZone: tnz
+    ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: openshift-ingress
+        podSelector:
+          matchLabels:
+            ingresscontroller.operator.openshift.io/deployment-ingresscontroller: tnz
+      - namespaceSelector: {}
+        podSelector:
+          matchLabels:
+            acs.xxxx.com/securityZone: tnz
+    policyTypes:
+    - Ingress
+    - Egress
+
+ ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: perfdb-ingress-from-perfapp
+spec:
+  podSelector:
+    matchLabels:
+      type: perfdb
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          type: perfapp   
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: perfapp-access
+  namespace: alpha
+spec:
+  podSelector:
+    matchLabels:
+      type: perfapp
+  ingress:
+  - from:
+    - namespaceSelector: {}  ##These pods can be in any namespace
+      podSelector:
+        matchLabels:
+          type: egress-app
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: openshift-monitoring
+  egress:
+  - ports:
+      - protocol: TCP
+        port: 53
+      - protocol: UDP
+        port: 53
+  policyTypes:
+  - Ingress
+  - Egres
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-db-access
+spec:
+  podSelector:
+    matchLabels:
+      app: "db"
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          networking/allow-db-access: "true"
+---
+#Within the same namespace  
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-server-to-access
+spec:
+  podSelector:
+    matchLabels:
+      deployment-b-pod-label-1-key: deployment-b-pod-label-1-value
+      deployment-b-pod-label-2-key: deployment-b-pod-label-2-value
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          deployment-a-pod-label-1-key: deployment-a-pod-label-1-value
+          deployment-a-pod-label-2-key: deployment-a-pod-label-2-value
+---
+#Across namespace          
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-n1-a-to-n2-b
+  namespace: N2
+spec:
+  podSelector:
+    matchLabels:
+      deployment-b-pod-label-1-key: deployment-b-pod-label-1-value
+      deployment-b-pod-label-2-key: deployment-b-pod-label-2-value
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    -  namespaceSelector:
+        matchLabels:
+          networking/namespace: N1
+       podSelector:
+        matchLabels:
+          deployment-a-pod-label-1-key: deployment-a-pod-label-1-value
+          deployment-a-pod-label-2-key: deployment-a-pod-label-2-value
+---          
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-from-new
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          networking/allow-all-connections: "true"
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-new
+spec:
+  podSelector:
+    matchLabels:
+      networking/allow-all-connections: "true"
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector: {}          
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all-egress
+spec:
+  podSelector: {}
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          networking/namespace: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+  policyTypes:
+  - Egress    
+  ---
+  apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+    - namespaceSelector:
+        matchLabels:
+          project: myproject
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+    ports:
+    - protocol: TCP
+      port: 5978
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: multi-port-egress
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/24
+      ports:
+        - protocol: TCP
+          port: 32000
+          endPort: 32768
+

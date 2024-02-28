@@ -138,3 +138,35 @@
 - query: cluster_version{type="completed"}
   metricName: clusterVersion
   instant: true
+
+# OVS metrics
+- query: (sum(irate(container_cpu_usage_seconds_total{id=~"/system.slice/ovs-vswitchd.service"}[2m]) * 100) by (node)) > 0
+  metricName: ovsVswitchdCPU
+
+- query: (sum(irate(container_cpu_usage_seconds_total{id=~"/system.slice/ovsdb-server.service"}[2m]) * 100) by (node)) > 0
+  metricName: ovsdbServerCPU
+
+- query: ovs_vswitchd_bridge_flows_total
+  metricName: ovsFlowsCounter
+
+- query: ovs_vswitchd_rconn_discarded
+  metricName: ovsVswitchdRconnDiscarded
+
+- query: ovs_vswitchd_rconn_overflow
+  metricName: ovsVswitchdRconnOverflow
+
+- query: ovs_vswitchd_stream_open
+  metricName: ovsVswitchdStreamOpen
+
+# OVN metrics
+- query: ovn_controller_rconn_discarded
+  metricName: ovnControllerRconnDiscarded
+
+- query: ovn_controller_rconn_overflow
+  metricName: ovnControllerRconnOverflow
+
+- query: ovn_controller_flow_generation_95th_percentile
+  metricName: ovnControllerFlowGeneration95Perc
+
+- query: ovn_controller_flow_installation_95th_percentile
+  metricName: ovnControllerFlowInstallation95Perc

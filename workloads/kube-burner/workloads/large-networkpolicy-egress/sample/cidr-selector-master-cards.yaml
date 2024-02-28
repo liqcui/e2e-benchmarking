@@ -1,0 +1,70 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-traffic-cidr-anp-open-network-tenant97-p98
+spec:
+  priority: 98
+  subject:
+    namespaces:
+      matchLabels:
+        customer_tenat: tenant97
+  ingress:
+  - name: "all-ingress-from-same-tenant"  
+    action: Allow   # Allows connection 
+    from:
+    - namespaces:
+        # namespaceSelector:
+        matchLabels:
+          customer_tenat: tenant97    
+  egress:
+  - name: "pass-egress-to-cluster-network"
+    action: "Pass"
+    ports:
+      - portNumber:
+          port: 9093
+          protocol: TCP
+      - portNumber:
+          port: 9094
+          protocol: TCP    
+    to:
+    - networks:
+      - 10.128.0.0/14      
+  - name: "deny-egress-to-anp-open-network-1"
+    action: "Deny"
+    ports:
+      - portNumber:
+          port: 5432
+          protocol: TCP
+      - portNumber:
+          port: 60000
+          protocol: TCP
+      - portNumber:
+          port: 9099
+          protocol: TCP
+      - portNumber:
+          port: 9393
+          protocol: TCP
+    to:
+    - networks:
+      - 10.129.26.119/32
+      - 10.128.46.120/32
+      - 10.129.20.126/32
+      - 10.131.22.192/32
+      - 10.131.54.124/32
+  - name: "allow-egress-to-anp-open-network-1"
+    action: "Allow"
+    ports:
+      - portNumber:
+          port: 8080
+          protocol: TCP
+      - portRange:
+          start: 9201
+          end: 9205
+          protocol: TCP
+    to:
+    - networks:
+      - 10.128.26.123/32
+      - 10.130.38.119/32
+      - 10.129.52.128/32
+      - 10.129.26.120/32
+      - 10.128.36.121/32

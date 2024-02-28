@@ -1,0 +1,24 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: BaselineAdminNetworkPolicy
+metadata:
+  name: default
+spec:
+  subject:
+    namespaces:
+      matchExpressions:
+      - key: anplabel
+        operator: In
+        values: ["anp-restricted","anp-cidr","anp-open","anp-test","anp-unknown"]       
+    #namespaces: {}
+  ingress:
+  - name: "deny-all-ingress-to-any-ns"
+    action: "Deny"
+    from:
+    - namespaces:
+        namespaceSelector: {}
+  # egress:
+  # - name: "deny-all-egress-to-any-ns"
+  #   action: "Deny"
+  #   to:
+  #   - namespaces:
+  #       namespaceSelector: {}

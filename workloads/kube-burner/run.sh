@@ -120,6 +120,13 @@ case ${WORKLOAD} in
     export TEST_JOB_ITERATIONS=${JOB_ITERATIONS:-5}
     prep_networkpolicy_workload
   ;;
+  large-networkpolicy-egress)
+    EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=workloads/large-networkpolicy-egress/engress-firewall.yaml
+    METRICS_PROFILE=${METRICS_PROFILE:-metrics-profiles/metrics-ovn.yaml}
+    export TEST_JOB_ITERATIONS=${JOB_ITERATIONS:-5}
+    generated_egress_firewall_policy
+    prep_networkpolicy_workload
+  ;;
   custom)
   ;;
   *)
@@ -155,13 +162,15 @@ fi
 if [[ ${WORKLOAD} == "concurrent-builds" ]]; then
    app_array=($APP_LIST)
    for app in "${app_array[@]}"
-    do
+   do
       run_build_workload $app
-  done
-  unlabel_nodes_with_label $label
-  cat conc_builds_results.out
+   done
+   unlabel_nodes_with_label $label
+   cat conc_builds_results.out
+elif [[ ${WORKLOAD} == "large-networkpolicy-egress" ]]; then
+   run_large_networkpolicy_egressfirewall_anp_workload
 else
-  run_workload
+   run_workload
 fi
 JOB_END=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 if [[ ${CLEANUP_WHEN_FINISH} == "true" ]]; then

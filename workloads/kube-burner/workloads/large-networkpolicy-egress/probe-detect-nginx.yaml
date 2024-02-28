@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe-detectd-nginx
+  labels:
+    app: probe-detectd-nginx
+spec:
+  selector:
+    matchLabels:
+      app: probe-detectd-nginx
+  replicas: 3      
+  template:
+    metadata:
+      labels:
+        app: probe-detectd-nginx     
+    spec:
+      containers:
+      - name: nginx
+        image: quay.io/openshift-psap-qe/nginx-alpine:multiarch
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL        
+        env:
+          - name: JAVA_OPTS
+            value: -Djenkins.install.runSetupWizard=false
+        ports:
+          - name: http-port
+            containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10                 
+        volumeMounts:
+          - name: jenkins-vol
+            mountPath: /var/jenkins_home/
+      volumes:
+        - name: jenkins-vol
+          emptyDir: {}

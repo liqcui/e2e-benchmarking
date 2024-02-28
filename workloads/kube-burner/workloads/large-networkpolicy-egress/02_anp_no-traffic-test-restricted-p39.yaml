@@ -1,0 +1,36 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: no-traffic-test-restricted-p39
+spec:
+  priority: 39
+  subject:
+    pods:
+      namespaceSelector:
+        matchLabels:
+          anplabel: anp-test
+      podSelector:
+        matchLabels:
+          anplabel: anp-test
+  ingress:
+  - name: "deny-all-ingress-from-anp-restricted"
+    action: "Deny"
+    from:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-restricted
+        podSelector:
+          matchLabels:
+            anplabel: anp-restricted
+  egress:
+  - name: "deny-all-egress-to-anp-restricted"
+    action: "Deny"
+    to:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-restricted
+        podSelector:
+          matchLabels:
+            anplabel: anp-restricted

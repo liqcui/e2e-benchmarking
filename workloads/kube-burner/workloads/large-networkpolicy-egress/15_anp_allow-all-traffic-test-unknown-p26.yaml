@@ -1,0 +1,36 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-all-traffic-test-unknown-p26
+spec:
+  priority: 26
+  subject:
+    pods:
+      namespaceSelector:
+        matchLabels:
+          anplabel: anp-test
+      podSelector:
+        matchLabels:
+          anplabel: anp-test
+  ingress:
+  - name: "allow-all-ingress-from-anp-unknown"
+    action: "Allow"
+    from:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-unknown
+        podSelector:
+          matchLabels:
+            anplabel: anp-unknown
+  egress:
+  - name: "allow-all-egress-to-anp-unknown"
+    action: "Allow"
+    to:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-unknown
+        podSelector:
+          matchLabels:
+            anplabel: anp-unknown

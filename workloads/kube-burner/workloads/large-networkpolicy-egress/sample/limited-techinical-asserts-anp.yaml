@@ -1,0 +1,26 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-traffic-multi-techincal-asserts-anp-tenant10-p11
+spec:
+  priority: 11
+  subject:
+    namespaces:
+      matchLabels:
+        customer_tenat: tenant10
+  ingress:
+  - name: "all-ingress-from-same-tenant"  
+    action: Allow   # Allows connection 
+    from:
+    - namespaces:
+        # namespaceSelector:
+        matchLabels:
+          customer_tenat: tenant10    
+  egress:
+  - name: "all-ingress-to-same-tenat"  
+    action: Allow   # Allows connection   
+    to:
+    - namespaces:
+        # namespaceSelector:
+        matchLabels:
+          customer_tenat: tenant10

@@ -1,0 +1,33 @@
+global:
+  writeToFile: false
+  indexerConfig:
+    enabled: {{.INDEXING}}
+    esServers: ["{{.ES_SERVER}}"]
+    insecureSkipVerify: true
+    defaultIndex: {{.ES_INDEX}}
+    type: elastic
+jobs:
+  - name: convergence-tracker
+    namespace: convergence-tracker
+    jobIterations: 1
+    podWait: false
+    waitWhenFinished: false
+    preLoadImages: false
+    churn: false
+    cleanup: true
+    namespaceLabels:
+      security.openshift.io/scc.podSecurityLabelSync: false
+      pod-security.kubernetes.io/enforce: privileged
+      pod-security.kubernetes.io/audit: privileged
+      pod-security.kubernetes.io/warn: privileged
+      anplabel: convergence-tracker
+    jobPause: 30s
+    objects:
+      - objectTemplate: convergence_tracker.yml
+        replicas: {{.NODES_COUNT}}
+        inputVars:
+          convergence_period: "{{.CONVERGENCE_PERIOD}}"
+          convergence_timeout: "{{.CONVERGENCE_TIMEOUT}}"
+          es_server: "{{.ES_SERVER}}"
+          es_index: {{.ES_INDEX_NETPOL}}
+          metadata: "netpols_per_namespace: {{.NETPOLS_PER_NAMESPACE}}, pods_per_namespace: {{.PODS_PER_NAMESPACE}}"
