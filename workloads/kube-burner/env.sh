@@ -87,3 +87,25 @@ export EMAIL_ID_FOR_RESULTS_SHEET=${EMAIL_ID_FOR_RESULTS_SHEET}
 export GEN_CSV=${GEN_CSV:-false}
 export GEN_JSON=${GEN_JSON:-false}
 export SORT_BY_VALUE=${SORT_BY_VALUE:-true}
+
+#Only for Large netwrokpolicy and egress firewall rule use case
+export POD_RPLICAS=${POD_RPLICAS:=40}
+export NETWORKPOLICY_RPLICAS=${NETWORKPOLICY_RPLICAS:=75}
+export EGRESS_FIREWALL_POLICY_TOTAL_NUM=${EGRESS_FIREWALL_POLICY_TOTAL_NUM:=80}
+export WAIT_OVN_DB_SYNC_TIME=${WAIT_OVN_DB_SYNC_TIME:=5400}
+export IF_CIDR_ANP=${IF_CIDR_ANP:="false"}
+export IF_NODE_ANP=${IF_NODE_ANP:="false"}
+
+# CONVERGENCE_PERIOD and CONVERGENCE_TIMEOUT are convergence tracker parameters.
+# CONVERGENCE_PERIOD specifies for how long the system should be stable to be considered converged and
+# CONVERGENCE_TIMEOUT is a timer specifying the hard deadline for policy convergence.
+# A test failure will be reported by convergence tracker in CONVERGENCE_TIMEOUT + CONVERGENCE_PERIOD seconds.
+export CONVERGENCE_PERIOD=${CONVERGENCE_PERIOD:=60}
+export CONVERGENCE_TIMEOUT=${CONVERGENCE_TIMEOUT:=3600}
+# Number of nodes to run convergence tracker. Doesn't have effect if CONVERGENCE_TRACKER is false
+export NODES_COUNT=${NODES_COUNT:=3}
+
+export NAMESPACES=${NAMESPACES:=1}
+export PODS_PER_NAMESPACE=${PODS_PER_NAMESPACE:=1}
+export NETPOLS_PER_NAMESPACE=${NETPOLS_PER_NAMESPACE:=1}
+export ES_INDEX_NETPOL=${ES_INDEX}
