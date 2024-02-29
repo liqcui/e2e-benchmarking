@@ -399,13 +399,13 @@ function networkPolicyInitSyncDurationCheck(){
    masterNodeNames=`oc get nodes |grep -E 'master' |awk '{print $1}' | tr -s '\n' '|'`
    masterNodeNames=${masterNodeNames:0:-1}
    echo "----------------------TOP Usage of Infra Node---------------------------"
-   oc adm top nodes |sort -n -k5 | grep -i -E "$infraNodeNames|NAME"
+   oc adm top nodes | grep -i -E "$infraNodeNames|NAME"  |sort -n -k5 
    echo
    echo "----------------------TOP Usage of Master/ControlPlane Node---------------------------"
-   oc adm top nodes |sort -n -k5 | grep -i -E "$masterNodeNames|NAME"
+   oc adm top nodes | grep -i -E "$masterNodeNames|NAME" |sort -n -k5 
    echo
-   echo "----------------------TOP Usage of Master Node---------------------------"
-   oc adm top nodes |sort -n -r -k5 | grep -i -E -v "$masterNodeNames|$infraNodeNames"| tail -11| sort
+   echo "----------------------TOP Usage of Worker Node---------------------------"
+   oc adm top nodes | grep -i -E -v "$masterNodeNames|$infraNodeNames" | sort -k5 -n
    echo "----------------------`date`-------------------------------"
    #Wait for max 10 minutes to check if pod is up and running
    INIT=1
