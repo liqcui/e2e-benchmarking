@@ -107,7 +107,7 @@ jobs:
         replicas: 1
       - objectTemplate: 12_anp_allow-egress-only-open-test-p41.yaml
         replicas: 1
-       - objectTemplate: 13_anp_allow-all-traffic-open-test-p35.yaml
+      - objectTemplate: 13_anp_allow-all-traffic-open-test-p35.yaml
         replicas: 1
       - objectTemplate: 14_anp_allow-all-traffic-unknown-open-p34.yaml
         replicas: 1
