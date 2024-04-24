@@ -348,7 +348,7 @@ function networkPolicyInitSyncDurationCheck(){
    do
 	oc create ns recycle-ns${i}
 	oc -n recycle-ns${i} apply -f ${WORKLOAD_TMPLATE_PATH}/deny-all.yml
-        oc -n recycle-ns${i} apply -f ${WORKLOAD_TMPLATE_PATH}/case-networkpolicy-defaultport.yml
+        oc -n recycle-ns${i} apply -f ${WORKLOAD_TMPLATE_PATH}/networkpolicy-defaultport.yml
         oc -n recycle-ns${i} apply -f $EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH
 	i=$(( $i + 1 ))
    done
@@ -374,15 +374,15 @@ function networkPolicyInitSyncDurationCheck(){
    oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/deny-all.yml
    oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/probe-detect-deployment.yaml
    oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/probe-detect-service.yaml
-   oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/case-networkpolicy-probe-port.yml
+   oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/networkpolicy-probe-port.yml
 
    echo "wait for $WAIT_OVN_DB_SYNC_TIME seconds to make sure all network policy/egress firewall rule sync"
    sleep $WAIT_OVN_DB_SYNC_TIME
    oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/deny-all.yml
    sleep 600
    oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/probe-detect-daemonset.yaml
-   oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/case-networkpolicy-allowdns.yml
-   oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/case-networkpolicy-defaultport.yml
+   oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/networkpolicy-allowdns.yml
+   oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/networkpolicy-defaultport.yml
    
    if oc -n openshift-ovn-kubernetes get pods |grep ovnkube-master; then
 

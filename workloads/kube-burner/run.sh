@@ -122,7 +122,7 @@ case ${WORKLOAD} in
   ;;
   large-networkpolicy-egress)
     WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress.yml
-    EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=workloads/large-networkpolicy-egress/case-engress-firewall.yaml
+    EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=workloads/large-networkpolicy-egress/engress-firewall.yaml
     METRICS_PROFILE=${METRICS_PROFILE:-metrics-profiles/metrics-ovn.yaml}
     export TEST_JOB_ITERATIONS=${JOB_ITERATIONS:-5}
     generated_egress_firewall_policy

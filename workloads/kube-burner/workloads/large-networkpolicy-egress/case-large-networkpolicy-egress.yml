@@ -75,14 +75,46 @@ jobs:
       pod-security.kubernetes.io/enforce: privileged
       pod-security.kubernetes.io/audit: privileged
       pod-security.kubernetes.io/warn: privileged
+      anplabel: anp-restricted
     objects:
-      - objectTemplate: case-engress-firewall.yaml
+      - objectTemplate: engress-firewall.yaml
         replicas: 1
 
       - objectTemplate: deny-all.yml
         replicas: 1
 
-      - objectTemplate: case-networkpolicy-deployapp.yml
+      - objectTemplate: 01_banp_deny_traffic_open_restricted.yaml
+        replicas: 1
+      - objectTemplate: 02_anp_no-traffic-test-restricted-p70.yaml
+        replicas: 1
+      - objectTemplate: 03_anp_no-traffic-unknown-restricted-p60.yaml
+        replicas: 1
+      - objectTemplate: 04_anp_no-traffic-test-unknown-p50.yaml
+        replicas: 1
+      - objectTemplate: 05_anp_allow-ingress-only-test-unknown-p45.yaml
+        replicas: 1
+      - objectTemplate: 06_anp_allow-egress-only-test-unknown-p40.yaml
+        replicas: 1
+      - objectTemplate: 07_anp_no-traffic-unknown-open-p55.yaml
+        replicas: 1
+      - objectTemplate: 08_anp_allow-ingress-only-unknown-open-p46.yaml
+        replicas: 1
+      - objectTemplate: 09_anp_allow-egress-only-unknown-open-p42.yaml
+        replicas: 1
+      - objectTemplate: 10_anp_no-traffic-open-test-p53.yaml
+        replicas: 1
+      - objectTemplate: 11_anp_allow-ingress-only-open-test-p48.yaml
+        replicas: 1
+      - objectTemplate: 12_anp_allow-egress-only-open-test-p41.yaml
+        replicas: 1
+       - objectTemplate: 13_anp_allow-all-traffic-open-test-p35.yaml
+        replicas: 1
+      - objectTemplate: 14_anp_allow-all-traffic-unknown-open-p34.yaml
+        replicas: 1
+      - objectTemplate: 15_anp_allow-all-traffic-test-unknown-p33.yaml
+        replicas: 1
+                                                                                                       
+      - objectTemplate: networkpolicy-deployapp.yml
         replicas: {{.NETWORKPOLICY_RPLICAS}}
         inputVars:
           podselector_label_num: "label1"
@@ -90,7 +122,7 @@ jobs:
           ingress_label_num: "label1"
           ingress_label: "foo"
 
-      - objectTemplate: case-networkpolicy-deployapp.yml
+      - objectTemplate: networkpolicy-deployapp.yml
         replicas: {{.NETWORKPOLICY_RPLICAS}}
         inputVars:
           podselector_label_num: "label2"
@@ -105,7 +137,7 @@ jobs:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           label1: "foo"
           label2: "bar"
-
+          anplabel: anp-open
       - objectTemplate: app-deployment.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
@@ -114,26 +146,27 @@ jobs:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           label1: "foo"
           label2: "bar"
-
+          anplabel: anp-open
       - objectTemplate: postgres-service.yml
         replicas: 1
         inputVars:
           label1: "foo"
           label2: "bar"
-
+          anplabel: anp-open
       - objectTemplate: egress-app.yaml
         replicas: {{.POD_RPLICAS}}
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           label1: "foo"
           label2: "bar"
+          anplabel: anp-open
           workload: "{{.WORKLOAD}}"
           es_server: "{{.ES_SERVER}}"
           es_index: "{{.ES_INDEX_NETPOL}}"
 
-      - objectTemplate: case-networkpolicy-defaultport.yml
+      - objectTemplate: networkpolicy-defaultport.yml
         replicas: 1
 
-      - objectTemplate: case-networkpolicy-allowdns.yml
+      - objectTemplate: networkpolicy-allowdns.yml
         replicas: 1
 
