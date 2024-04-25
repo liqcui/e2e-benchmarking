@@ -9,6 +9,7 @@ spec:
         name: perfapp-{{.Replica}}-{{.Iteration}}
         label1: {{.label1}}-{{.Replica}}
         label2: {{.label2}}-{{.Replica}}
+        anplabel: {{.anplabel}}
     spec:
       nodeSelector: {{.nodeSelector}}
       containers:
