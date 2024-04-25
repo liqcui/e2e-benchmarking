@@ -121,7 +121,6 @@ case ${WORKLOAD} in
     prep_networkpolicy_workload
   ;;
   large-networkpolicy-egress)
-    WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress.yml
     EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=workloads/large-networkpolicy-egress/engress-firewall.yaml
     METRICS_PROFILE=${METRICS_PROFILE:-metrics-profiles/metrics-ovn.yaml}
     export TEST_JOB_ITERATIONS=${JOB_ITERATIONS:-5}
@@ -169,7 +168,14 @@ if [[ ${WORKLOAD} == "concurrent-builds" ]]; then
   unlabel_nodes_with_label $label
   cat conc_builds_results.out
 elif [[ ${WORKLOAD} == "large-networkpolicy-egress" ]]; then
-  run_workload
+  for anptype in anp-test anp-open anp-restricted anp-unknown
+  do
+     WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
+     run_workload
+  done
+  sleep 300
+  createANP
+  sleep 300
   networkPolicyInitSyncDurationCheck
 else
   run_workload

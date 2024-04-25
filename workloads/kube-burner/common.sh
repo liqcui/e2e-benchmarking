@@ -440,3 +440,23 @@ function networkPolicyInitSyncDurationCheck(){
    done
    echo "----------------------`date`-------------------------------"
 }
+
+function createANP(){
+    WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
+    echo "Create BANP and ANP ..."
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}01_banp_deny_traffic_open_restricted.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}02_anp_no-traffic-test-restricted-p70.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}03_anp_no-traffic-unknown-restricted-p60.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}04_anp_no-traffic-test-unknown-p50.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}05_anp_allow-ingress-only-test-unknown-p45.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}06_anp_allow-egress-only-test-unknown-p40.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}07_anp_no-traffic-unknown-open-p55.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}08_anp_allow-ingress-only-unknown-open-p46.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}09_anp_allow-egress-only-unknown-open-p42.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}10_anp_no-traffic-open-test-p53.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}11_anp_allow-ingress-only-open-test-p48.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}12_anp_allow-egress-only-open-test-p41.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}13_anp_allow-all-traffic-open-test-p35.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}14_anp_allow-all-traffic-unknown-open-p34.yaml
+    oc apply -f ${WORKLOAD_TEMPLATE_PATH}15_anp_allow-all-traffic-test-unknown-p33.yaml
+}
