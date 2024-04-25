@@ -170,6 +170,7 @@ if [[ ${WORKLOAD} == "concurrent-builds" ]]; then
 elif [[ ${WORKLOAD} == "large-networkpolicy-egress" ]]; then
   for anptype in anp-test anp-open anp-restricted anp-unknown
   do
+     export UUID=${UUID:-$(uuidgen)}
      WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
      run_workload
   done
