@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: perfapp-{{.Replica}}-{{.Iteration}}
+  name: {{.anplabel}}-app-{{.Replica}}-{{.Iteration}}
 spec:
   template:
     metadata:

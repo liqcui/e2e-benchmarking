@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: postgres-{{.Replica}}-{{.Iteration}}
+  name: {{.anplabel}}-db-{{.Replica}}-{{.Iteration}}
 spec:
   template:
     metadata:

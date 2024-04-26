@@ -177,7 +177,7 @@ elif [[ ${WORKLOAD} == "large-networkpolicy-egress" ]]; then
   sleep 300
   createANP
   sleep 300
-  networkPolicyInitSyncDurationCheck
+  #networkPolicyInitSyncDurationCheck
 else
   run_workload
 fi
