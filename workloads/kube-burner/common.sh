@@ -213,7 +213,14 @@ function verify_if_mcp_be_in_updated_state_by_name() {
 function live-migration-keepalive-detect(){
     LIVE_MIGRATION_DETECT_INTERVAL=${LIVE_MIGRATION_DETECT_INTERVAL:=1}
     INIT=1
-    MAX_RETRY=${MAX_RETRY:=7200}  
+    MAX_RETRY=${MAX_RETRY:=7200}
+    NETWORK_TYPE=`oc get network.config.openshift.io cluster -o jsonpath='{.status.networkType}'`
+    
+    if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
+        echo "The cluster network type is OpenShiftSDN, no need to migration" 
+        exit 1
+    fi
+
     oc get mcp |grep infra>/dev/null
     RC1=$?
     oc get mcp |grep workload>/dev/null
@@ -239,9 +246,7 @@ function live-migration-keepalive-detect(){
     do
                 curl -k -Is https://keepalive-detectd-nginx-service-ovn-live-migration-1.apps.liqcui-oc414sdn.qe.gcp.devcluster.openshift.com/ | head -n 1| grep OK;
                 RC=$?;
-                if [ $RC -eq 0 ] ; then 
-                   echo Service detect succesfully during ovn live migration.
-                else
+                if [ $RC -ne 0 ] ; then 
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                    echo "#       [Failure] Service broken during ovn live migration at `date +"%Y-%m-%d %H:%M:%S"`      #"
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
@@ -256,7 +261,7 @@ function live-migration-keepalive-detect(){
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
                    break
                 fi
-                sleep $LIVE_MIGRATION_DETECT_INTERVAL;
+                echo -n "-"&& sleep $LIVE_MIGRATION_DETECT_INTERVAL;
                 INIT=$(( $INIT + 1 ))
                 if [[ $INIT -gt $MAX_RETRY ]];then
                    echo "max retry reached in live-migration-post-check"
@@ -271,14 +276,11 @@ function live-migration-post-check(){
     MAX_RETRY=${MAX_RETRY:=7200}
     echo "Start to delect if the service broken during the second reboot of OVN live migration ...."
     
-    
     while true;
     do
                 curl -k -Is https://keepalive-detectd-nginx-service-ovn-live-migration-1.apps.liqcui-oc414sdn.qe.gcp.devcluster.openshift.com/ | head -n 1| grep OK;
                 RC=$?;
-                if [ $RC -eq 0 ] ; then 
-                   echo Service detect succesfully during ovn live migration.
-                else
+                if [ $RC -ne 0 ] ; then 
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                    echo "#       [Failure] Service broken during ovn live migration at `date +"%Y-%m-%d %H:%M:%S"`      #"
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
@@ -297,7 +299,7 @@ function live-migration-post-check(){
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
                    break
                 fi
-                sleep 5;
+                echo -n "-"&& sleep 5;
                 INIT=$(( $INIT + 1 ))
                 if [[ $INIT -gt $MAX_RETRY ]];then
                    echo "max retry reached in live-migration-post-check"
