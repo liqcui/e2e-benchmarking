@@ -238,9 +238,7 @@ function live-migration-keepalive-detect(){
     do
                 curl -k -Is https://${DETECT_ROUTE_NAME}/ | head -n 1| grep OK;
                 RC=$?;
-                if [ $RC -eq 0 ] ; then 
-                   echo Service detect succesfully during ovn live migration.
-                else
+                if [ $RC -ne 0 ] ; then 
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                    echo "#       [Failure] Service broken during ovn live migration at `date +"%Y-%m-%d %H:%M:%S"`      #"
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
@@ -255,7 +253,7 @@ function live-migration-keepalive-detect(){
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
                    break
                 fi
-                sleep $LIVE_MIGRATION_DETECT_INTERVAL;
+                echo -n "-" && sleep $LIVE_MIGRATION_DETECT_INTERVAL;
                 INIT=$(( $INIT + 1 ))
                 if [[ $INIT -gt $MAX_RETRY ]];then
                    echo "max retry reached in live-migration-post-check"
@@ -341,9 +339,7 @@ function live-migration-post-check(){
     do
                 curl -k -Is https://${DETECT_ROUTE_NAME}/ | head -n 1| grep OK;
                 RC=$?;
-                if [ $RC -eq 0 ] ; then 
-                   echo Service detect succesfully during ovn live migration.
-                else
+                if [ $RC -ne 0 ] ; then
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                    echo "#       [Failure] Service broken during ovn live migration at `date +"%Y-%m-%d %H:%M:%S"`      #"
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
@@ -362,7 +358,7 @@ function live-migration-post-check(){
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
                    break
                 fi
-                sleep 5;
+                echo -n "-" && sleep 5;
                 INIT=$(( $INIT + 1 ))
                 if [[ $INIT -gt $MAX_RETRY ]];then
                    echo "max retry reached in live-migration-post-check"
