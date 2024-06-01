@@ -253,7 +253,7 @@ function live-migration-keepalive-detect(){
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
                    break
                 fi
-                echo -n "-" && sleep $LIVE_MIGRATION_DETECT_INTERVAL;
+                sleep $LIVE_MIGRATION_DETECT_INTERVAL;
                 INIT=$(( $INIT + 1 ))
                 if [[ $INIT -gt $MAX_RETRY ]];then
                    echo "max retry reached in live-migration-post-check"
@@ -358,7 +358,7 @@ function live-migration-post-check(){
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
                    break
                 fi
-                echo -n "-" && sleep 5;
+                sleep 5;
                 INIT=$(( $INIT + 1 ))
                 if [[ $INIT -gt $MAX_RETRY ]];then
                    echo "max retry reached in live-migration-post-check"
