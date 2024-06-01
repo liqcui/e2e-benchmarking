@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: {{.anplabel}}-{{.Iteration}}-nginx-{{.Replica}}
   labels:
-    app: keepalive-detectd-nginx
+    app: keepalive-detect-nginx
 spec:
   selector:
     matchLabels:
-      app: keepalive-detectd-nginx
+      app: keepalive-detect-nginx
   replicas: 1     
   template:
     metadata:
       labels:
-        app: keepalive-detectd-nginx 
+        app: keepalive-detect-nginx
     spec:
       nodeSelector: {{.nodeSelector}}    
       containers:

@@ -224,20 +224,19 @@ function live-migration-keepalive-detect(){
         exit 1
     fi
 
-    if ! oc get route -A |grep keepalive-detectd-nginx-service; then
+    if ! oc get route -A |grep keepalive-detect-nginx-service; then
         echo "Create a route service to public network"
-        oc -n ovn-live-migration-1 create route edge --service=keepalive-detectd-nginx-service
+        oc -n ovn-live-migration-1 create route edge --service=keepalive-detect-nginx-service
     fi
     echo "Start to OVN live migration ...."
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-    # oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"unsupported-red-hat-internal-testing": "true"}}}'
     # oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"network.openshift.io/network-type-migration":""}},"spec":{"networkType":"OVNKubernetes"}}'
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     echo "Start to delect if the service broken during OVN live migration ...."
-    
+    DETECT_ROUTE_NAME=`oc get route -A|grep keepalive-detect | awk '{print $3}'`
     while true;
     do
-                curl -k -Is https://keepalive-detectd-nginx-service-ovn-live-migration-1.apps.liqcui-oc414sdn.qe.gcp.devcluster.openshift.com/ | head -n 1| grep OK;
+                curl -k -Is https://${DETECT_ROUTE_NAME}/ | head -n 1| grep OK;
                 RC=$?;
                 if [ $RC -eq 0 ] ; then 
                    echo Service detect succesfully during ovn live migration.
@@ -337,10 +336,10 @@ function live-migration-post-check(){
     MAX_RETRY=${MAX_RETRY:=7200}
     echo "Start to delect if the service broken during the second reboot of OVN live migration ...."
     
-    
+    DETECT_ROUTE_NAME=`oc get route -A|grep keepalive-detect | awk '{print $3}'`
     while true;
     do
-                curl -k -Is https://keepalive-detectd-nginx-service-ovn-live-migration-1.apps.liqcui-oc414sdn.qe.gcp.devcluster.openshift.com/ | head -n 1| grep OK;
+                curl -k -Is https://${DETECT_ROUTE_NAME}/ | head -n 1| grep OK;
                 RC=$?;
                 if [ $RC -eq 0 ] ; then 
                    echo Service detect succesfully during ovn live migration.

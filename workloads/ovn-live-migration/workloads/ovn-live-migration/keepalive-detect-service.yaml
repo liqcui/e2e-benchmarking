@@ -2,10 +2,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: keepalive-detectd-nginx-service
+  name: keepalive-detect-nginx-service
 spec:
   selector:
-    app: keepalive-detectd-nginx
+    app: keepalive-detect-nginx
   ports:
   - protocol: TCP
     port: 8080

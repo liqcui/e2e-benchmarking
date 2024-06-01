@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: anp-traffic-service
+  name: anp-traffic-node-port-service
 spec:
   selector:
     trafficapp: perfapp   
@@ -9,5 +9,6 @@ spec:
   - protocol: TCP
     port: 8080
     targetPort: 8080
-  type: ClusterIP
+    nodePort: 30036
+  type: NodePort
   sessionAffinity: None
