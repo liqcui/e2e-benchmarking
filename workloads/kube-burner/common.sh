@@ -221,9 +221,9 @@ function live-migration-keepalive-detect(){
         exit 1
     fi
 
-    oc get mcp |grep infra>/dev/null
+    oc get mcp |grep infra >/dev/null
     RC1=$?
-    oc get mcp |grep workload>/dev/null
+    oc get mcp |grep workload >/dev/null
     RC2=$?
     echo $RC1 $RC2
     if [[ $RC1 -ne 0 || $RC2 -ne 0 ]];then
