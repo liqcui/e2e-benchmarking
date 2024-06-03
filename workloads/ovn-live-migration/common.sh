@@ -288,10 +288,7 @@ function cluster_health_postcheck() {
   echo
   echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
   echo -e "print detail msg for co(AVAILABLE != True or PROGRESSING!=False or DEGRADED!=False or version != target_version) if exist:\n"
-  # Check if the kube-apiserver is rolling out after upgrade
-  if [ -z "$nodeStatusCheckResult" ]; then # If master nodes are normal
-      kas_rollingout_wait
-  fi 
+
   echo nodeStatusCheckResult is $nodeStatusCheckResult
   echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Abnormal co details~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
 
