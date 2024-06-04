@@ -1433,8 +1433,10 @@ function create_anp_banp_egress_rule_verify_traffic_from_two_different_groups_to
 
     format_Output_ANP_BANP_Source2Host $TARGET_NS_FILTER "node-role.kubernetes.io/worker" 10250 true
     format_Output_ANP_BANP_Source2Host $TARGET_NS_FILTER "node-role.kubernetes.io/worker" 30003 true
+    export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy.[Min]"
+    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     get_ovn_node_system_usage_info
-   
+
     SOURCE_NS_FILTER="anp-restricted"
     TARGET_NS_FILTER="anp-test"
     export TEST_STEP="Creating 1 Node Selector ANP to Allow Egress to Two Worker Nodes Gropus"
@@ -1531,11 +1533,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
        printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
        get_ovn_node_system_usage_info
-       sleep 120
-       export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy.[Min]"
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
-       get_ovn_node_system_usage_info
-
+  
        ###################################Create Node Selector Policy#################################
        create_anp_banp_egress_rule_verify_traffic_from_two_different_groups_to_host
        
