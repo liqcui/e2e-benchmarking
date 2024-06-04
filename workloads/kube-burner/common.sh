@@ -1564,6 +1564,11 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
        get_ovn_node_system_usage_info
 
+       export TEST_STEP="Creating ANP to Allow Monitor ANP "
+       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
+       oc apply -f ${WORKLOAD_TEMPLATE_PATH}/01_anp_allow-monitor.yaml
+       get_ovn_node_system_usage_info
+
        export TEST_STEP="Creating Large Scale NetPol and Egress Firewall"
        export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        echo "Creating networkpolicy enable pod traffic within the same namespace"
