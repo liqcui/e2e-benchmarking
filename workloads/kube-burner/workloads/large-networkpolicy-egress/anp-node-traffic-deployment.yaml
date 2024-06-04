@@ -16,7 +16,8 @@ spec:
         app: node-traffic-clt
         anplabel: anp-restricted
     spec:
-      nodeSelector: {{.nodeSelector}}    
+      nodeSelector:
+        node-role.kubernetes.io/worker: "" 
       containers:
       - name: node-traffic-clt
         image: quay.io/openshift-psap-qe/ubi9-minimal
