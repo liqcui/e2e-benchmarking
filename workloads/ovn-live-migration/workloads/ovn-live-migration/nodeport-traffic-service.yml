@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: anp-traffic-node-port-service
+  name: keepalive-detect-nginx-nodeport-service
 spec:
   selector:
-    trafficapp: perfapp   
+    app: keepalive-detect-nginx 
   ports:
   - protocol: TCP
     port: 8080

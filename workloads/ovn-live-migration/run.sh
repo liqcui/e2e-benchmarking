@@ -178,7 +178,7 @@ elif [[ ${WORKLOAD} == "large-networkpolicy-egress" ]]; then
 elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
    run_workload
    live-migration-keepalive-detect
-   sleep 300
+   sleep 180
    live-migration-post-check
 else
    run_workload

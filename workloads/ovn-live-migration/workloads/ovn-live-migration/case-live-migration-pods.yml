@@ -98,7 +98,7 @@ jobs:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           anplabel: "live-migration"
 
-      - objectTemplate: perfapp-traffic-service.yml
+      - objectTemplate: clusterip-traffic-service.yaml
         replicas: 1
         inputVars:
           anplabel: "live-migration"
@@ -121,7 +121,7 @@ jobs:
           es_server: "{{.ES_SERVER}}"
           es_index: "{{.ES_INDEX_NETPOL}}"
 
-      - objectTemplate: keepalive-detect-service.yaml
+      - objectTemplate: nodeport-traffic-service.yml
         replicas: 1
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
