@@ -363,6 +363,7 @@ function live-migration-post-check(){
                    exit 1
                 fi
     done
+    sleep 180
     cluster_health_postcheck
 }
     
