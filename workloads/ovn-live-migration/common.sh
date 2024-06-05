@@ -328,7 +328,8 @@ function cluster_health_postcheck() {
 }
 
 function migration_checkpoint(){
-  
+     echo "Pod to Pod(same node)"
+     echo "Pod to Pod(diff node)"
 }
 
 function live-migration-post-check(){
