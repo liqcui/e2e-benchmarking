@@ -14,7 +14,7 @@ spec:
       labels:
         app: workload-nginx-app
     spec:
-      nodeSelector:  "node-role.kubernetes.io/workload="  
+      nodeSelector:  "node-role.kubernetes.io/workload"  
       containers:
       - name: nginx
         image: quay.io/openshift-psap-qe/nginx-alpine:multiarch
