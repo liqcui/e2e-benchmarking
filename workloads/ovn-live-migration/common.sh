@@ -224,9 +224,9 @@ function live-migration-keepalive-detect(){
         exit 1
     fi
 
-    if ! oc get route -A |grep keepalive-detect-nginx-service; then
+    if ! oc get route -A |grep keepalive-detect-nginx-cluster-ip-service; then
         echo "Create a route service to public network"
-        oc -n ovn-live-migration-1 create route edge --service=keepalive-detect-nginx-service
+        oc -n ovn-live-migration-1 create route edge --service=keepalive-detect-nginx-cluster-ip-service
     fi
     echo "Start to OVN live migration ...."
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
