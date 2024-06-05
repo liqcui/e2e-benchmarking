@@ -142,17 +142,10 @@ jobs:
       - objectTemplate: workload-app.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
-          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          nodeSelector: "{{.WORKLOAD_POD_NODE_SELECTOR}}"
           anplabel: "live-migration"
-          workload: "{{.WORKLOAD}}"
-          es_server: "{{.ES_SERVER}}"
-          es_index: "{{.ES_INDEX_NETPOL}}"
 
       - objectTemplate: workload-service.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
-          nodeSelector: "{{.POD_NODE_SELECTOR}}"
-          anplabel: "live-migration"
-          workload: "{{.WORKLOAD}}"
-          es_server: "{{.ES_SERVER}}"
-          es_index: "{{.ES_INDEX_NETPOL}}"          
+          anplabel: "live-migration"         
