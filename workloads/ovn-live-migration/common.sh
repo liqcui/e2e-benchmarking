@@ -213,7 +213,8 @@ function verify_if_mcp_be_in_updated_state_by_name() {
 function live-migration-keepalive-detect(){
     LIVE_MIGRATION_DETECT_INTERVAL=${LIVE_MIGRATION_DETECT_INTERVAL:=1}
     INIT=1
-    MAX_RETRY=${MAX_RETRY:=7200}  
+    MAX_RETRY=${MAX_RETRY:=7200}
+    
     oc get mcp |grep infra>/dev/null
     RC1=$?
     oc get mcp |grep workload>/dev/null

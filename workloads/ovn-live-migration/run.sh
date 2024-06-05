@@ -176,6 +176,8 @@ if [[ ${WORKLOAD} == "concurrent-builds" ]]; then
 elif [[ ${WORKLOAD} == "large-networkpolicy-egress" ]]; then
    run_large_networkpolicy_egressfirewall_anp_workload
 elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
+   LABEL_NODE=`oc get nodes |grep worker | awk '{print $1}' | head -1`
+   oc label node $LABEL_NODE node-role.kubernetes.io/backend=
    run_workload
    live-migration-keepalive-detect
    sleep 180

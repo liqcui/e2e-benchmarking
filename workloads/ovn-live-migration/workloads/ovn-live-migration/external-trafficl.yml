@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-external-traffic-{{.Replica}}
+  labels:
+    app: external-traffic
+spec:
+  selector:
+    matchLabels:
+      app: external-traffic
+  template:
+    metadata:
+      labels:
+        app: external-traffic
+    spec:
+      nodeSelector: {{.nodeSelector}}    
+      containers:
+      - name: keepalive
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL 
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do curl -Is http://www.google.com | head -n 1;
+          sleep 3;
+          ping -c 5 8.8.8.8;
+          curl -Is https://www.digitalocean.com/robots.txt | head -n 1;
+          sleep 3;
+          ping -c 5 8.8.4.4;
+          done
+

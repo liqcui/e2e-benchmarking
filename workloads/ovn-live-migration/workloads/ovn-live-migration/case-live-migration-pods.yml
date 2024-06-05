@@ -81,7 +81,7 @@ jobs:
         replicas: {{.POD_RPLICAS}}
         inputVars:
           readinessPeriod: 1
-          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          nodeSelector: "{{.BACKEND_POD_NODE_SELECTOR}}"
           type: perfdb
           anplabel: "live-migration"
 
@@ -95,7 +95,7 @@ jobs:
         inputVars:
           readinessPeriod: 10
           livenessPeriod: 10
-          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          nodeSelector: "{{.BACKEND_POD_NODE_SELECTOR}}"
           anplabel: "live-migration"
 
       - objectTemplate: clusterip-traffic-service.yml
@@ -104,7 +104,7 @@ jobs:
           anplabel: "live-migration"
 
       - objectTemplate: egress-traffic-app.yml
-        replicas: {{.POD_RPLICAS}}
+        replicas: 1
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           anplabel: "live-migration"
@@ -149,3 +149,10 @@ jobs:
         replicas: {{.POD_RPLICAS}}
         inputVars:
           anplabel: "live-migration"         
+
+      - objectTemplate: external-trafficl.yml
+        replicas: 1
+        inputVars:
+          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          anplabel: "live-migration"
+

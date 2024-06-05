@@ -17,14 +17,9 @@ spec:
       do curl -Is http://www.google.com | head -n 1;
       sleep 3;
       ping -c 5 8.8.8.8;
-      ping -c 5 dev.azuresynapse.net;
-      sleep 3;
       curl -Is https://www.digitalocean.com/robots.txt | head -n 1;
       sleep 3;
       ping -c 5 8.8.4.4;
-      ping -c 5 management.core.windows.net;
-      ping -c 5 infogw.api.openshift.com;
-      ping -c 5 dc.applicationinsights.azure.com;
       done
     ports:
     - containerPort: 8080

@@ -18,6 +18,7 @@ export MAX_WAIT_TIMEOUT=${MAX_WAIT_TIMEOUT:-1h}
 export CLEANUP=${CLEANUP:-true}
 export POD_NODE_SELECTOR=${POD_NODE_SELECTOR:-'{node-role.kubernetes.io/worker: }'}
 export WORKLOAD_POD_NODE_SELECTOR=${WORKLOAD_POD_NODE_SELECTOR:-'{node-role.kubernetes.io/workload: }'}
+export BACKEND_POD_NODE_SELECTOR=${BACKEND_POD_NODE_SELECTOR:-'{node-role.kubernetes.io/backend: }'}
 export WORKER_NODE_LABEL=${WORKER_NODE_LABEL:-"node-role.kubernetes.io/worker"}
 export WAIT_WHEN_FINISHED=true
 export POD_WAIT=${POD_WAIT:-false}
