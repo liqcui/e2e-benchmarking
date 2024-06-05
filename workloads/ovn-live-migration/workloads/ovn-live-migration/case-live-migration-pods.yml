@@ -98,12 +98,12 @@ jobs:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           anplabel: "live-migration"
 
-      - objectTemplate: clusterip-traffic-service.yaml
+      - objectTemplate: clusterip-traffic-service.yml
         replicas: 1
         inputVars:
           anplabel: "live-migration"
 
-      - objectTemplate: egress-traffic-app.yaml
+      - objectTemplate: egress-traffic-app.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
@@ -112,7 +112,7 @@ jobs:
           es_server: "{{.ES_SERVER}}"
           es_index: "{{.ES_INDEX_NETPOL}}"          
 
-      - objectTemplate: keepalive-detect-nginx.yaml
+      - objectTemplate: keepalive-detect-nginx.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
@@ -130,7 +130,7 @@ jobs:
           es_server: "{{.ES_SERVER}}"
           es_index: "{{.ES_INDEX_NETPOL}}"
 
-      - objectTemplate: keepalive-detect-deploy.yaml
+      - objectTemplate: keepalive-detect-deploy.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
@@ -139,4 +139,20 @@ jobs:
           es_server: "{{.ES_SERVER}}"
           es_index: "{{.ES_INDEX_NETPOL}}"
 
+      - objectTemplate: workload-app.yml
+        replicas: {{.POD_RPLICAS}}
+        inputVars:
+          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          anplabel: "live-migration"
+          workload: "{{.WORKLOAD}}"
+          es_server: "{{.ES_SERVER}}"
+          es_index: "{{.ES_INDEX_NETPOL}}"
 
+      - objectTemplate: workload-service.yml
+        replicas: {{.POD_RPLICAS}}
+        inputVars:
+          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          anplabel: "live-migration"
+          workload: "{{.WORKLOAD}}"
+          es_server: "{{.ES_SERVER}}"
+          es_index: "{{.ES_INDEX_NETPOL}}"          

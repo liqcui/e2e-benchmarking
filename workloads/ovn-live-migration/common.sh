@@ -327,6 +327,10 @@ function cluster_health_postcheck() {
 
 }
 
+function migration_checkpoint(){
+  
+}
+
 function live-migration-post-check(){
     INIT=1
     MAX_RETRY=${MAX_RETRY:=7200}
