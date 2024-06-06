@@ -86,7 +86,7 @@ jobs:
           anplabel: "live-migration"
 
       - objectTemplate: postgres-service.yml
-        replicas: 1
+        replicas: {{.POD_RPLICAS}}
         inputVars:
           anplabel: "live-migration"
 

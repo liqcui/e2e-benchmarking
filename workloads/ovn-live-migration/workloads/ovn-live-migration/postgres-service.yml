@@ -2,10 +2,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: postgres-db-service
+  name: postgres-{{.Iteration}}-{{.Replica}}
 spec:
   selector:
-    type: perfdb
+    name: postgres-{{.Iteration}}-{{.Replica}} 
+    anplabel: {{.anplabel}}
+    type: perfdb-{{.Iteration}}-{{.Replica}}  
   ports:
   - protocol: TCP
     port: 5432
