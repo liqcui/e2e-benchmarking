@@ -146,7 +146,7 @@ jobs:
           anplabel: "live-migration"
 
       - objectTemplate: workload-service.yml
-        replicas: {{.POD_RPLICAS}}
+        replicas: 1
         inputVars:
           anplabel: "live-migration"         
 
