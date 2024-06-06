@@ -110,7 +110,7 @@ jobs:
         inputVars:
           anplabel: "anp-restricted"
 
-      - objectTemplate: egress-traffic-app.yaml
+      - objectTemplate: egress-traffic-app.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"

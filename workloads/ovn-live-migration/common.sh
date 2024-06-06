@@ -344,7 +344,7 @@ function migration_checkpoint(){
 
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
      echo 
-     echo "Network connection testing from pod to pod(diff node)"
+     echo "Network connection testing from pod to pod(cross node)"
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
      SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
      POD_IP=`oc -n ovn-live-migration-1 get pod -lapp=workload-nginx-app -ojsonpath={.items[0].status.podIP}`
@@ -352,9 +352,9 @@ function migration_checkpoint(){
      OUTPUT=`oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $POD_IP 8080 |grep Connected`
      oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $POD_IP 8080
      if [[ $? -eq 0 ]];then
-	     echo "Network connection testing from pod to pod(diff node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+	     echo "Network connection testing from pod to pod(cross node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-        echo "Network connection testing from pod to pod(diff node),Failure" >>/tmp/checkResult.csv
+        echo "Network connection testing from pod to pod(cross node),Failure" >>/tmp/checkResult.csv
      fi
      echo 
      echo "Network connection testing from pod to host(same node)"
@@ -370,7 +370,7 @@ function migration_checkpoint(){
         echo "Network connection testing from pod to host(same node),Failure" >>/tmp/checkResult.csv
      fi
      echo 
-     echo "Network connection testing from pod to host(diff node)"
+     echo "Network connection testing from pod to host(cross node)"
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
      SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
      HOST_IP=`oc -n ovn-live-migration-1 get pod -lapp=workload-nginx-app -ojsonpath={.items[0].status.hostIP}`
@@ -378,9 +378,9 @@ function migration_checkpoint(){
      OUTPUT=`oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 10250 |grep Connected`
      oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 10250
      if [[ $? -eq 0 ]];then
-	     echo "Network connection testing from pod to host(diff node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+	     echo "Network connection testing from pod to host(cross node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-        echo "Network connection testing from pod to host(diff node),Failure" >>/tmp/checkResult.csv
+        echo "Network connection testing from pod to host(cross node),Failure" >>/tmp/checkResult.csv
      fi
 
      echo 
@@ -396,10 +396,83 @@ function migration_checkpoint(){
         echo "Network connection testing from pod to ClusterIP service,Failure" >>/tmp/checkResult.csv
      fi
 
+     echo 
+     echo "Network connection testing from pod to NodePort service(same node)"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     NODE_LABEL=node-role.kubernetes.io/workload
+     SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pods -lapp=workload-tool -oname`
+     HOST_IP=`oc get nodes -l"${NODE_LABEL}" -ojsonpath='{range .items[0]}{.status.addresses[?(@.type=="InternalIP")].address}'`
+     CMD="oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036"
+     OUTPUT=`oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036 |grep Connected`
+     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod to NodePort service(same node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+	     echo "Network connection testing from pod to NodePort service,Failure" >>/tmp/checkResult.csv
+     fi
+
+     echo 
+     echo "Network connection testing from pod to NodePort service(cross node)"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     NODE_LABEL=node-role.kubernetes.io/workload
+     SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
+     HOST_IP=`oc get nodes -l"${NODE_LABEL}" -ojsonpath='{range .items[0]}{.status.addresses[?(@.type=="InternalIP")].address}'`
+     CMD="oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036"
+     OUTPUT=`oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036 |grep Connected`
+     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod to NodePort service(cross node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+	     echo "Network connection testing from pod to NodePort service,Failure" >>/tmp/checkResult.csv
+     fi
+
+     echo 
+     echo "Network connection testing from external to NodePort service"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     MASTER_NODE=`oc get node |grep control-plane | awk '{print $1}'| head -1`
+     NODE_LABEL=node-role.kubernetes.io/workload
+     HOST_IP=`oc get nodes -l"${NODE_LABEL}" -ojsonpath='{range .items[0]}{.status.addresses[?(@.type=="InternalIP")].address}'`
+     CMD="oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 30036"
+     OUTPUT=`oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 30036 |grep Connected`
+     oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 30036
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from external to NodePort service(cross node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+	     echo "Network connection testing from external to NodePort service,Failure" >>/tmp/checkResult.csv
+     fi
+
+     echo 
+     echo "Network connection testing from pod to external"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     NODE_LABEL=node-role.kubernetes.io/workload
+     SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
+     CMD="oc -n ovn-live-migration-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'"
+     OUTPUT=`oc -n ovn-live-migration-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'| head -1`
+     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod to external,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+	     echo "Network connection testing from pod to external,Failure" >>/tmp/checkResult.csv
+     fi
+
+     echo 
+     echo "Network connection testing from externl to loadbalancer service"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     NODE_LABEL=node-role.kubernetes.io/workload
+     SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
+     CMD="oc -n ovn-live-migration-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'"
+     OUTPUT=`oc -n ovn-live-migration-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'| head -1`
+     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod to external,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+	     echo "Network connection testing from pod to external,Failure" >>/tmp/checkResult.csv
+     fi
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
      cat /tmp/checkResult.csv
 
 }
+
 
 function live-migration-post-check(){
     INIT=1
