@@ -8,7 +8,7 @@ spec:
       labels:
         name: postgres-{{.Iteration}}-{{.Replica}} 
         anplabel: {{.anplabel}}
-        type: perfdb
+        type: perfdb-{{.Iteration}}-{{.Replica}}
         podsn: {{.anplabel}}-{{.Iteration}}-{{.Replica}}
     spec:
       nodeSelector: {{.nodeSelector}}
