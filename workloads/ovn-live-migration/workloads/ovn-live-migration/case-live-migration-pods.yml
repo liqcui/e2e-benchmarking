@@ -156,9 +156,14 @@ jobs:
         inputVars:
           anplabel: "live-migration"         
 
-      - objectTemplate: external-trafficl.yml
+      - objectTemplate: external-traffic.yml
         replicas: 1
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          anplabel: "live-migration"
+
+      - objectTemplate: loadbalance-traffic-service.yml
+        replicas: 1
+        inputVars:
           anplabel: "live-migration"
 
