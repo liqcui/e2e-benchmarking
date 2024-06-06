@@ -84,7 +84,7 @@ jobs:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           anplabel: "anp-restricted"
 
-      - objectTemplate: perapp-deployment.yml
+      - objectTemplate: perfapp-deployment.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
           readinessPeriod: 10
