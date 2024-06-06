@@ -1,0 +1,538 @@
+#!/usr/bin/env bash
+set -m
+# set -x
+source ../../utils/common.sh
+source env.sh
+
+
+openshift_login
+
+# If INDEXING is enabled we retrive the prometheus oauth token
+if [[ ${INDEXING} == "true" ]]; then
+  if [[ ${HYPERSHIFT} == "false" ]]; then
+    export PROM_TOKEN=$(oc create token -n openshift-monitoring prometheus-k8s --duration=6h || oc sa get-token -n openshift-monitoring prometheus-k8s || oc sa new-token -n openshift-monitoring prometheus-k8s)
+  else
+    export PROM_TOKEN="dummytokenforthanos"
+    export HOSTED_CLUSTER_NAME=$(oc get infrastructure cluster -o jsonpath='{.status.infrastructureName}')
+  fi
+fi
+export UUID=${UUID:-$(uuidgen)}
+export OPENSHIFT_VERSION=$(oc version -o json | jq -r '.openshiftVersion') 
+export NETWORK_TYPE=$(oc get network.config/cluster -o jsonpath='{.status.networkType}') 
+export INGRESS_DOMAIN=$(oc get IngressController default -n openshift-ingress-operator -o jsonpath='{.status.domain}' || oc get routes -A --no-headers | head -n 1 | awk {'print$3'} | cut -d "." -f 2-)
+
+platform=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.type}')
+
+if [[ ${HYPERSHIFT} == "true" ]]; then
+  # shellcheck disable=SC2143
+  if oc get ns grafana-agent; then
+    log "Grafana agent is already installed"
+  else
+    export CLUSTER_NAME=${HOSTED_CLUSTER_NAME}
+    export PLATFORM=$(oc get infrastructure cluster -o jsonpath='{.status.platformStatus.type}')
+    export DAG_ID=$(oc version -o json | jq -r '.openshiftVersion')-$(oc get infrastructure cluster -o jsonpath='{.status.infrastructureName}') # setting a dynamic value
+    envsubst < ./grafana-agent.yaml | oc apply -f -
+  fi
+  echo "Get all management worker nodes.."
+  export Q_TIME=$(date +"%s")
+  export Q_NODES=""
+  for n in $(curl -k --silent --globoff  ${PROM_URL}/api/v1/query?query='sum(kube_node_role{openshift_cluster_name=~"'${MGMT_CLUSTER_NAME}'",role=~"master|infra|workload"})by(node)&time='$(($Q_TIME-300))'' | jq -r '.data.result[].metric.node'); do
+    Q_NODES=${n}"|"${Q_NODES};
+  done
+  export MGMT_NON_WORKER_NODES=${Q_NODES}
+  # set time for modifier queries 
+  export Q_TIME=$(($Q_TIME+600))
+fi
+
+collect_pprof() {
+  sleep 50
+  while [ $(oc get benchmark -n benchmark-operator kube-burner-${1}-${UUID} -o jsonpath="{.status.complete}") == "false" ]; do
+    log "-----------------------checking for new pprof files--------------------------"
+    oc rsync -n benchmark-operator $(oc get pod -n benchmark-operator -o name -l benchmark-uuid=${UUID}):/tmp/pprof-data $PWD/
+    sleep 60
+  done
+}
+
+run_workload() {
+  local CMD
+  local KUBE_BURNER_DIR 
+  KUBE_BURNER_DIR=$(mktemp -d)
+  if [[ ! -d ${KUBE_DIR} ]]; then
+    mkdir -p ${KUBE_DIR}
+  fi
+  if [[ -n ${BUILD_FROM_REPO} ]]; then
+    git clone --depth=1 ${BUILD_FROM_REPO} ${KUBE_BURNER_DIR}
+    make -C ${KUBE_BURNER_DIR} build
+    mv ${KUBE_BURNER_DIR}/bin/amd64/kube-burner ${KUBE_DIR}/kube-burner
+    rm -rf ${KUBE_BURNER_DIR}
+  else
+    curl -sS -L ${KUBE_BURNER_URL} | tar -xzC ${KUBE_DIR}/ kube-burner
+  fi
+  CMD="timeout ${JOB_TIMEOUT} ${KUBE_DIR}/kube-burner init --uuid=${UUID} -c $(basename ${WORKLOAD_TEMPLATE}) --log-level=${LOG_LEVEL}"
+
+  # When metrics or alerting are enabled we have to pass the prometheus URL to the cmd
+  if [[ ${INDEXING} == "true" ]] || [[ ${PLATFORM_ALERTS} == "true" ]] ; then
+    CMD+=" -u=${PROM_URL} -t ${PROM_TOKEN}"
+  fi
+  if [[ -n ${METRICS_PROFILE} ]]; then
+    log "Indexing enabled, using metrics from ${METRICS_PROFILE}"
+    envsubst < ${METRICS_PROFILE} > ${KUBE_DIR}/metrics.yml
+    CMD+=" -m ${KUBE_DIR}/metrics.yml"
+  fi
+  if [[ ${PLATFORM_ALERTS} == "true" ]]; then
+    log "Platform alerting enabled, using ${PWD}/alerts-profiles/${WORKLOAD}-${platform}.yml"
+    CMD+=" -a ${PWD}/alerts-profiles/${WORKLOAD}-${platform}.yml"
+  fi
+  pushd $(dirname ${WORKLOAD_TEMPLATE})
+  local start_date=$(date +%s%3N)
+  ${CMD}
+  rc=$?
+  popd
+  if [[ ${rc} == 0 ]]; then
+    RESULT=Complete
+  else
+    RESULT=Failed
+  fi
+  gen_metadata ${WORKLOAD} ${start_date} $(date +%s%3N)
+}
+
+find_running_pods_num() {
+  pod_count=0
+  # The next statement outputs something similar to:
+  # ip-10-0-177-166.us-west-2.compute.internal:20
+  # ip-10-0-250-197.us-west-2.compute.internal:17
+  # ip-10-0-151-0.us-west-2.compute.internal:19
+  NODE_PODS=$(kubectl get pods --field-selector=status.phase=Running -o go-template --template='{{range .items}}{{.spec.nodeName}}{{"\n"}}{{end}}' -A | awk '{nodes[$1]++ }END{ for (n in nodes) print n":"nodes[n]}')
+  for worker_node in ${WORKER_NODE_NAMES}; do
+    for node_pod in ${NODE_PODS}; do
+      # We use awk to match the node name and then we take the number of pods, which is the number after the colon
+      pods=$(echo "${node_pod}" | awk -F: '/'$worker_node'/{print $2}')
+      pod_count=$((pods + pod_count))
+    done
+  done
+  log "Total running pods across nodes: ${pod_count}"
+  # Number of pods to deploy per node * number of labeled nodes - pods running
+  total_pod_count=$((PODS_PER_NODE * NODE_COUNT - pod_count))
+  log "Number of pods to deploy on nodes: ${total_pod_count}"
+  if [[ ${1} == "heavy" ]] || [[ ${1} == *cni* ]]; then
+    total_pod_count=$((total_pod_count / 2))
+  fi
+  if [[ ${total_pod_count} -le 0 ]]; then
+    log "Number of pods to deploy <= 0"
+    exit 1
+  fi
+  export TEST_JOB_ITERATIONS=${total_pod_count}
+}
+
+cleanup() {
+  log "Cleaning up benchmark assets"
+  if ! oc delete ns -l kube-burner-uuid=${UUID} --grace-period=600 --timeout=${CLEANUP_TIMEOUT} 1>/dev/null; then
+    log "Namespaces cleanup failure"
+    rc=1
+  fi
+}
+
+get_pprof_secrets() {
+  if [[ ${HYPERSHIFT} == "true" ]]; then
+    log "Control Plane not available in HyperShift"
+    exit 1
+  else
+    oc create ns benchmark-operator
+    oc create serviceaccount kube-burner -n benchmark-operator
+    oc create clusterrolebinding kube-burner-crb --clusterrole=cluster-admin --serviceaccount=benchmark-operator:kube-burner
+    local certkey=`oc get secret -n openshift-etcd | grep "etcd-serving-ip" | head -1 | awk '{print $1}'`
+    oc extract -n openshift-etcd secret/$certkey
+    export CERTIFICATE=`base64 -w0 tls.crt`
+    export PRIVATE_KEY=`base64 -w0 tls.key`
+    export BEARER_TOKEN=$(oc create token -n benchmark-operator kube-burner --duration=6h || oc sa get-token kube-burner -n benchmark-operator)
+  fi
+}
+
+delete_pprof_secrets() {
+ rm -f tls.key tls.crt
+}
+
+delete_oldpprof_folder() {
+ rm -rf pprof-data
+}
+
+label_node_with_label() {
+  colon_param=$(echo $1 | tr "=" ":" | sed 's/:/: /g')
+  export POD_NODE_SELECTOR="{$colon_param}"
+  if [[ -z $NODE_COUNT ]]; then
+    NODE_COUNT=$(oc get node -o name --no-headers -l ${WORKER_NODE_LABEL},node-role.kubernetes.io/infra!=,node-role.kubernetes.io/workload!= | wc -l )
+  fi
+  if [[ ${NODE_COUNT} -le 0 ]]; then
+    log "Node count <= 0: ${NODE_COUNT}"
+    exit 1
+  fi
+  WORKER_NODE_NAMES=$(oc get node -o custom-columns=name:.metadata.name --no-headers -l ${WORKER_NODE_LABEL},node-role.kubernetes.io/infra!=,node-role.kubernetes.io/workload!= | head -n ${NODE_COUNT})
+  if [[ $(echo "${WORKER_NODE_NAMES}" | wc -l) -lt ${NODE_COUNT} ]]; then
+    log "Not enough worker nodes to label"
+    exit 1
+  fi
+
+  log "Labeling ${NODE_COUNT} worker nodes with $1"
+  oc label node ${WORKER_NODE_NAMES} $1 --overwrite 1>/dev/null
+}
+
+unlabel_nodes_with_label() {
+  split_param=$(echo $1 | tr "=" " ")
+  log "Removing $1 label from worker nodes"
+  for worker_node in ${WORKER_NODE_NAMES}; do
+    for p in ${split_param}; do
+      oc label node $worker_node $p- 1>/dev/null
+      break
+    done
+  done
+}
+
+prep_networkpolicy_workload() {
+  export ES_INDEX_NETPOL=${ES_INDEX_NETPOL:-networkpolicy-enforcement}
+  oc apply -f workloads/networkpolicy/clusterrole.yml
+  oc apply -f workloads/networkpolicy/clusterrolebinding.yml
+}
+
+function verify_if_mcp_be_in_updated_state_by_name() {
+	
+    MCP_NAME=$1
+		mcpUpdatingStatus=`oc get mcp $MCP_NAME -ojsonpath='{.status.conditions[?(@.type=="Updating")].status}'`
+		mcpUpdatedStatus=`oc get mcp $MCP_NAME -ojsonpath='{.status.conditions[?(@.type=="Updated")].status}'`
+
+		mcpMachineCount=`oc get mcp $MCP_NAME -ojsonpath={..status.machineCount}`
+		mcpReadyMachineCount=`oc get mcp $MCP_NAME -ojsonpath={..status.readyMachineCount}`
+		mcpUpdatedMachineCount=`oc get mcp $MCP_NAME -ojsonpath={..status.updatedMachineCount}`
+		mcpDegradedMachineCount=`oc get mcp $MCP_NAME -ojsonpath={..status.degradedMachineCount}`
+		if [[ $mcpUpdatingStatus=="False" && $mcpUpdatedStatus=="True" && $mcpMachineCount == $mcpReadyMachineCount && $mcpMachineCount == $mcpUpdatedMachineCount && $mcpDegradedMachineCount == "0" ]];then
+        echo true
+    else
+        echo false
+    fi
+}
+
+function connection_testing_to_labeled_node_host(){
+    SOURCE_NS_PREFIX=$1
+    NODE_LABEL=$2
+    PORT_NUMBER=$3
+    EXPECTED_RESULT=$4
+    
+    if [[ -z $SOURCE_NS_PREFIX ]];then
+            echo please specify TARGET_NS_PREFIX or SOURCE_NS_PREFIX
+            exit 1
+    fi
+
+    SOURCE_NS=`oc get ns |grep -w $SOURCE_NS_PREFIX | awk '{print $1}'| head -1`
+    if [[ -z $SOURCE_NS ]];then
+            echo "No SOURCE_NS $SOURCE_NS was found"
+            exit 1
+    fi
+
+    echo NODE_LABEL is $NODE_LABEL inside check_traffic_to_labeled_node_host
+    for ns in `oc get ns |grep -w $SOURCE_NS_PREFIX | awk '{print $1}'`
+    do
+         echo "check the ef pod in $ns inside check_traffic_to_labeled_node_host"
+         SOURCE_POD=`oc -n $ns get pods|grep ef| head -1 | awk '{print $1}'`
+         if [[ -z $SOURCE_POD ]];then
+            echo "No SOURCE_POD was found"
+            exit 1
+         fi
+         echo SOURCE_NS is $ns
+         echo SOURCE_POD is $SOURCE_POD
+         for ipaddr in `oc get nodes -l"${NODE_LABEL}" -ojsonpath='{range .items[*]}{.status.addresses[?(@.type=="InternalIP")].address}{"\n"}' |tail -3`
+         do
+             echo
+             echo oc -n $ns exec -i $SOURCE_POD -- nc -vz $ipaddr $PORT_NUMBER -w 5
+             echo -----------------------------------------------------------------------
+             oc -n $ns exec -i $SOURCE_POD -- nc -vz $ipaddr $PORT_NUMBER -w 5
+             if [[ $? -eq 0 ]];then
+                 echo "The traffic between $ns and $ipaddr with port $PORT_NUMBER is accessiable"
+                 RESULT="true"
+             else
+                 echo "The traffic between $ns and $ipaddr with port $PORT_NUMBER is denied"
+                 RESULT="false"
+             fi
+             if [[ $RESULT == $EXPECTED_RESULT ]];then
+                  echo This is expected result.
+             else
+                  echo "The is unexpected result, please check."
+                  exit 1
+             fi
+         done    
+    done
+}
+
+function check_traffic_to_internet(){
+    SOURCE_NS_PREFIX=$1
+    EXPECTED_RESULT=$2
+    echo SOURCE_NS_FILTER is $SOURCE_NS_FILTER in check_traffic_to_internet
+    echo TARGET_NS_FILTER is $TARGET_NS_FILTER in check_traffic_to_internet
+    if [[ -z $SOURCE_NS_PREFIX ]];then
+            echo please specify TARGET_NS_PREFIX or SOURCE_NS_PREFIX
+            exit 1
+    fi
+
+    SOURCE_NS=`oc get ns |grep -w $SOURCE_NS_PREFIX | awk '{print $1}'| head -1`
+    if [[ -z $SOURCE_NS ]];then
+            echo "No SOURCE_NS $SOURCE_NS was found"
+            exit 1
+    fi
+    echo "check SOURCE_POD in $SOURCE_NS inside check_traffic_to_internet"
+    SOURCE_POD=`oc -n $SOURCE_NS get pods|grep ef| head -1 | awk '{print $1}'`
+    if [[ -z $SOURCE_POD ]];then
+            echo "No SOURCE_POD was found"
+            exit 1
+    fi
+    echo SOURCE_NS is $SOURCE_NS
+    echo SOURCE_POD is $SOURCE_POD
+
+    
+    for ipaddr in 8.8.8.8 1.1.1.1
+    do
+        oc -n $SOURCE_NS exec -i $SOURCE_POD -- ping -c2 $ipaddr
+        #oc -n $SOURCE_NS exec -it $SOURCE_POD -- curl -Is $pod_id:8080 --connect-timeout 5
+       
+        if [[ $? -eq 0 ]];then
+            echo "The traffic between $SOURCE_NS_PREFIX and $ipaddr is accessiable"
+            RESULT="true"
+        else
+            echo "The traffic between $SOURCE_NS_PREFIX and $ipaddr is denied"
+            RESULT="false"
+        fi
+        if [[ $RESULT == $EXPECTED_RESULT ]];then
+             echo This is expected result.
+        else
+             echo "The is unexpected result, please check."
+             exit 1
+        fi
+    done    
+}
+
+function check_traffic_between_anp_zones(){
+    
+    SOURCE_NS=$1
+    TARGET_NS=$2
+    PORT_NUMBER=$3
+    EXPECTED_RESULT=$4
+
+    if [[ -z $TARGET_NS || -z $SOURCE_NS ]];then
+            echo please specify TARGET_NS_FILTER or SOURCE_NS_FILTER
+            exit 1
+    fi
+
+    TARGET_NS=`oc get ns |grep -w $TARGET_NS | awk '{print $1}'`
+    if [[ -z $TARGET_NS ]];then
+            echo "No TARGET_NS was found"
+            exit 1
+    fi
+
+    SOURCE_NS=`oc get ns |grep -w $SOURCE_NS | awk '{print $1}'| head -1`
+    if [[ -z $SOURCE_NS ]];then
+            echo "No SOURCE_NS was found"
+            exit 1
+    fi
+
+    SOURCE_POD=`oc -n $SOURCE_NS get pods|grep ef| head -1 | awk '{print $1}'`
+    echo "find SOURCE_POD $SOURCE_POD in $SOURCE_NS inside check_traffic_between_anp_zones "
+    if [[ -z $SOURCE_POD ]];then
+            echo "No SOURCE_POD was found"
+            exit 1
+    fi
+    echo SOURCE_NS is $SOURCE_NS
+    echo SOURCE_POD is $SOURCE_POD
+    for ns in $TARGET_NS
+    do
+            if [[ $PORT_NUMBER -eq 8080 ]];then
+                 POD_IPs=`oc -n $ns get pods -owide |grep -w app | awk '{print $6}'| head -3`
+            elif [[ $PORT_NUMBER -eq 5432 ]];then
+                 POD_IPs=`oc -n $ns get pods -owide |grep -w db | awk '{print $6}'| head -3`
+            fi
+            #Get Pods IP via service port
+            for pod_ip in $POD_IPs
+            do
+                echo
+                echo oc -n $SOURCE_NS exec -i $SOURCE_POD -- nc -vz $pod_ip $PORT_NUMBER -w 5
+                echo -----------------------------------------------------------------------
+                oc -n $SOURCE_NS exec -i $SOURCE_POD -- nc -vz $pod_ip $PORT_NUMBER -w 5
+                #oc -n $SOURCE_NS exec -it $SOURCE_POD -- curl -Is $pod_id:8080 --connect-timeout 5
+               
+                if [[ $? -eq 0 ]];then
+                    echo "The traffic between $SOURCE_NS and $ns is accessiable"
+                    RESULT="true"
+                else
+                    echo "The traffic between $SOURCE_NS and $ns is denied"
+                    RESULT="false"
+                fi
+                if [[ $RESULT == $EXPECTED_RESULT ]];then
+                     echo This is expected result.
+                else
+                     echo "The is unexpected result, please check."
+                     exit 1
+                fi
+            done
+    done
+}
+
+
+function live-migration-keepalive-detect(){
+    LIVE_MIGRATION_DETECT_INTERVAL=${LIVE_MIGRATION_DETECT_INTERVAL:=1}
+    INIT=1
+    MAX_RETRY=${MAX_RETRY:=7200}
+
+    oc get mcp |grep infra>/dev/null
+    RC1=$?
+    oc get mcp |grep workload>/dev/null
+    RC2=$?
+    NETWORK_TYPE=`oc get network.config.openshift.io cluster -o jsonpath='{.status.networkType}'`
+    if [[ $RC1 -ne 0 || $RC2 -ne 0 || $NETWORK_TYPE == "OVNKubernetes" ]];then
+        echo please enable infra and workload node or the cluster is already OVNKubernetes network
+        exit 1
+    fi
+
+    if ! oc get route -A |grep keepalive-detect-nginx-cluster-ip-service; then
+        echo "Create a route service to public network"
+        oc -n ovn-live-migration-1 create route edge --service=keepalive-detect-nginx-cluster-ip-service
+    fi
+    echo "Start to OVN live migration ...."
+    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+    # oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"unsupported-red-hat-internal-testing": "true"}}}'
+    # oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"network.openshift.io/network-type-migration":""}},"spec":{"networkType":"OVNKubernetes"}}'
+    #oc patch Network.operator.openshift.io cluster --type='merge' --patch '{ "spec": { "migration": {"networkType": "OVNKubernetes" } } }'
+    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+    echo "Start to delect if the service broken during OVN live migration ...."
+    DETECT_ROUTE_NAME=`oc get route -A|grep keepalive-detect | awk '{print $3}'`
+    while true;
+    do
+                curl -k -Is https://${DETECT_ROUTE_NAME}/ | head -n 1| grep OK;
+                RC=$?;
+                if [ $RC -ne 0 ] ; then 
+                   awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
+                   echo "#       [Failure] Service broken during ovn live migration at `date +"%Y-%m-%d %H:%M:%S"`      #"
+                   awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
+                fi;
+                NETWORK_TYPE=`oc get network.config.openshift.io cluster -o jsonpath='{.status.networkType}'`
+    
+                if [[ $NETWORK_TYPE == "OVNKubernetes" ]];then
+                #if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
+                   awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
+                   echo "#       The OCP Network Type Changed to NETWORK_TYPE at `date +"%Y-%m-%d %H:%M:%S"`         #"
+                   echo "#                     Current Network Type is $NETWORK_TYPE                    #"
+                   awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
+                   break
+                fi
+                sleep $LIVE_MIGRATION_DETECT_INTERVAL;
+                INIT=$(( $INIT + 1 ))
+                if [[ $INIT -gt $MAX_RETRY ]];then
+                   echo "max retry reached in live-migration-post-check"
+                   exit 1
+                fi
+    done
+}
+
+function cluster_health_postcheck() {
+ 
+  #target_version_prefix=$1
+  echo -e "**************Post Action after upgrade succ****************\n"
+  echo -----------------------------------------------------------------------
+  echo -e "Post action: #oc get node:\n"
+  oc get node -o wide
+  echo -----------------------------------------------------------------------
+  echo
+  echo -e "Post action: #oc get co:\n"
+  echo -----------------------------------------------------------------------
+  oc get co
+  echo -----------------------------------------------------------------------
+
+  echo -e "print detail msg for node(SchedulingDisabled) if exist:\n"
+  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Abnormal node details~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
+  nodeStatusCheckResult=${nodeStatusCheckResult:=""}
+  if oc get node --no-headers | grep -E 'SchedulingDisabled|NotReady' ; then
+                  oc get node --no-headers | grep -E 'SchedulingDisabled|NotReady'| awk '{print $1}'|while read line; do oc describe node $line;done
+                  nodeStatusCheckResult="abnormal"
+  fi
+  echo
+  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
+  echo -e "print detail msg for co(AVAILABLE != True or PROGRESSING!=False or DEGRADED!=False or version != target_version) if exist:\n"
+
+  echo nodeStatusCheckResult is $nodeStatusCheckResult
+  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Abnormal co details~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
+
+  abnormalCO=${abnormalCO:=""}
+  echo abnormalCO is $abnormalCO
+  ! oc get co -o jsonpath='{range .items[*]}{.metadata.name} {range .status.conditions[*]} {.type}={.status}{end}{"\n"}{end}' | grep -v "openshift-samples" | grep -w -E 'Available=False|Progressing=True|Degraded=True' || abnormalCO=`oc get co -o jsonpath='{range .items[*]}{.metadata.name} {range .status.conditions[*]} {.type}={.status}{end}{"\n"}{end}' | grep -v "openshift-samples" | grep -w -E 'Available=False|Progressing=True|Degraded=True' | awk '{print $1}'`
+  echo "abnormalCO is $abnormalCO before quick_diagnosis"
+
+  if [[ "X${abnormalCO}" != "X" ]]; then
+      echo "Start quick_diagnosis"
+      quick_diagnosis "$abnormalCO"
+      for aco in $abnormalCO; do
+          oc describe co $aco
+          echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~\n"
+      done
+  fi
+  echo abnormalCO is $abnormalCO after quick_diagnosis
+  coStatusCheckResult=${coStatusCheckResult:=""}
+ ! oc get co |sed '1d'|grep -v "openshift-samples"|grep -v "True        False         False" || coStatusCheckResult=`oc get co |sed '1d'|grep -v "openshift-samples"|grep -v "True        False         False"|awk '{print $1}'|while read line; do oc describe co $line;done`
+  echo coStatusCheckResult is $coStatusCheckResult 
+  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
+
+  coVersionCheckResult=${coVersionCheckResult:=""}
+  ! oc get co |sed '1d'|grep -v "openshift-samples"|grep -v ${target_version_prefix} || coVersionCheckResult=`oc get co |sed '1d'|grep -v "openshift-samples"|grep -v ${target_version_prefix}|awk '{print $1}'|while read line; do oc describe co $line;done`
+  echo coVersionCheckResult is $coVersionCheckResult
+  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
+
+
+  if [ -z "$nodeStatusCheckResult" ] && [ -z "$coStatusCheckResult" ] && [ -z "$coVersionCheckResult" ]; then
+      echo -e "post check passed without err.\n"
+
+  else
+      oc get nodes
+      oc describe nodes
+  fi
+
+}
+
+function migration_checkpoint(){
+     echo "Pod to Pod(same node)"
+     echo "Pod to Pod(diff node)"
+}
+
+function live-migration-post-check(){
+    INIT=1
+    MAX_RETRY=${MAX_RETRY:=7200}
+    echo "Start to delect if the service broken during the second reboot of OVN live migration ...."
+    
+    DETECT_ROUTE_NAME=`oc get route -A|grep keepalive-detect | awk '{print $3}'`
+    while true;
+    do
+                curl -k -Is https://${DETECT_ROUTE_NAME}/ | head -n 1| grep OK;
+                RC=$?;
+                if [ $RC -ne 0 ] ; then
+                   awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
+                   echo "#       [Failure] Service broken during ovn live migration at `date +"%Y-%m-%d %H:%M:%S"`      #"
+                   awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
+                fi;
+               
+                MASTER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name master`
+                WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
+                INFRA_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name infra`
+                WORKLOAD_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name workload`
+    
+                if [[ $MASTER_MCP_STATUS == "true" && $MASTER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" ]];then
+                #if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
+                   awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
+                   echo "#            OVN Live Migration Successfully at `date +"%Y-%m-%d %H:%M:%S"`            #"
+                   echo "#                     Current Network Type is $NETWORK_TYPE                    #"
+                   awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
+                   break
+                fi
+                sleep 5;
+                INIT=$(( $INIT + 1 ))
+                if [[ $INIT -gt $MAX_RETRY ]];then
+                   echo "max retry reached in live-migration-post-check"
+                   exit 1
+                fi
+    done
+    sleep 180
+    cluster_health_postcheck
+}
+    
