@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: keepalive-detect-nginx-nodeport-service
+  name: workload-app-node-port-service
 spec:
   selector:
-    app: keepalive-detect-nginx 
+    app: workload-nginx-app
   ports:
   - protocol: TCP
     port: 8080

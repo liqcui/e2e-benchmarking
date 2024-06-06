@@ -329,8 +329,76 @@ function cluster_health_postcheck() {
 }
 
 function migration_checkpoint(){
-     echo "Pod to Pod(same node)"
-     echo "Pod to Pod(diff node)"
+     echo "Network connection testing from pod to pod(same node)"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo "Checking Items, Result, Command,Output">/tmp/checkResult.csv
+     POD_NAME=`oc -n ovn-live-migration-1 get pods -ltrafficapp=perfapp -oname |head -1`
+     CMD="oc -n ovn-live-migration-1 logs $POD_NAME --tail=6 |grep 'Timestamp inserted in'"
+     OUTPUT=`oc -n ovn-live-migration-1 logs $POD_NAME --tail=6 |grep 'Timestamp inserted in' |tail -1`
+     oc -n ovn-live-migration-1 logs $POD_NAME --tail=6 |grep 'Timestamp inserted in'
+     if [[ $? -eq 0 ]];then
+        echo "Network connection testing from pod to pod(same node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+        echo "Network connection testing from pod to pod(same node),Failure" >>/tmp/checkResult.csv
+     fi
+
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo 
+     echo "Network connection testing from pod to pod(diff node)"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
+     POD_IP=`oc -n ovn-live-migration-1 get pod -lapp=workload-nginx-app -ojsonpath={.items[0].status.podIP}`
+     CMD="oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $POD_IP 8080"
+     OUTPUT=`oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $POD_IP 8080 |grep Connected`
+     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $POD_IP 8080
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod to pod(diff node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+        echo "Network connection testing from pod to pod(diff node),Failure" >>/tmp/checkResult.csv
+     fi
+     echo 
+     echo "Network connection testing from pod to host(same node)"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
+     HOST_IP=`oc -n ovn-live-migration-1 get $SOURCE_POD_NAME -ojsonpath={.status.hostIP}`
+     CMD="oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 10250"
+     OUTPUT=`oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 10250 |grep Connected`
+     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 10250
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod to host(same node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+        echo "Network connection testing from pod to host(same node),Failure" >>/tmp/checkResult.csv
+     fi
+     echo 
+     echo "Network connection testing from pod to host(diff node)"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
+     HOST_IP=`oc -n ovn-live-migration-1 get pod -lapp=workload-nginx-app -ojsonpath={.items[0].status.hostIP}`
+     CMD="oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 10250"
+     OUTPUT=`oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 10250 |grep Connected`
+     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 10250
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod to host(diff node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+        echo "Network connection testing from pod to host(diff node),Failure" >>/tmp/checkResult.csv
+     fi
+
+     echo 
+     echo "Network connection testing from pod to ClusterIP service"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
+     CMD="oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz keepalive-detect-nginx-cluster-ip-service 8080"
+     OUTPUT=`oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz keepalive-detect-nginx-cluster-ip-service 8080 |grep Connected`
+     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz keepalive-detect-nginx-cluster-ip-service 8080
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod to ClusterIP service,Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+        echo "Network connection testing from pod to ClusterIP service,Failure" >>/tmp/checkResult.csv
+     fi
+
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     cat /tmp/checkResult.csv
+
 }
 
 function live-migration-post-check(){
@@ -371,5 +439,6 @@ function live-migration-post-check(){
     done
     sleep 180
     cluster_health_postcheck
+    migration_checkpoint
 }
     
