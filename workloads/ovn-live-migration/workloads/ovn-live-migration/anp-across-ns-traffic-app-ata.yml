@@ -25,11 +25,14 @@ spec:
         image: quay.io/openshift-psap-qe/ubi9-minimal
         imagePullPolicy: Always
         securityContext:
-          runAsNonRoot: false
+          runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault
           allowPrivilegeEscalation: false
-          runAsUser: 0
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL
         command: [ "/bin/bash", "-c", "--" ]
         args:
         - while true;
