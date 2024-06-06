@@ -179,8 +179,10 @@ elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
    LABEL_NODE=`oc get nodes |grep worker | awk '{print $1}' | head -1`
    oc label node $LABEL_NODE node-role.kubernetes.io/backend=
    run_workload
+   export TEST_JOB_ITERATIONS=1
    WORKLOAD_TEMPLATE=workloads/ovn-live-migration/case-large-networkpolicy-egress-restricted.yml
-   run_workload   
+   run_workload
+   unset  TEST_JOB_ITERATIONS
    live-migration-keepalive-detect
    sleep 180
    live-migration-post-check
