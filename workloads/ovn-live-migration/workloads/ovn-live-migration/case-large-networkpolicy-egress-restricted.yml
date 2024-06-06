@@ -78,14 +78,14 @@ jobs:
       anplabel: anp-restricted
     objects:
       - objectTemplate: postgres-deployment.yml
-        replicas: {{.POD_RPLICAS}}
+        replicas: 3
         inputVars:
           readinessPeriod: 1
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           anplabel: "anp-restricted"
 
       - objectTemplate: perfapp-deployment.yml
-        replicas: {{.POD_RPLICAS}}
+        replicas: 3
         inputVars:
           readinessPeriod: 10
           livenessPeriod: 10
@@ -93,7 +93,7 @@ jobs:
           anplabel: "anp-restricted"
 
       - objectTemplate: postgres-service.yml
-        replicas: {{.POD_RPLICAS}}
+        replicas: 1
         inputVars:
           anplabel: "anp-restricted"
 
@@ -111,7 +111,7 @@ jobs:
           anplabel: "anp-restricted"
 
       - objectTemplate: egress-traffic-app.yml
-        replicas: {{.POD_RPLICAS}}
+        replicas: 2
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           anplabel: "anp-restricted"
