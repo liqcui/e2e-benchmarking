@@ -20,6 +20,10 @@ spec:
         cidr: 8.8.8.8/32
     - ipBlock:
         cidr: 8.8.8.4/32
+    - ipBlock:
+        cidr: 142.0.0.0/8
+    - ipBlock:
+        cidr: 104.18.0.0/16
   - to:
     - namespaceSelector:
         matchLabels:
