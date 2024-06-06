@@ -145,6 +145,12 @@ jobs:
           nodeSelector: "{{.WORKLOAD_POD_NODE_SELECTOR}}"
           anplabel: "live-migration"
 
+      - objectTemplate: workload-tool.yml
+        replicas: 1
+        inputVars:
+          nodeSelector: "{{.WORKLOAD_POD_NODE_SELECTOR}}"
+          anplabel: "live-migration"
+
       - objectTemplate: workload-service.yml
         replicas: 1
         inputVars:
