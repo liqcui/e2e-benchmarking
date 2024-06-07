@@ -248,8 +248,8 @@ function live-migration-keepalive-detect(){
                 fi;
                 NETWORK_TYPE=`oc get network.config.openshift.io cluster -o jsonpath='{.status.networkType}'`
     
-                #if [[ $NETWORK_TYPE == "OVNKubernetes" ]];then
-                if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
+                if [[ $NETWORK_TYPE == "OVNKubernetes" ]];then
+                #if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                    echo "#       The OCP Network Type Changed to NETWORK_TYPE at `date +"%Y-%m-%d %H:%M:%S"`         #"
                    echo "#                     Current Network Type is $NETWORK_TYPE                    #"
