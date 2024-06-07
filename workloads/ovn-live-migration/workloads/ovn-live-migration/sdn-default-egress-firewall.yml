@@ -1,0 +1,18 @@
+apiVersion: network.openshift.io/v1
+kind: EgressNetworkPolicy
+metadata:
+  name: default
+spec:
+  egress: 
+  - type: Allow
+    to:
+      cidrSelector: 8.8.8.8/24
+  - type: Allow
+    to:
+      dnsName: www.google.com
+  - type: Deny
+    to:
+      cidrSelector: 8.8.8.4/24      
+  - type: Deny
+    to:
+      dnsName: www.digitalocean.com

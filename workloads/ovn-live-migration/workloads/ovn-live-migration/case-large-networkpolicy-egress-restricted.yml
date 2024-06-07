@@ -122,6 +122,9 @@ jobs:
       - objectTemplate: deny-all.yml
         replicas: 1
 
+      - objectTemplate: sdn-default-egress-firewall.yml
+        replicas: 1
+
       - objectTemplate: networkpolicy-allowdns.yml
         replicas: 1
         
@@ -140,3 +143,4 @@ jobs:
           ns_label_value: "anp-restricted"
           pod_label: "type"
           pod_label_value: perfdb         
+
