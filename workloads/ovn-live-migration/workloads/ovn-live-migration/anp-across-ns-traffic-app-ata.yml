@@ -37,11 +37,7 @@ spec:
         args:
         - while true;
           do
-          curl -Is http://anp-traffic-service.anp-restricted-1.svc.cluster.local:8080 | head -n 1;
+          curl -Is http://keepalive-detect-nginx-cluster-ip-service.ovn-live-migration-1.svc.cluster.local:8080 | head -n 1;
           sleep 2;
-          curl -Is http://anp-traffic-service.anp-open-1.svc.cluster.local:8080 | head -n 1;
-          sleep 2;
-          curl -Is http://anp-traffic-service.anp-test-1.svc.cluster.local:8080 | head -n 1;
-          sleep 2;      
-          curl -Is http://anp-traffic-service.anp-unknown-1.svc.cluster.local:8080 | head -n 1;
+          curl -Is http://workload-app-service.ovn-live-migration-1.svc.cluster.local:8080 | head -n 1;
           done
