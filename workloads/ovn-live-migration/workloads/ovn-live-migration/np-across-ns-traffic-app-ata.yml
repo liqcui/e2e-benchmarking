@@ -11,6 +11,7 @@ spec:
     matchLabels:
        type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
        anplabel: {{.anplabel}}
+       trafficapp: perfata
   replicas: 1
   strategy:
     type: RollingUpdate       
@@ -19,6 +20,7 @@ spec:
       labels:
         type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
         anplabel: {{.anplabel}}
+        trafficapp: perfata
     spec:
       nodeSelector: {{.nodeSelector}}
       containers:
