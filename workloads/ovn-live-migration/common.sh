@@ -472,7 +472,6 @@ function migration_checkpoint(){
      SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
      CMD="oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 8080 | grep Connected"
      OUTPUT=`oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 8080 |grep Connected`
-     nc -vz $HOST_IP 8080
      oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 8080 |grep Connected
      if [[ $? -eq 0 ]];then
 	     echo "Network connection testing from pod to external,Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
