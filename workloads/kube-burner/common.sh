@@ -794,17 +794,17 @@ function create_and_delete_anp_network_policy(){
 	      i=$(( $i + 1 ))
    done
    export TEST_STEP="After Creating recycle ns with/without network policy"
-   export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+   export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
    get_ovn_node_system_usage_info
 
    export TEST_STEP="300s After Creating recycle ns with network policy and before delete ns"
-   export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`   
+   export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`   
    get_ovn_node_system_usage_info
 
    echo "remove network policy and egressfirewall operation" 
    oc get ns |grep recycle-ns | awk '{print $1}'| xargs oc delete ns
    export TEST_STEP="After Deleting recycle ns"
-   export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+   export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
    get_ovn_node_system_usage_info
 }
 
@@ -845,41 +845,46 @@ function networkPolicyInitSyncDurationCheck(){
    fi
 
    export TEST_STEP="Creating 3 networkpolicy in zero-trust-jks"
-   export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+   export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
    oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/deny-all.yml
    oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/probe-detect-nginx.yaml
    oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/probe-detect-service.yaml
    oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/networkpolicy-essential-ports.yml
    oc -n zero-trust-jks apply -f ${WORKLOAD_TMPLATE_PATH}/networkpolicy-allowdns.yml
+   export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`      
    get_ovn_node_system_usage_info   
 
    echo "wait for $WAIT_OVN_DB_SYNC_TIME seconds to make sure all network policy/egress firewall rule sync"
    sleep $WAIT_OVN_DB_SYNC_TIME
 
    export TEST_STEP="Creating deny all networkpolicy in zero-trust-clt"   
-   export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+   export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
    oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/deny-all.yml
+   export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
    get_ovn_node_system_usage_info   
 
    sleep 600
    export TEST_STEP="Creating deny all networkpolicy in zero-trust-clt[Min]"
-   export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+   #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+   export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
    get_ovn_node_system_usage_info
 
    export TEST_STEP="Creating 3 networkpolicy in zero-trust-clt"
-   export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+   export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
    oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/probe-detect-deploy.yaml
    oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/networkpolicy-essential-ports.yml
    oc -n zero-trust-clt apply -f ${WORKLOAD_TMPLATE_PATH}/networkpolicy-allowdns.yml
+   export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`   
    get_ovn_node_system_usage_info
 
    export TEST_STEP="Creating additional networkpolicy in zero-trust-clt and scale pods"
-   export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+   export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
    EXPECT_RPLICAS=`oc get nodes |grep worker |wc -l`
    oc -n zero-trust-clt scale  deployment/probe-detect-deploy --replicas=${EXPECT_RPLICAS}
 
    #Wait for max 10 minutes to check if pod is up and running
    check_if_pods_is_ready zero-trust-clt deployment probe-detect-deploy
+   export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`   
    get_ovn_node_system_usage_info
    echo "----------------------`date`-------------------------------"
 }
@@ -926,11 +931,11 @@ function get_ovn_node_system_usage_info(){
       getOVNICDBInfo
    fi
    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-   echo -e "Test Step,Start Time,Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set,lflow-list,dump-flows br-int"
-   echo $TEST_STEP,$BEGIN_TIME,$MAX_MASTER_CPU,$MAX_MASTER_RAM,$MAX_WORKER_CPU,$MAX_WORKER_RAM,$ACL,$MATCH_ACL,$PORT_GROUP_UUID,$ADDRESS_SET_UUID,$LFLOW,$DUMP_FLOW_BR_INT | tee -a /tmp/system_resource_info.csv
+   echo -e "Test Step,Start Time,Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set,lflow-list,dump-flows br-int"
+   echo $TEST_STEP,$CREATE_TIME,$QUERY_TIME,$MAX_MASTER_CPU,$MAX_MASTER_RAM,$MAX_WORKER_CPU,$MAX_WORKER_RAM,$ACL,$MATCH_ACL,$PORT_GROUP_UUID,$ADDRESS_SET_UUID,$LFLOW,$DUMP_FLOW_BR_INT | tee -a /tmp/system_resource_info.csv
    echo $EGRESS_RULES_NUMS_BY_NS| tr " " "\n"
    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-   unset TEST_STEP BEGIN_TIME MAX_MASTER_CPU MAX_MASTER_RAM MAX_WORKER_CPU MAX_WORKER_RAM ACL MATCH_ACL PORT_GROUP_UUID ADDRESS_SET_UUID EGRESS_RULES_NUMS_BY_NS LFLOW DUMP_FLOW_BR_INT
+   unset TEST_STEP CREATE_TIME QUERY_TIME MAX_MASTER_CPU MAX_MASTER_RAM MAX_WORKER_CPU MAX_WORKER_RAM ACL MATCH_ACL PORT_GROUP_UUID ADDRESS_SET_UUID EGRESS_RULES_NUMS_BY_NS LFLOW DUMP_FLOW_BR_INT
 }
 
 function check_traffic_between_anp_zones(){
@@ -1236,8 +1241,12 @@ function create_anp_banp_verify_traffic_between_different_zones(){
     WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-restricted"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of No Traffic Between Test and Restricted."      
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/02_anp_no-traffic-test-restricted-p39.yaml   
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/02_anp_no-traffic-test-restricted-p39.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
 
@@ -1248,8 +1257,12 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-restricted"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of No traffic between unknown and Restricted."       
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/03_anp_no-traffic-unknown-restricted-p38.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/03_anp_no-traffic-unknown-restricted-p38.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false    
 
@@ -1260,8 +1273,12 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-unknown"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of No traffic between test and unknown."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/04_anp_no-traffic-test-unknown-p37.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/04_anp_no-traffic-test-unknown-p37.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false   
 
@@ -1272,78 +1289,122 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-unknown"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of allowing ingress only between test and unknown."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/05_anp_allow-ingress-only-test-unknown-p36.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/05_anp_allow-ingress-only-test-unknown-p36.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true   
 
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-unknown"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of allowing egress only between test and unknown."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/06_anp_allow-egress-only-test-unknown-p35.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/06_anp_allow-egress-only-test-unknown-p35.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
   
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-open"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of no traffic between unknown and open."      
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/07_anp_no-traffic-unknown-open-p34.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/07_anp_no-traffic-unknown-open-p34.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
 
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-open"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of ingress only between unknown and open."    
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/08_anp_allow-ingress-only-unknown-open-p33.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/08_anp_allow-ingress-only-unknown-open-p33.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
   
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-open"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of egress only between unknown and open."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/09_anp_allow-egress-only-unknown-open-p32.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/09_anp_allow-egress-only-unknown-open-p32.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
   
     SOURCE_NS_FILTER="anp-open"
     TARGET_NS_FILTER="anp-test"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of no traffic between open and test."      
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/10_anp_no-traffic-open-test-p31.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/10_anp_no-traffic-open-test-p31.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
 
     SOURCE_NS_FILTER="anp-open"
     TARGET_NS_FILTER="anp-test"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of allow ingress between open and test."    
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/11_anp_allow-ingress-only-open-test-p30.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/11_anp_allow-ingress-only-open-test-p30.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
   
     SOURCE_NS_FILTER="anp-open"
     TARGET_NS_FILTER="anp-test"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of allow egress between open and test."       
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/12_anp_allow-egress-only-open-test-p29.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/12_anp_allow-egress-only-open-test-p29.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
 
     SOURCE_NS_FILTER="anp-open"
     TARGET_NS_FILTER="anp-test"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of allow all traffic between open and test."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/13_anp_allow-all-traffic-open-test-p28.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/13_anp_allow-all-traffic-open-test-p28.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
 
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-open"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of allow all traffic between unknown and test."       
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/14_anp_allow-all-traffic-unknown-open-p27.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/14_anp_allow-all-traffic-unknown-open-p27.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
 
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-unknown"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    echo "Creating 1 POD Selector ANP of allow all traffic between test and unknown."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/15_anp_allow-all-traffic-test-unknown-p26.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/15_anp_allow-all-traffic-test-unknown-p26.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    get_ovn_node_system_usage_info    
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
 }
@@ -1372,10 +1433,11 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
     echo "-------------------------------------------------------------------------"
 
     export TEST_STEP="Creating 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`         
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`         
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
     echo "-----The egress of $SOURCE_NS_FILTER open to all cluster network--------"
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"` 
     get_ovn_node_system_usage_info
 
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
@@ -1386,25 +1448,28 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
     format_Output_ANP_BANP_Target2Source  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 true
     export TEST_STEP="Creating 1 CIDR ANP to Allow Egress to The Whole Cluster Network[Mins]"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`         
+    #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`              
     get_ovn_node_system_usage_info
     sleep 120
 
     export TEST_STEP="Deleting 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     oc delete -f ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`    
     get_ovn_node_system_usage_info    
     echo ----------------------------------------------------------
 
     sleep 120
     export TEST_STEP="Creating $TOTAL_ANP Multi ANP with Multi Rule/25 IP Per Rule"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     generated_anp_cidr_selector_25ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`     
     get_ovn_node_system_usage_info 
     unset TOTAL_ANP
 
     export TEST_STEP="Creating $TOTAL_ANP Multi ANP with Multi Rule/25 IP Per Rule[Min]"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     TOTAL_LINE=`cat ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst |wc -l`
     for ((i=1;i<=$TOTAL_LINE;i++))
     do
@@ -1417,7 +1482,8 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
     SOURCE_NS_FILTER="anp-cidr"
     TARGET_NS_FILTER="anp-test"    
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
-    format_Output_ANP_BANP_Target2Source  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 true    
+    format_Output_ANP_BANP_Target2Source  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 true
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`    
     get_ovn_node_system_usage_info
 
 }
@@ -1434,38 +1500,44 @@ function create_anp_banp_egress_rule_verify_traffic_from_two_different_groups_to
     format_Output_ANP_BANP_Source2Host $TARGET_NS_FILTER "node-role.kubernetes.io/worker" 10250 true
     format_Output_ANP_BANP_Source2Host $TARGET_NS_FILTER "node-role.kubernetes.io/worker" 30003 true
     export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy.[Min]"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"` 
     get_ovn_node_system_usage_info
 
     SOURCE_NS_FILTER="anp-restricted"
     TARGET_NS_FILTER="anp-test"
     export TEST_STEP="Creating 1 Node Selector ANP to Allow Egress to Two Worker Nodes Gropus"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`     
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/19-anp_allow-traffic-egress-node-ns-p19.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/19-anp_allow-traffic-egress-node-ns-p19.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`     
     get_ovn_node_system_usage_info
 
     format_Output_ANP_BANP_Source2Host $SOURCE_NS_FILTER "node-role.kubernetes.io/worker" 30003 true
     format_Output_ANP_BANP_Source2Host $SOURCE_NS_FILTER "node-role.kubernetes.io/worker" 10250 false    
     export TEST_STEP="Creating 1 Node Selector ANP to Allow Egress to Two Worker Nodes Gropus[Min]"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`  
+    #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`    
     get_ovn_node_system_usage_info
 
     export TEST_STEP="Deleting the Node Selector ANP to Allow Egress to Two Worker Nodes Gropus"
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`     
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`     
     echo "Clean up old anp before apply new one"
     oc delete -f ${WORKLOAD_TEMPLATE_PATH}/19-anp_allow-traffic-egress-node-ns-p19.yaml
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`    
     get_ovn_node_system_usage_info
 
     export IF_LABEL_IN_ORDER="true"
     export TEST_STEP="Creating ${TOTAL_ANP} Node Selector ANP/1 ANP Per 4 NS(1 Tenant)"    
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     label_node_for_allow_deny_egress_nodes
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`    
     generated_anp_based_on_node_selector_with_multi_policy_by_ns $SOURCE_NS_FILTER
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`     
     get_ovn_node_system_usage_info
     sleep 120
     export TEST_STEP="Creating ${TOTAL_ANP} Node Selector ANP/1 ANP Per 4 NS(1 Tenant)[Min]"    
-    export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`    
     get_ovn_node_system_usage_info
 
 }
@@ -1490,7 +1562,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        IF_NODE_ANP=${IF_NODE_ANP:="false"}
        WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
        export TEST_STEP="Creating Large Scale PODs without BANP/ANP/NetPol/EgressFW[Min]"
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`   
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`   
        echo -e "Test Step,Start Time,Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        ###################################Create Large Scale Pods#################################
@@ -1524,14 +1596,16 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        TARGET_NS_FILTER="anp-test"
 
        create_client_pod_to_access_labeled_node_ports $SOURCE_NS_FILTER "node-role.kubernetes.io/worker" $NODE_TRAFFIC_CLT_EXPECT_RPLICAS
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"` 
        get_ovn_node_system_usage_info
    
        ###################################Create Default BANP#################################
        export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
        echo "Create BAMP to deny traffic to host network/cidir cluster network and egress/ingress to specifiec ns"
        oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
        printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"` 
        get_ovn_node_system_usage_info
   
        ###################################Create Node Selector Policy#################################
@@ -1542,44 +1616,44 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        ###################################Create POD Selector Policy#################################
        export TEST_STEP="Creating 14 POD Selector ANP to deny egress/ingress policy."
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
-       echo "Creating 14 POD Selector ANP to deny egress/ingress policy."       
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+       echo "Creating 14 POD Selector ANP to deny egress/ingress policy[Min]."       
        create_anp_banp_verify_traffic_between_different_zones
-       get_ovn_node_system_usage_info
-
-       sleep 120
-       export TEST_STEP="Creating 14 POD Selector ANP to deny egress/ingress policy."
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
        export TEST_STEP="Creating ANP to Allow Egress to Kube API"
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        create_anp_allow_egress_api "anp-test anp-restricted"
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
        sleep 600
        export TEST_STEP="Creating ANP to Allow Egress to Kube API[Min]"
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+       #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
        export TEST_STEP="Creating ANP to Allow Monitor ANP "
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        oc apply -f ${WORKLOAD_TEMPLATE_PATH}/01_anp_allow-monitor.yaml
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
        export TEST_STEP="Creating Large Scale NetPol and Egress Firewall"
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        echo "Creating networkpolicy enable pod traffic within the same namespace"
        for anptype in anp-restricted-np anp-cidr-np anp-open-np anp-unknown-np 
        do
          WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
          run_workload
        done
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
   
        sleep 300
-       export TEST_STEP="Scaling out Worker Nodes"
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
+       export TEST_STEP="Scaling out Worker Nodes[Min]"
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
        echo "Recycle worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
@@ -1590,16 +1664,18 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
        sleep 30
        check_if_machineset_ready ${DESIRED_REPLICAS}
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
        sleep 600
        export TEST_STEP="Scaling down Worker Nodes"
-       export BEGIN_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
        echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 30
        check_if_machineset_ready ${DESIRED_REPLICAS}
        sleep 300
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
        networkPolicyInitSyncDurationCheck
