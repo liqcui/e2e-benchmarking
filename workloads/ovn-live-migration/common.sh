@@ -554,6 +554,7 @@ function live-migration-post-check(){
     done
     sleep 180
     cluster_health_postcheck
+    sleep 180
     migration_checkpoint
 }
     
