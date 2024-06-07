@@ -5,6 +5,7 @@ metadata:
   labels:
     type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
     anplabel: {{.anplabel}}
+    trafficapp: perfata
 spec:
   selector:
     matchLabels:

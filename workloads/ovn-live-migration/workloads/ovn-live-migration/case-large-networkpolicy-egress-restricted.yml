@@ -97,7 +97,7 @@ jobs:
         inputVars:
           anplabel: "anp-restricted"
 
-      - objectTemplate: anp-across-ns-traffic-app-ata.yml
+      - objectTemplate: np-across-ns-traffic-app-ata.yml
         replicas: {{.POD_RPLICAS}}
         inputVars:
           readinessPeriod: 10
