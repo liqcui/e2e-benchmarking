@@ -931,11 +931,12 @@ function get_ovn_node_system_usage_info(){
       getOVNICDBInfo
    fi
    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-   echo -e "Test Step,Start Time,Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set,lflow-list,dump-flows br-int"
+   echo -e "Test Step,Create Time,Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set,lflow-list,dump-flows br-int"
    echo $TEST_STEP,$CREATE_TIME,$QUERY_TIME,$MAX_MASTER_CPU,$MAX_MASTER_RAM,$MAX_WORKER_CPU,$MAX_WORKER_RAM,$ACL,$MATCH_ACL,$PORT_GROUP_UUID,$ADDRESS_SET_UUID,$LFLOW,$DUMP_FLOW_BR_INT | tee -a /tmp/system_resource_info.csv
    echo $EGRESS_RULES_NUMS_BY_NS| tr " " "\n"
    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-   unset TEST_STEP CREATE_TIME QUERY_TIME MAX_MASTER_CPU MAX_MASTER_RAM MAX_WORKER_CPU MAX_WORKER_RAM ACL MATCH_ACL PORT_GROUP_UUID ADDRESS_SET_UUID EGRESS_RULES_NUMS_BY_NS LFLOW DUMP_FLOW_BR_INT
+  #  unset TEST_STEP CREATE_TIME QUERY_TIME MAX_MASTER_CPU MAX_MASTER_RAM MAX_WORKER_CPU MAX_WORKER_RAM ACL MATCH_ACL PORT_GROUP_UUID ADDRESS_SET_UUID EGRESS_RULES_NUMS_BY_NS LFLOW DUMP_FLOW_BR_INT
+  #unset TEST_STEP CREATE_TIME QUERY_TIME MAX_MASTER_CPU MAX_MASTER_RAM MAX_WORKER_CPU MAX_WORKER_RAM ACL MATCH_ACL PORT_GROUP_UUID ADDRESS_SET_UUID EGRESS_RULES_NUMS_BY_NS LFLOW DUMP_FLOW_BR_INT
 }
 
 function check_traffic_between_anp_zones(){
@@ -1563,7 +1564,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
        export TEST_STEP="Creating Large Scale PODs without BANP/ANP/NetPol/EgressFW[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`   
-       echo -e "Test Step,Start Time,Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
+       echo -e "Test Step,Create Time,Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        ###################################Create Large Scale Pods#################################
        echo "Prepare Testing Environment for BANP and ANP - Creating NS and Pods - Mixed Scenario"
