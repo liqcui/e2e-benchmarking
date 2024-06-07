@@ -132,6 +132,7 @@ case ${WORKLOAD} in
     METRICS_PROFILE=${METRICS_PROFILE:-metrics-profiles/metrics-ovn.yaml}
     export TEST_JOB_ITERATIONS=${JOB_ITERATIONS:-1}
     export POD_RPLICAS=${POD_RPLICAS:=6}
+    export ONLY_POST_CHECKING=${ONLY_POST_CHECKING:="false"}
   ;;
   custom)
   ;;
@@ -177,15 +178,19 @@ elif [[ ${WORKLOAD} == "large-networkpolicy-egress" ]]; then
    run_large_networkpolicy_egressfirewall_anp_workload
 elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
    LABEL_NODE=`oc get nodes |grep worker | awk '{print $1}' | head -1`
-   oc label node $LABEL_NODE node-role.kubernetes.io/backend=
-   run_workload
-   export TEST_JOB_ITERATIONS=1
-   WORKLOAD_TEMPLATE=workloads/ovn-live-migration/case-large-networkpolicy-egress-restricted.yml
-   run_workload
-   unset  TEST_JOB_ITERATIONS
-   live-migration-keepalive-detect
-   sleep 180
-   live-migration-post-check
+   if [[ $ONLY_POST_CHECKING == "false "]];then
+        oc label node $LABEL_NODE node-role.kubernetes.io/backend=
+        run_workload
+        export TEST_JOB_ITERATIONS=1
+        WORKLOAD_TEMPLATE=workloads/ovn-live-migration/case-large-networkpolicy-egress-restricted.yml
+        run_workload
+        unset  TEST_JOB_ITERATIONS
+        live-migration-keepalive-detect
+        sleep 180
+        live-migration-post-check
+   else
+         live-migration-post-check
+   fi
 else
    run_workload
 fi

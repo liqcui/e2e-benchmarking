@@ -232,7 +232,7 @@ function live-migration-keepalive-detect(){
     echo "Start to OVN live migration ...."
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     # oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"unsupported-red-hat-internal-testing": "true"}}}'
-    #oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"network.openshift.io/network-type-migration":""}},"spec":{"networkType":"OVNKubernetes"}}'
+    oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"network.openshift.io/network-type-migration":""}},"spec":{"networkType":"OVNKubernetes"}}'
     #4.15 oc patch Network.operator.openshift.io cluster --type='merge' --patch '{ "spec": { "migration": {"networkType": "OVNKubernetes" } } }'
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     echo "Start to delect if the service broken during OVN live migration ...."
