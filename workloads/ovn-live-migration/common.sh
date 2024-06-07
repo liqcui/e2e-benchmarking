@@ -339,10 +339,10 @@ function migration_checkpoint(){
      if [[ $? -eq 0 ]];then
         echo "Network connection testing from pod to pod(same node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-        echo "Network connection testing from pod to pod(same node),Failure" >>/tmp/checkResult.csv
+        echo "Network connection testing from pod to pod(same node),Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
-
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+
      echo 
      echo "Network connection testing from pod to pod(cross node)"
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
@@ -354,8 +354,10 @@ function migration_checkpoint(){
      if [[ $? -eq 0 ]];then
 	     echo "Network connection testing from pod to pod(cross node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-        echo "Network connection testing from pod to pod(cross node),Failure" >>/tmp/checkResult.csv
+        echo "Network connection testing from pod to pod(cross node),Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+
      echo 
      echo "Network connection testing from pod to host(same node)"
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
@@ -367,8 +369,10 @@ function migration_checkpoint(){
      if [[ $? -eq 0 ]];then
 	     echo "Network connection testing from pod to host(same node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-        echo "Network connection testing from pod to host(same node),Failure" >>/tmp/checkResult.csv
+        echo "Network connection testing from pod to host(same node),Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+
      echo 
      echo "Network connection testing from pod to host(cross node)"
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
@@ -380,8 +384,9 @@ function migration_checkpoint(){
      if [[ $? -eq 0 ]];then
 	     echo "Network connection testing from pod to host(cross node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-        echo "Network connection testing from pod to host(cross node),Failure" >>/tmp/checkResult.csv
+        echo "Network connection testing from pod to host(cross node),Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
      echo 
      echo "Network connection testing from pod to ClusterIP service"
@@ -393,8 +398,9 @@ function migration_checkpoint(){
      if [[ $? -eq 0 ]];then
 	     echo "Network connection testing from pod to ClusterIP service,Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-        echo "Network connection testing from pod to ClusterIP service,Failure" >>/tmp/checkResult.csv
+        echo "Network connection testing from pod to ClusterIP service,Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
      echo 
      echo "Network connection testing from pod to NodePort service(same node)"
@@ -408,8 +414,9 @@ function migration_checkpoint(){
      if [[ $? -eq 0 ]];then
 	     echo "Network connection testing from pod to NodePort service(same node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-	     echo "Network connection testing from pod to NodePort service,Failure" >>/tmp/checkResult.csv
+	     echo "Network connection testing from pod to NodePort service,Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
      echo 
      echo "Network connection testing from pod to NodePort service(cross node)"
@@ -423,8 +430,9 @@ function migration_checkpoint(){
      if [[ $? -eq 0 ]];then
 	     echo "Network connection testing from pod to NodePort service(cross node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-	     echo "Network connection testing from pod to NodePort service,Failure" >>/tmp/checkResult.csv
+	     echo "Network connection testing from pod to NodePort service,Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
      echo 
      echo "Network connection testing from external to NodePort service"
@@ -438,8 +446,9 @@ function migration_checkpoint(){
      if [[ $? -eq 0 ]];then
 	     echo "Network connection testing from external to NodePort service(cross node),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-	     echo "Network connection testing from external to NodePort service,Failure" >>/tmp/checkResult.csv
+	     echo "Network connection testing from external to NodePort service,Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
      echo 
      echo "Network connection testing from pod to external"
@@ -450,29 +459,62 @@ function migration_checkpoint(){
      OUTPUT=`oc -n ovn-live-migration-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'| head -1`
      oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036
      if [[ $? -eq 0 ]];then
-	     echo "Network connection testing from pod to external,$CMD,$OUTPUT">>/tmp/checkResult.csv
+	     echo "Network connection testing from pod to external,Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-	     echo "Network connection testing from pod to external,Failure" >>/tmp/checkResult.csv
+	     echo "Network connection testing from pod to external,Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
      echo 
      echo "Network connection testing from externl to loadbalancer service"
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-     NODE_LABEL=node-role.kubernetes.io/workload
+     HOST_IP=`oc -n ovn-live-migration-1 get services keepalive-detect-nginx-loadbalancer-service -ojsonpath='{.status.loadBalancer.ingress[0].ip}'`
      SOURCE_POD_NAME=`oc -n ovn-live-migration-1 get pod -lapp=external-traffic -oname`
-     CMD="oc -n ovn-live-migration-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'"
-     OUTPUT=`oc -n ovn-live-migration-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'| head -1`
-     oc -n ovn-live-migration-1 exec -it $SOURCE_POD_NAME -- nc -vz $HOST_IP 30036
+     CMD="oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 8080 | grep Connected"
+     OUTPUT=`oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 8080 |grep Connected`
+     nc -vz $HOST_IP 8080
+     oc -n ovn-live-migration-1 debug node/${MASTER_NODE} -q -- chroot /host nc -vz $HOST_IP 8080 |grep Connected
      if [[ $? -eq 0 ]];then
-	     echo "Network connection testing from pod to external,$CMD,$OUTPUT">>/tmp/checkResult.csv
+	     echo "Network connection testing from pod to external,Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
      else
-	     echo "Network connection testing from pod to external,Failure" >>/tmp/checkResult.csv
+	     echo "Network connection testing from pod to external,Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
      fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+
+     echo
+     echo "######################Network Policy####################################"
+     echo "Network connection testing from pod to pod with netpol(cross ns)"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     SOURCE_POD_NAME=`oc -n anp-restricted-1  get pods -ltrafficapp=perfata -oname | head -1`
+     CMD="oc -n anp-restricted-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'"
+     OUTPUT=`oc -n anp-restricted-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200' | head -1`
+     oc -n anp-restricted-1 logs $SOURCE_POD_NAME --tail=20|grep 'HTTP/.* 200'
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod with netpol(cross ns),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+	     echo "Network connection testing from pod with netpol(cross ns),Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
+     fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+
+     echo
+     echo "Network connection testing from pod to pod with netpol(same ns)"
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     SOURCE_POD_NAME=`oc -n anp-restricted-1  get pods -ltrafficapp=perfapp -oname | head -1`
+     CMD="oc -n anp-restricted-1 logs $SOURCE_POD_NAME --tail=20|grep 'Timestamp inserted'"
+     OUTPUT=`oc -n anp-restricted-1 logs $SOURCE_POD_NAME --tail=20|grep 'Timestamp inserted' | head -1`
+     oc -n anp-restricted-1 logs $SOURCE_POD_NAME --tail=20|grep 'Timestamp inserted'
+     if [[ $? -eq 0 ]];then
+	     echo "Network connection testing from pod with netpol(same ns),Passed,$CMD,$OUTPUT">>/tmp/checkResult.csv
+     else
+	     echo "Network connection testing from pod with netpol(same ns),Failure,$CMD,$OUTPUT" >>/tmp/checkResult.csv
+     fi
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo
+     echo "###############################Summary Report##################################"
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
      cat /tmp/checkResult.csv
 
 }
-
 
 function live-migration-post-check(){
     INIT=1
