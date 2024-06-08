@@ -3,7 +3,7 @@ kind: AdminNetworkPolicy
 metadata:
   name: allow-monitoring
 spec:
-  priority: 9
+  priority: 6
   subject:
     namespaces: {}
   ingress:
