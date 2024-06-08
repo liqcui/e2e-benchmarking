@@ -310,7 +310,7 @@ function getOVNICDBInfo()
   #  echo "The Node of Pod $OVNKUBE_CONTROL_PLANE_POD is $NODE_NAME"
    NODE_NAME=`oc get nodes | grep worker | awk '{print $1}'| sort -n -r | tail -1`
    OVNKUBE_NODE_POD=`oc -n openshift-ovn-kubernetes get pod -l app=ovnkube-node --field-selector spec.nodeName=$NODE_NAME, -ojsonpath='{..metadata.name}'`
-   echo OVNKUBE_NODE_POD is $OVNKUBE_NODE_POD
+   echo OVNKUBE_NODE_POD on node $NODE_NAME is $OVNKUBE_NODE_POD
    echo "----------ACL----------";
    echo "Previous ACL is $ACL"
    NEWACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=_uuid list acl | grep ^_uuid | wc -l'`;
