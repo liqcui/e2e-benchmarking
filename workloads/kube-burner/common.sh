@@ -1637,12 +1637,6 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
-      #  sleep 600
-      #  export TEST_STEP="Creating ANP to Allow Egress to Kube API[Min]"
-      #  #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
-      #  export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
-      #  get_ovn_node_system_usage_info
-
        export TEST_STEP="Creating ANP to Allow Monitor ANP "
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        oc apply -f ${WORKLOAD_TEMPLATE_PATH}/01_anp_allow-monitor.yaml
@@ -1660,7 +1654,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
   
-       sleep 600
+       #sleep 600
        export TEST_STEP="Scaling out Worker Nodes[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
        echo "Recycle worker nodes ...."
@@ -1676,7 +1670,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
-       sleep 600
+       #sleep 600
        export TEST_STEP="Scaling down Worker Nodes"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
        echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
