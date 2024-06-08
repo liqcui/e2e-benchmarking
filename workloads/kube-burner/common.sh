@@ -1588,7 +1588,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
        export TEST_STEP="Creating Large Scale PODs without BANP/ANP/NetPol/EgressFW[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`   
-       echo -e "Test Step,Create Time,Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
+       echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        ###################################Create Large Scale Pods#################################
        echo "Prepare Testing Environment for BANP and ANP - Creating NS and Pods - Mixed Scenario"
