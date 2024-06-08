@@ -1476,7 +1476,7 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
     #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`              
     get_ovn_node_system_usage_info
-    sleep 120
+    #sleep 120
 
     export TEST_STEP="Deleting 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
@@ -1485,7 +1485,7 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
     get_ovn_node_system_usage_info    
     echo ----------------------------------------------------------
 
-    sleep 120
+    #sleep 120
     export TEST_STEP="Creating $TOTAL_ANP Multi ANP with Multi Rule/25 IP Per Rule"
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     generated_anp_cidr_selector_25ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
@@ -1559,7 +1559,7 @@ function create_anp_banp_egress_rule_verify_traffic_from_two_different_groups_to
     generated_anp_based_on_node_selector_with_multi_policy_by_ns $SOURCE_NS_FILTER
     export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`     
     get_ovn_node_system_usage_info
-    sleep 120
+    #sleep 120
     export TEST_STEP="Creating ${TOTAL_ANP} Node Selector ANP/1 ANP Per 4 NS(1 Tenant)[Min]"    
     #export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`    
