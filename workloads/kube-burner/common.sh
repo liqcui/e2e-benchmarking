@@ -1654,7 +1654,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
   
-       #sleep 600
+       sleep 600
        export TEST_STEP="Scaling out Worker Nodes[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
        echo "Recycle worker nodes ...."
@@ -1670,13 +1670,13 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
-       #sleep 600
+       sleep 600
        export TEST_STEP="Scaling down Worker Nodes"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
        echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 60
-       check_if_machineset_ready ${DESIRED_REPLICAS}
+       check_if_machineset_ready ${PREVIOUS_REPLICAS}
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
