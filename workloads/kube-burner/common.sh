@@ -311,20 +311,27 @@ function getOVNICDBInfo()
    NODE_NAME=`oc get nodes | grep worker | awk '{print $1}'| sort -n -r | tail -1`
    OVNKUBE_NODE_POD=`oc -n openshift-ovn-kubernetes get pod -l app=ovnkube-node --field-selector spec.nodeName=$NODE_NAME, -ojsonpath='{..metadata.name}'`
    echo OVNKUBE_NODE_POD on node $NODE_NAME is $OVNKUBE_NODE_POD
-   echo "----------ACL----------";
-   echo "Previous ACL is $ACL"
+   echo "Previous ACL is $ACL and Previous ACL is $MATCH_ACL " 
    NEWACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=_uuid list acl | grep ^_uuid | wc -l'`;
-   for ((i=0;i<=120;i++))
+
+   NEW_MATCH_ACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=match list acl | grep -c ^match'`;
+ 
+   for ((i=0;i<=180;i++))
    do
-       if [[ $NEWACL -ne $ACL ]];then
+       NEWACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=_uuid list acl | grep ^_uuid | wc -l'`;
+       NEW_MATCH_ACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=match list acl | grep -c ^match'`;
+       if [[ $NEWACL -ne $ACL && $NEWACL -eq $NEW_MATCH_ACL ]];then
            export ACL=$NEWACL
+           export MATCH_ACL=$NEW_MATCH_ACL
            break
        fi
        echo -n "."&&sleep 1
    done
-   echo "New ACL After Creating BANP, ANP, NetPol, is $ACL"
+   echo "New ACL After Creating BANP, ANP, NetPol, is $ACL" 
+   echo "New Match ACL After Creating BANP, ANP, NetPol, is $MATCH_ACL"      
+   echo "----------ACL----------";
+   echo $ACL
    echo "----------match ACL----------";
-   export MATCH_ACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=match list acl | grep -c ^match'`;
    echo $MATCH_ACL
    echo "----------ACL find port_group by uuid----------";
    export PORT_GROUP_UUID=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl find port_group|grep _uuid|wc -l'`;
