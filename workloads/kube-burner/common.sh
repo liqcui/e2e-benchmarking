@@ -1242,6 +1242,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
     WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-restricted"
+    export TEST_STEP="Creating 1 POD Selector ANP of No Traffic Between Test and Restricted."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of No Traffic Between Test and Restricted."      
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/02_anp_no-traffic-test-restricted-p39.yaml   
@@ -1259,6 +1260,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-restricted"
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    export TEST_STEP="Creating 1 POD Selector ANP of No traffic between unknown and Restricted."
     echo "Creating 1 POD Selector ANP of No traffic between unknown and Restricted."       
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/03_anp_no-traffic-unknown-restricted-p38.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/03_anp_no-traffic-unknown-restricted-p38.yaml
@@ -1275,6 +1277,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-unknown"
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
+    export TEST_STEP="Creating 1 POD Selector ANP of No traffic between test and unknown."
     echo "Creating 1 POD Selector ANP of No traffic between test and unknown."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/04_anp_no-traffic-test-unknown-p37.yaml
     printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/04_anp_no-traffic-test-unknown-p37.yaml
@@ -1290,6 +1293,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-unknown"
+    export TEST_STEP="Creating 1 POD Selector ANP of allowing ingress only between test and unknown."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of allowing ingress only between test and unknown."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/05_anp_allow-ingress-only-test-unknown-p36.yaml
@@ -1301,6 +1305,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-unknown"
+    export TEST_STEP="Creating 1 POD Selector ANP of allowing egress only between test and unknown."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of allowing egress only between test and unknown."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/06_anp_allow-egress-only-test-unknown-p35.yaml
@@ -1312,6 +1317,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
   
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-open"
+    export TEST_STEP="Creating 1 POD Selector ANP of no traffic between unknown and open."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of no traffic between unknown and open."      
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/07_anp_no-traffic-unknown-open-p34.yaml
@@ -1323,6 +1329,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-open"
+    export TEST_STEP="Creating 1 POD Selector ANP of ingress only between unknown and open."    
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of ingress only between unknown and open."    
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/08_anp_allow-ingress-only-unknown-open-p33.yaml
@@ -1334,6 +1341,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
   
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-open"
+    export TEST_STEP="Creating 1 POD Selector ANP of egress only between unknown and open."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of egress only between unknown and open."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/09_anp_allow-egress-only-unknown-open-p32.yaml
@@ -1345,6 +1353,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
   
     SOURCE_NS_FILTER="anp-open"
     TARGET_NS_FILTER="anp-test"
+    export TEST_STEP="Creating 1 POD Selector ANP of no traffic between open and test."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of no traffic between open and test."      
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/10_anp_no-traffic-open-test-p31.yaml
@@ -1356,6 +1365,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-open"
     TARGET_NS_FILTER="anp-test"
+    export TEST_STEP="Creating 1 POD Selector ANP of allow ingress between open and test."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of allow ingress between open and test."    
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/11_anp_allow-ingress-only-open-test-p30.yaml
@@ -1367,6 +1377,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
   
     SOURCE_NS_FILTER="anp-open"
     TARGET_NS_FILTER="anp-test"
+    export TEST_STEP="Creating 1 POD Selector ANP of allow egress between open and test."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of allow egress between open and test."       
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/12_anp_allow-egress-only-open-test-p29.yaml
@@ -1378,6 +1389,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-open"
     TARGET_NS_FILTER="anp-test"
+    export TEST_STEP="Creating 1 POD Selector ANP of allow all traffic between open and test."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of allow all traffic between open and test."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/13_anp_allow-all-traffic-open-test-p28.yaml
@@ -1389,6 +1401,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-unknown"
     TARGET_NS_FILTER="anp-open"
+    export TEST_STEP="Creating 1 POD Selector ANP of allow all traffic between unknown and test."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of allow all traffic between unknown and test."       
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/14_anp_allow-all-traffic-unknown-open-p27.yaml
@@ -1400,6 +1413,7 @@ function create_anp_banp_verify_traffic_between_different_zones(){
 
     SOURCE_NS_FILTER="anp-test"
     TARGET_NS_FILTER="anp-unknown"
+    export TEST_STEP="Creating 1 POD Selector ANP of allow all traffic between test and unknown."
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
     echo "Creating 1 POD Selector ANP of allow all traffic between test and unknown."     
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/15_anp_allow-all-traffic-test-unknown-p26.yaml
