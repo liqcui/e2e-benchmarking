@@ -313,9 +313,7 @@ function getOVNICDBInfo()
    echo OVNKUBE_NODE_POD on node $NODE_NAME is $OVNKUBE_NODE_POD
    echo "Previous ACL is $ACL and Previous ACL is $MATCH_ACL " 
    NEWACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=_uuid list acl | grep ^_uuid | wc -l'`;
-
    NEW_MATCH_ACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=match list acl | grep -c ^match'`;
- 
    for ((i=0;i<=180;i++))
    do
        NEWACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=_uuid list acl | grep ^_uuid | wc -l'`;
