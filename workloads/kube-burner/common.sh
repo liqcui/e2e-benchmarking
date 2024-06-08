@@ -312,9 +312,9 @@ function getOVNICDBInfo()
    OVNKUBE_NODE_POD=`oc -n openshift-ovn-kubernetes get pod -l app=ovnkube-node --field-selector spec.nodeName=$NODE_NAME, -ojsonpath='{..metadata.name}'`
    echo OVNKUBE_NODE_POD is $OVNKUBE_NODE_POD
    echo "----------ACL----------";
-
+   echo "Previous ACL is $ACL"
    NEWACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=_uuid list acl | grep ^_uuid | wc -l'`;
-   for ((i=0;i<=60;i++))
+   for ((i=0;i<=120;i++))
    do
        if [[ $NEWACL -ne $ACL ]];then
            export ACL=$NEWACL
@@ -322,7 +322,7 @@ function getOVNICDBInfo()
        fi
        echo -n "."&&sleep 1
    done
-   echo $ACL
+   echo "New ACL After Creating BANP, ANP, NetPol, is $ACL"
    echo "----------match ACL----------";
    export MATCH_ACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=match list acl | grep -c ^match'`;
    echo $MATCH_ACL
