@@ -303,15 +303,25 @@ done
 function getOVNICDBInfo()
 {
   
-   echo "Get ACL From OVN DB"
-   OVNKUBE_CONTROL_PLANE_POD=`oc -n openshift-ovn-kubernetes get lease ovn-kubernetes-master -o=jsonpath={.spec.holderIdentity}`
-   echo OVNKUBE_CONTROL_PLANE_POD is $OVNKUBE_CONTROL_PLANE_POD
-   NODE_NAME=`oc -n openshift-ovn-kubernetes get pod $OVNKUBE_CONTROL_PLANE_POD -o=jsonpath={.spec.nodeName}`
-   echo "The Node of Pod $OVNKUBE_CONTROL_PLANE_POD is $NODE_NAME"
+  #  echo "Get ACL From OVN DB"
+  #  OVNKUBE_CONTROL_PLANE_POD=`oc -n openshift-ovn-kubernetes get lease ovn-kubernetes-master -o=jsonpath={.spec.holderIdentity}`
+  #  echo OVNKUBE_CONTROL_PLANE_POD is $OVNKUBE_CONTROL_PLANE_POD
+  #  NODE_NAME=`oc -n openshift-ovn-kubernetes get pod $OVNKUBE_CONTROL_PLANE_POD -o=jsonpath={.spec.nodeName}`
+  #  echo "The Node of Pod $OVNKUBE_CONTROL_PLANE_POD is $NODE_NAME"
+   NODE_NAME=`oc get nodes | grep worker | awk '{print $1}'| sort -n -r | tail -1`
    OVNKUBE_NODE_POD=`oc -n openshift-ovn-kubernetes get pod -l app=ovnkube-node --field-selector spec.nodeName=$NODE_NAME, -ojsonpath='{..metadata.name}'`
    echo OVNKUBE_NODE_POD is $OVNKUBE_NODE_POD
    echo "----------ACL----------";
-   export ACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=_uuid list acl | grep ^_uuid | wc -l'`;
+
+   NEWACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=_uuid list acl | grep ^_uuid | wc -l'`;
+   for ((i=0;i<=60;i++))
+   do
+       if [[ $NEWACL -ne $ACL ]];then
+           export ACL=$NEWACL
+           break
+       fi
+       echo -n "."&&sleep 1
+   done
    echo $ACL
    echo "----------match ACL----------";
    export MATCH_ACL=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c 'ovn-nbctl --no-leader-only --columns=match list acl | grep -c ^match'`;
