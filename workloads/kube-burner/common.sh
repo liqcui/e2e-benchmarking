@@ -1627,13 +1627,9 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        ###################################Create CIDR Selector Policy#################################    
        create_anp_banp_cidr_verify_traffic_tween_different_zones
 
-       ###################################Create POD Selector Policy#################################
-       export TEST_STEP="Creating 14 POD Selector ANP to deny egress/ingress policy."
-       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`
-       echo "Creating 14 POD Selector ANP to deny egress/ingress policy[Min]."       
+       ###################################Create POD Selector Policy#################################  
+       echo "Creating 14 POD Selector ANP to deny egress/ingress policy[Min]." 
        create_anp_banp_verify_traffic_between_different_zones
-       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
-       get_ovn_node_system_usage_info
 
        export TEST_STEP="Creating ANP to Allow Egress to Kube API"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
