@@ -1222,12 +1222,17 @@ function label_node_for_allow_deny_egress_nodes(){
      IF_LABEL_IN_ORDER=${IF_LABEL_IN_ORDER:="false"}
  
      TOTAL_NODES=`oc get nodes -lnode-role.kubernetes.io/worker= -oname |wc -l`
-     if [[ $TOTAL_NODES -lt 3 ]];then
+     if [[ $TOTAL_NODES -ge 3 && $TOTAL_NODES -le 20 ]];then
+          KEEP_WORKER=1
+     elif [[ $TOTAL_NODES -gt 30 ]];then
+          KEEP_WORKER=10
+     elif [[ $TOTAL_NODES -lt 3 ]];then
          echo "To run the test case, you have run it on OCP with more than 3 worker node"
          exit 1
      fi
      
-     LABEL_NUM=$(( $TOTAL_NODES / 2 ))
+     TOTAL_LABEL_NODES=$(( $TOTAL_NODES - $KEEP_WORKER ))
+     LABEL_NUM=$(( $TOTAL_LABEL_NODES / 2 ))
      if [[ $IF_LABEL_IN_ORDER == "false" ]];then
           for node in `oc get nodes -lnode-role.kubernetes.io/worker= -oname |head -${LABEL_NUM}`
           do
