@@ -1687,7 +1687,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo "Recycle worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
-       FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname | head -1`
+       FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
        PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
        DESIRED_REPLICAS=$(( $ADDITIONAL_REPLICAS + $PREVIOUS_REPLICAS ))
        echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
