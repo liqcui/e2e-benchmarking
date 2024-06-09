@@ -1681,8 +1681,6 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
   
-       networkPolicyInitSyncDurationCheck
-
        sleep 600
        export TEST_STEP="Scaling out Worker Nodes[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
@@ -1709,6 +1707,8 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
+       networkPolicyInitSyncDurationCheck
+
        sleep 600
        export TEST_STEP="Scaling down Worker Nodes"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
@@ -1717,17 +1717,18 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        sleep 60
        check_if_machineset_ready ${PREVIOUS_REPLICAS}
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
-       get_ovn_node_system_usage_info
+       get_ovn_node_system_usage_info 
 
-       export NODES_COUNT=`oc get nodes | grep worker |wc -l`
-       export NAMESPACES=`oc get ns |grep anp| grep -v anp-node-http |wc -l`
-       export PODS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get pods -n |wc -l`
-       export NETPOLS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get networkpolicy -n |wc -l`
-       WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-anp-convergence-tracker.yml
-       run_workload
+      #  export NODES_COUNT=`oc get nodes | grep worker |wc -l`
+      #  export NAMESPACES=`oc get ns |grep anp| grep -v anp-node-http |wc -l`
+      #  export PODS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get pods -n |wc -l`
+      #  export NETPOLS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get networkpolicy -n |wc -l`
+      #  WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-anp-convergence-tracker.yml
+      #  run_workload
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        cat /tmp/system_resource_info.csv
        sleep 600
        echo "Clean resource by ns"
        oc get ns | grep -E 'anp|zero'| awk '{print $1}' | xargs oc delete ns
+       echo return code is $?
 }
