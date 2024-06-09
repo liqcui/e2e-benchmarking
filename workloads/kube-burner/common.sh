@@ -1570,6 +1570,23 @@ function check_if_machineset_ready(){
     done
 }
 
+function verify_if_mcp_be_in_updated_state_by_name() {
+	
+    MCP_NAME=$1
+		mcpUpdatingStatus=`oc get mcp $MCP_NAME -ojsonpath='{.status.conditions[?(@.type=="Updating")].status}'`
+		mcpUpdatedStatus=`oc get mcp $MCP_NAME -ojsonpath='{.status.conditions[?(@.type=="Updated")].status}'`
+
+		mcpMachineCount=`oc get mcp $MCP_NAME -ojsonpath={..status.machineCount}`
+		mcpReadyMachineCount=`oc get mcp $MCP_NAME -ojsonpath={..status.readyMachineCount}`
+		mcpUpdatedMachineCount=`oc get mcp $MCP_NAME -ojsonpath={..status.updatedMachineCount}`
+		mcpDegradedMachineCount=`oc get mcp $MCP_NAME -ojsonpath={..status.degradedMachineCount}`
+		if [[ $mcpUpdatingStatus=="False" && $mcpUpdatedStatus=="True" && $mcpMachineCount == $mcpReadyMachineCount && $mcpMachineCount == $mcpUpdatedMachineCount && $mcpDegradedMachineCount == "0" ]];then
+        echo true
+    else
+        echo false
+    fi
+}
+
 function run_large_networkpolicy_egressfirewall_anp_workload(){
        IF_CIDR_ANP=${IF_CIDR_ANP:="false"}
        IF_NODE_ANP=${IF_NODE_ANP:="false"}
@@ -1667,6 +1684,16 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
        sleep 60
        check_if_machineset_ready ${DESIRED_REPLICAS}
+       for((i=0;i<=600;i++))
+       do
+           WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
+           if [[ $WORKER_MCP_STATUS == "true" ]];then
+               echo The worker mcp is ready
+                   break
+            fi
+               echo -n "."&&sleep 1;
+       done
+     
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
