@@ -1681,6 +1681,8 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
   
+       networkPolicyInitSyncDurationCheck
+
        sleep 600
        export TEST_STEP="Scaling out Worker Nodes[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`             
@@ -1717,7 +1719,6 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
-       networkPolicyInitSyncDurationCheck
        export NODES_COUNT=`oc get nodes | grep worker |wc -l`
        export NAMESPACES=`oc get ns |grep anp| grep -v anp-node-http |wc -l`
        export PODS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get pods -n |wc -l`
