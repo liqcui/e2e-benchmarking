@@ -303,12 +303,12 @@ done
 function getOVNICDBInfo()
 {
   
-  #  echo "Get ACL From OVN DB"
-  #  OVNKUBE_CONTROL_PLANE_POD=`oc -n openshift-ovn-kubernetes get lease ovn-kubernetes-master -o=jsonpath={.spec.holderIdentity}`
-  #  echo OVNKUBE_CONTROL_PLANE_POD is $OVNKUBE_CONTROL_PLANE_POD
-  #  NODE_NAME=`oc -n openshift-ovn-kubernetes get pod $OVNKUBE_CONTROL_PLANE_POD -o=jsonpath={.spec.nodeName}`
-  #  echo "The Node of Pod $OVNKUBE_CONTROL_PLANE_POD is $NODE_NAME"
-   NODE_NAME=`oc get nodes | grep worker | awk '{print $1}'| sort -n -r | tail -1`
+   echo "Get ACL From OVN DB"
+   OVNKUBE_CONTROL_PLANE_POD=`oc -n openshift-ovn-kubernetes get lease ovn-kubernetes-master -o=jsonpath={.spec.holderIdentity}`
+   echo OVNKUBE_CONTROL_PLANE_POD is $OVNKUBE_CONTROL_PLANE_POD
+   NODE_NAME=`oc -n openshift-ovn-kubernetes get pod $OVNKUBE_CONTROL_PLANE_POD -o=jsonpath={.spec.nodeName}`
+   echo "The Node of Pod $OVNKUBE_CONTROL_PLANE_POD is $NODE_NAME"
+   #NODE_NAME=`oc get nodes | grep worker | awk '{print $1}'| sort -n -r | tail -1`
    OVNKUBE_NODE_POD=`oc -n openshift-ovn-kubernetes get pod -l app=ovnkube-node --field-selector spec.nodeName=$NODE_NAME, -ojsonpath='{..metadata.name}'`
    echo OVNKUBE_NODE_POD on node $NODE_NAME is $OVNKUBE_NODE_POD
    echo "Previous ACL is $ACL and Previous ACL is $MATCH_ACL " 
