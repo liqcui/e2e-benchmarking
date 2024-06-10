@@ -1729,7 +1729,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
       #  run_workload
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        cat /tmp/system_resource_info.csv
-       sleep 600
+       sleep 900
        echo "Clean resource by ns"
        oc get ns | grep -E 'anp|zero'| awk '{print $1}' | xargs oc delete ns
        echo return code is $?
