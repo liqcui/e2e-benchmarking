@@ -1636,10 +1636,15 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        get_ovn_node_system_usage_info
 
        sleep 600
-       export TEST_STEP="Scaling out Worker Nodes without ANP[Min]"
-       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
+       echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+       oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+       oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst         
        echo "Recycle worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+
+       export TEST_STEP="Scaling out Worker Nodes with PODs without ANP[Min]"
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
        FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
        PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
@@ -1661,8 +1666,14 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
+       oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+       oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+       echo "New worker node and ovn pods"
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+       cat /tmp/ocp-node-ovn-pods-*.lst sort -r| uniq -u
+
        sleep 300
-       export TEST_STEP="Scaling down Worker Nodes without ANP[Min]"
+       export TEST_STEP="Scaling down Worker Nodes with PODs without ANP[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
        echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
@@ -1707,8 +1718,14 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        get_ovn_node_system_usage_info
 
        sleep 600
+       echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+       oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+       oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst   
+
        export TEST_STEP="Scaling out Worker Nodes without large netpol/efw[Min]"
-       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
+
        echo "Recycle worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
@@ -1731,6 +1748,12 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
      
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
+
+       oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+       oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+       echo "New worker node and ovn pods"
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+       cat /tmp/ocp-node-ovn-pods-*.lst sort -r| uniq -u
 
        sleep 300
        export TEST_STEP="Scaling down Worker Nodes without large netpol/efw[Min]"
@@ -1755,6 +1778,11 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        get_ovn_node_system_usage_info
   
        sleep 600
+       echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+       oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+       oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+
        export TEST_STEP="Scaling out Worker Nodes[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
        echo "Recycle worker nodes ...."
@@ -1780,6 +1808,12 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
+       oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+       oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+       echo "New worker node and ovn pods"
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+       cat /tmp/ocp-node-ovn-pods-*.lst sort -r| uniq -u
+
        networkPolicyInitSyncDurationCheck
 
        sleep 300
@@ -1793,6 +1827,11 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        get_ovn_node_system_usage_info 
 
       sleep 600
+      echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+      oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+      oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst
+
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
       echo "Restart OVN Pods"
       export TEST_STEP="Restart OVN Node POD"
@@ -1806,8 +1845,14 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
       done
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      get_ovn_node_system_usage_info       
-      
+      get_ovn_node_system_usage_info
+
+      oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+      oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+      echo "New worker node and ovn pods"
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+      cat /tmp/ocp-node-ovn-pods-*.lst sort -r| uniq -u
+
       #  export NODES_COUNT=`oc get nodes | grep worker |wc -l`
       #  export NAMESPACES=`oc get ns |grep anp| grep -v anp-node-http |wc -l`
       #  export PODS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get pods -n |wc -l`
