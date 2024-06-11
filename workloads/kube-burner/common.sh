@@ -1636,6 +1636,41 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        get_ovn_node_system_usage_info
 
        sleep 600
+       export TEST_STEP="Scaling out Worker Nodes without ANP[Min]"
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
+       echo "Recycle worker nodes ...."
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+       ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
+       FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
+       PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
+       DESIRED_REPLICAS=$(( $ADDITIONAL_REPLICAS + $PREVIOUS_REPLICAS ))
+       echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
+       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
+       sleep 60
+       check_if_machineset_ready ${DESIRED_REPLICAS}
+       for((i=0;i<=600;i++))
+       do
+           WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
+           if [[ $WORKER_MCP_STATUS == "true" ]];then
+               echo The worker mcp is ready
+                   break
+            fi
+               echo -n "."&&sleep 1;
+       done
+     
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       get_ovn_node_system_usage_info
+
+       sleep 300
+       export TEST_STEP="Scaling down Worker Nodes without ANP[Min]"
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
+       echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
+       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
+       sleep 60
+       check_if_machineset_ready ${PREVIOUS_REPLICAS}
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       get_ovn_node_system_usage_info
+
        ###################################Create Default BANP#################################
        export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
@@ -1670,7 +1705,43 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc apply -f ${WORKLOAD_TEMPLATE_PATH}/01_anp_allow-monitor.yaml
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
-       
+
+       sleep 600
+       export TEST_STEP="Scaling out Worker Nodes without large netpol/efw[Min]"
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
+       echo "Recycle worker nodes ...."
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+       ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
+       FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
+       PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
+       DESIRED_REPLICAS=$(( $ADDITIONAL_REPLICAS + $PREVIOUS_REPLICAS ))
+       echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
+       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
+       sleep 60
+       check_if_machineset_ready ${DESIRED_REPLICAS}
+       for((i=0;i<=600;i++))
+       do
+           WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
+           if [[ $WORKER_MCP_STATUS == "true" ]];then
+               echo The worker mcp is ready
+                   break
+            fi
+               echo -n "."&&sleep 1;
+       done
+     
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       get_ovn_node_system_usage_info
+
+       sleep 300
+       export TEST_STEP="Scaling down Worker Nodes without large netpol/efw[Min]"
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
+       echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
+       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
+       sleep 60
+       check_if_machineset_ready ${PREVIOUS_REPLICAS}
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       get_ovn_node_system_usage_info 
+
        sleep 600
        export TEST_STEP="Creating Large Scale NetPol and Egress Firewall[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
@@ -1711,7 +1782,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        networkPolicyInitSyncDurationCheck
 
-       sleep 600
+       sleep 300
        export TEST_STEP="Scaling down Worker Nodes"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
        echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
@@ -1721,6 +1792,22 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
 
+      sleep 600
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+      echo "Restart OVN Pods"
+      export TEST_STEP="Restart OVN Node POD"
+      export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+      OVN_NODE_POD_NAMES=`oc -n openshift-ovn-kubernetes  get pods |grep -v ovnkube-control-plane | awk '{print $1}'| tail -5`
+      echo ovn_node_pod
+      for ovn_node_pod in $OVN_NODE_POD_NAMES
+      do  
+           echo restart pod $ovn_node_pod
+           oc -n openshift-ovn-kubernetes delete pod $ovn_node_pod
+      done
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+      export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+      get_ovn_node_system_usage_info       
+      
       #  export NODES_COUNT=`oc get nodes | grep worker |wc -l`
       #  export NAMESPACES=`oc get ns |grep anp| grep -v anp-node-http |wc -l`
       #  export PODS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get pods -n |wc -l`
