@@ -1679,7 +1679,8 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 60
        check_if_machineset_ready ${PREVIOUS_REPLICAS}
-       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       sleep 120       
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        get_ovn_node_system_usage_info
 
        ###################################Create Default BANP#################################
@@ -1762,6 +1763,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 60
        check_if_machineset_ready ${PREVIOUS_REPLICAS}
+       sleep 120       
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
 
@@ -1823,6 +1825,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 60
        check_if_machineset_ready ${PREVIOUS_REPLICAS}
+       sleep 120       
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
 
