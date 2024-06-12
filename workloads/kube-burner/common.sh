@@ -1668,9 +1668,9 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
        oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-       echo "New worker node and ovn pods"
+       echo "New worker node and ovn pods when scaling out worker node"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-       cat /tmp/ocp-node-ovn-pods-*.lst sort -r| uniq -u
+       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u
 
        sleep 300
        export TEST_STEP="Scaling down Worker Nodes with PODs without ANP[Min]"
@@ -1751,9 +1751,9 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
        oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-       echo "New worker node and ovn pods"
+       echo "New worker node and ovn pods when scaling out worker node"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-       cat /tmp/ocp-node-ovn-pods-*.lst sort -r| uniq -u
+       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
 
        sleep 300
        export TEST_STEP="Scaling down Worker Nodes without large netpol/efw[Min]"
@@ -1810,9 +1810,9 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
        oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-       echo "New worker node and ovn pods"
+       echo "New worker node and ovn pods when scaling out worker node"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-       cat /tmp/ocp-node-ovn-pods-*.lst sort -r| uniq -u
+       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
 
        networkPolicyInitSyncDurationCheck
 
@@ -1849,9 +1849,9 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
       oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
       oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-      echo "New worker node and ovn pods"
+      echo "New worker node and ovn pods when scaling out worker node"
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-      cat /tmp/ocp-node-ovn-pods-*.lst sort -r| uniq -u
+      cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
 
       #  export NODES_COUNT=`oc get nodes | grep worker |wc -l`
       #  export NAMESPACES=`oc get ns |grep anp| grep -v anp-node-http |wc -l`
