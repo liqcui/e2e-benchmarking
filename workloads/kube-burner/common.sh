@@ -1593,6 +1593,32 @@ function verify_if_mcp_be_in_updated_state_by_name() {
     fi
 }
 
+function restartOVNPODs(){
+      echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+      oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+      oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst
+
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+      echo "Restart OVN Pods"
+      OVN_NODE_POD_NAMES=`oc -n openshift-ovn-kubernetes  get pods |grep -v ovnkube-control-plane | awk '{print $1}'| tail -5`
+      echo ovn_node_pod
+      for ovn_node_pod in $OVN_NODE_POD_NAMES
+      do  
+           echo restart pod $ovn_node_pod
+           oc -n openshift-ovn-kubernetes delete pod $ovn_node_pod
+      done
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+      export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+      get_ovn_node_system_usage_info
+
+      oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+      oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+      echo "New worker node and ovn pods when scaling out worker node"
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+      cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
+}
+
 function run_large_networkpolicy_egressfirewall_anp_workload(){
        IF_CIDR_ANP=${IF_CIDR_ANP:="false"}
        IF_NODE_ANP=${IF_NODE_ANP:="false"}
@@ -1643,7 +1669,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo "Recycle worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
-       export TEST_STEP="Scaling out Worker Nodes with PODs without ANP[Min]"
+       export TEST_STEP="Scaling Out Worker Nodes with Large Scale PODs without BANP/ANP[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
        FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
@@ -1673,15 +1699,20 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u
 
        sleep 300
-       export TEST_STEP="Scaling down Worker Nodes with PODs without ANP[Min]"
+       export TEST_STEP="Scaling Down Worker Nodes with Large Scale PODs without BANP/ANP/[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-       echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
+       echo "Scale Down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 60
        check_if_machineset_ready ${PREVIOUS_REPLICAS}
        sleep 120       
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        get_ovn_node_system_usage_info
+
+      sleep 600
+      export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
+      export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+      restartOVNPODs
 
        ###################################Create Default BANP#################################
        export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
@@ -1724,7 +1755,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
        oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst   
 
-       export TEST_STEP="Scaling out Worker Nodes without large netpol/efw[Min]"
+       export TEST_STEP="Scaling Out Worker Nodes with Large Scale PODs and BANP/ANP/[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
 
        echo "Recycle worker nodes ...."
@@ -1757,15 +1788,20 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
 
        sleep 300
-       export TEST_STEP="Scaling down Worker Nodes without large netpol/efw[Min]"
+       export TEST_STEP="Scaling Down Worker Nodes Large Scale PODs and BANP/ANP[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-       echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
+       echo "Scale Down Woker Node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 60
        check_if_machineset_ready ${PREVIOUS_REPLICAS}
        sleep 120       
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
+
+      sleep 600
+      export TEST_STEP="Restart OVN Node POD with  Large Scale PODs and BANP/ANP"
+      export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+      restartOVNPODs
 
        sleep 600
        export TEST_STEP="Creating Large Scale NetPol and Egress Firewall[Min]"
@@ -1785,7 +1821,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
        oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
 
-       export TEST_STEP="Scaling out Worker Nodes[Min]"
+       export TEST_STEP="Scaling Out Worker Nodes With Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
        echo "Recycle worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
@@ -1819,7 +1855,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        networkPolicyInitSyncDurationCheck
 
        sleep 300
-       export TEST_STEP="Scaling down Worker Nodes"
+       export TEST_STEP="Scaling Down Worker Nodes With Large Scale PODs and BANP/ANP/NetPol/EgressFW"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
        echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
@@ -1830,31 +1866,9 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        get_ovn_node_system_usage_info 
 
       sleep 600
-      echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-      oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-      oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst
-
-      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-      echo "Restart OVN Pods"
-      export TEST_STEP="Restart OVN Node POD"
+      export TEST_STEP="Restart OVN Node POD With Large Scale PODs and BANP/ANP/NetPol/EgressFW"
       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      OVN_NODE_POD_NAMES=`oc -n openshift-ovn-kubernetes  get pods |grep -v ovnkube-control-plane | awk '{print $1}'| tail -5`
-      echo ovn_node_pod
-      for ovn_node_pod in $OVN_NODE_POD_NAMES
-      do  
-           echo restart pod $ovn_node_pod
-           oc -n openshift-ovn-kubernetes delete pod $ovn_node_pod
-      done
-      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-      export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      get_ovn_node_system_usage_info
-
-      oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-      oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-      echo "New worker node and ovn pods when scaling out worker node"
-      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-      cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
+      restartOVNPODs
 
       #  export NODES_COUNT=`oc get nodes | grep worker |wc -l`
       #  export NAMESPACES=`oc get ns |grep anp| grep -v anp-node-http |wc -l`
