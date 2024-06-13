@@ -1619,7 +1619,7 @@ function restartOVNPODs(){
       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
 }
 function scale_out_worker_nodes(){
-       echo "Recycle worker nodes ...."
+       echo "Scaling out worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        export ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
        export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
@@ -1643,6 +1643,8 @@ function scale_out_worker_nodes(){
 }
 
 function scale_down_worker_nodes(){
+       echo "Scaling down worker nodes ...."
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        echo "Scale Down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 60
