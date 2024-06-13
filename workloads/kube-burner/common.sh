@@ -1642,7 +1642,7 @@ function scale_out_worker_nodes(){
        
 }
 
-function scale_down_worker_nodes{
+function scale_down_worker_nodes(){
        echo "Scale Down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
        sleep 60
