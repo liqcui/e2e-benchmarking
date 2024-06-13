@@ -1601,7 +1601,7 @@ function restartOVNPODs(){
 
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
       echo "Restart OVN Pods"
-      OVN_NODE_POD_NAMES=`oc -n openshift-ovn-kubernetes  get pods |grep -v ovnkube-control-plane | awk '{print $1}'| tail -5`
+      OVN_NODE_POD_NAMES=`oc -n openshift-ovn-kubernetes  get pods |grep -v -i -E 'ovnkube-control-plane|NAME' | awk '{print $1}'| tail -5`
       echo ovn_node_pod
       for ovn_node_pod in $OVN_NODE_POD_NAMES
       do  
