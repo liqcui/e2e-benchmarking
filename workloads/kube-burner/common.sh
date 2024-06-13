@@ -1618,6 +1618,37 @@ function restartOVNPODs(){
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
 }
+function scale_out_worker_nodes(){
+       echo "Recycle worker nodes ...."
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+       export ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
+       export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
+       export PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
+       export DESIRED_REPLICAS=$(( $ADDITIONAL_REPLICAS + $PREVIOUS_REPLICAS ))
+       echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
+       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
+       sleep 60
+       check_if_machineset_ready ${DESIRED_REPLICAS}
+       for((i=0;i<=600;i++))
+       do
+           WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
+           if [[ $WORKER_MCP_STATUS == "true" ]];then
+               echo The worker mcp is ready
+                   break
+            fi
+               echo -n "."&&sleep 1;
+       done
+
+       
+}
+
+function scale_down_worker_nodes{
+       echo "Scale Down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
+       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
+       sleep 60
+       check_if_machineset_ready ${PREVIOUS_REPLICAS}
+       sleep 120    
+}
 
 function run_large_networkpolicy_egressfirewall_anp_workload(){
        IF_CIDR_ANP=${IF_CIDR_ANP:="false"}
@@ -1666,29 +1697,10 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
        oc -n openshift-ovn-kubernetes get pods | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
        oc get nodes | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst         
-       echo "Recycle worker nodes ...."
-       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
        export TEST_STEP="Scaling Out Worker Nodes with Large Scale PODs without BANP/ANP[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
-       ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
-       FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
-       PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
-       DESIRED_REPLICAS=$(( $ADDITIONAL_REPLICAS + $PREVIOUS_REPLICAS ))
-       echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
-       sleep 60
-       check_if_machineset_ready ${DESIRED_REPLICAS}
-       for((i=0;i<=600;i++))
-       do
-           WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
-           if [[ $WORKER_MCP_STATUS == "true" ]];then
-               echo The worker mcp is ready
-                   break
-            fi
-               echo -n "."&&sleep 1;
-       done
-     
+       scale_out_worker_nodes
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
@@ -1701,11 +1713,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        sleep 300
        export TEST_STEP="Scaling Down Worker Nodes with Large Scale PODs without BANP/ANP/[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-       echo "Scale Down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
-       sleep 60
-       check_if_machineset_ready ${PREVIOUS_REPLICAS}
-       sleep 120       
+       scale_down_worker_nodes  
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        get_ovn_node_system_usage_info
 
@@ -1757,27 +1765,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        export TEST_STEP="Scaling Out Worker Nodes with Large Scale PODs and BANP/ANP/[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
-
-       echo "Recycle worker nodes ...."
-       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-       ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
-       FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
-       PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
-       DESIRED_REPLICAS=$(( $ADDITIONAL_REPLICAS + $PREVIOUS_REPLICAS ))
-       echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
-       sleep 60
-       check_if_machineset_ready ${DESIRED_REPLICAS}
-       for((i=0;i<=600;i++))
-       do
-           WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
-           if [[ $WORKER_MCP_STATUS == "true" ]];then
-               echo The worker mcp is ready
-                   break
-            fi
-               echo -n "."&&sleep 1;
-       done
-     
+       scale_out_worker_nodes
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
@@ -1790,11 +1778,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        sleep 300
        export TEST_STEP="Scaling Down Worker Nodes Large Scale PODs and BANP/ANP[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-       echo "Scale Down Woker Node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
-       sleep 60
-       check_if_machineset_ready ${PREVIOUS_REPLICAS}
-       sleep 120       
+       scale_down_worker_nodes
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
 
@@ -1823,26 +1807,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        export TEST_STEP="Scaling Out Worker Nodes With Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-       echo "Recycle worker nodes ...."
-       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-       ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
-       FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
-       PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
-       DESIRED_REPLICAS=$(( $ADDITIONAL_REPLICAS + $PREVIOUS_REPLICAS ))
-       echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
-       sleep 60
-       check_if_machineset_ready ${DESIRED_REPLICAS}
-       for((i=0;i<=600;i++))
-       do
-           WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
-           if [[ $WORKER_MCP_STATUS == "true" ]];then
-               echo The worker mcp is ready
-                   break
-            fi
-               echo -n "."&&sleep 1;
-       done
-     
+       scale_out_worker_nodes
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
@@ -1857,11 +1822,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        sleep 300
        export TEST_STEP="Scaling Down Worker Nodes With Large Scale PODs and BANP/ANP/NetPol/EgressFW"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-       echo "Scale down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
-       sleep 60
-       check_if_machineset_ready ${PREVIOUS_REPLICAS}
-       sleep 120       
+       scale_down_worker_nodes    
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
 
