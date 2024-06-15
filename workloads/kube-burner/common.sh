@@ -823,8 +823,8 @@ function create_and_delete_anp_network_policy(){
    done
    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
    get_ovn_node_system_usage_info   
-
    sleep 180
+   
    export TEST_STEP="Creating recycle ns with large network policy[3Min]"  
    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`    
    get_ovn_node_system_usage_info
@@ -1616,6 +1616,8 @@ function restartOVNPODs(){
       echo "New worker node and ovn pods when scaling out worker node"
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
+      echo 
+      cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u| tr -s "\n" "|"
 }
 function scale_out_worker_nodes(){
        echo "Scaling out worker nodes ...."
@@ -1655,6 +1657,33 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        IF_CIDR_ANP=${IF_CIDR_ANP:="false"}
        IF_NODE_ANP=${IF_NODE_ANP:="false"}
        WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
+       #################################Recycle Before Creating Large Scale Pods######################################
+       sleep 300
+       echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+       oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+       oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+       echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+       cat /tmp/ocp-node-ovn-pods-old.lst
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+
+       scale_out_worker_nodes
+
+       sleep 300
+       scale_down_worker_nodes
+
+       oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+       oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+       echo "New worker node and ovn pods when scaling out worker node"
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
+       echo 
+       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+    
+       restartOVNPODs
+
+       #########################Recycle Before Creating Large Scale Pods##########################
        export TEST_STEP="Creating Large Scale PODs without BANP/ANP/NetPol/EgressFW[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`   
        echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
@@ -1697,8 +1726,11 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
        oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-       oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst         
-
+       oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+       echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+       cat /tmp/ocp-node-ovn-pods-old.lst
+       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
        export TEST_STEP="Scaling Out Worker Nodes with Large Scale PODs without BANP/ANP[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        scale_out_worker_nodes
@@ -1709,7 +1741,9 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
        echo "New worker node and ovn pods when scaling out worker node"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u
+       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
+       echo 
+       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
 
        sleep 300
        export TEST_STEP="Scaling Down Worker Nodes with Large Scale PODs without BANP/ANP/[Min]"
@@ -1775,6 +1809,8 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo "New worker node and ovn pods when scaling out worker node"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
        cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
+       echo 
+       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
 
        sleep 300
        export TEST_STEP="Scaling Down Worker Nodes Large Scale PODs and BANP/ANP[Min]"
@@ -1783,7 +1819,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
 
-      sleep 600
+      sleep 300
       export TEST_STEP="Restart OVN Node POD with  Large Scale PODs and BANP/ANP"
       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
       restartOVNPODs
@@ -1817,6 +1853,8 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo "New worker node and ovn pods when scaling out worker node"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
        cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
+       echo 
+       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
 
        networkPolicyInitSyncDurationCheck
 
@@ -1827,7 +1865,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
 
-      sleep 600
+      sleep 300
       export TEST_STEP="Restart OVN Node POD With Large Scale PODs and BANP/ANP/NetPol/EgressFW"
       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
       restartOVNPODs
@@ -1840,7 +1878,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
       #  run_workload
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        cat /tmp/system_resource_info.csv
-       sleep 900
+       sleep 600
        echo "Clean resource by ns"
        oc get ns | grep -E 'anp|zero'| awk '{print $1}' | xargs oc delete ns
        echo return code is $?
