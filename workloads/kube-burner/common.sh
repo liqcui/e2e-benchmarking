@@ -1698,12 +1698,12 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        ###################################Create Large Scale Pods#################################
        echo "Prepare Testing Environment for BANP and ANP - Creating NS and Pods - Mixed Scenario"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-       echo "Create http server pods on each worker nodes in namespace anp-node-http"
-       oc create ns anp-node-http
-       oc -n anp-node-http apply -f workloads/large-networkpolicy-egress/anp-node-traffic-daemonset.yaml
-       check_if_pods_is_ready anp-node-http daemonset node-traffic-httpsvr
+      #  echo "Create http server pods on each worker nodes in namespace anp-node-http"
+      #  oc create ns anp-node-http
+      #  oc -n anp-node-http apply -f workloads/large-networkpolicy-egress/anp-node-traffic-daemonset.yaml
+      #  check_if_pods_is_ready anp-node-http daemonset node-traffic-httpsvr
 
-       unlabel_all_nodes
+       #unlabel_all_nodes
        #for anptype in anp-restricted-pods anp-cidr-pods anp-open-pods anp-unknown-pods anp-test-pods
        for anptype in anp-cidr-pods anp-open-pods anp-test-pods          
        do
