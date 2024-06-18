@@ -1726,11 +1726,10 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        SOURCE_NS_FILTER="anp-restricted"
        TARGET_NS_FILTER="anp-test"
 
-       #create_client_pod_to_access_labeled_node_ports $SOURCE_NS_FILTER "node-role.kubernetes.io/worker" $NODE_TRAFFIC_CLT_EXPECT_RPLICAS
-       #export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
-       #get_ovn_node_system_usage_info
-
-       sleep 300
+      #create_client_pod_to_access_labeled_node_ports $SOURCE_NS_FILTER "node-role.kubernetes.io/worker" $NODE_TRAFFIC_CLT_EXPECT_RPLICAS
+      #export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
+      #get_ovn_node_system_usage_info
+      sleep 300
       #  echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
       #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
       #  oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst

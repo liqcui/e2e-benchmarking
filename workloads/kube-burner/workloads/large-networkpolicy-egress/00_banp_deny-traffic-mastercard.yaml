@@ -4,9 +4,16 @@ metadata:
   name: default
 spec:
   subject:
-	namespaces: {}
+    namespaces: {}
   ingress:
-    - action: Deny
-      from:
-      - namespaces:
-      	namespaceSelector: {}
+  - name: "deny-all-ingress-to-any-ns"
+    action: "Deny"
+    from:
+    - namespaces:
+        namespaceSelector: {}
+  egress:
+  - name: "deny-all-egress-to-any-ns"
+    action: "Deny"
+    to:
+    - namespaces:
+        namespaceSelector: {}
