@@ -395,8 +395,8 @@ function generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant(
                   POD_INIT=0
                   RULE_INDEX=0
                   if [[ $PRIORITY -gt 99 ]];then
-                       echo "limited priority $PRIORITY to 70, the max anp of cidr selector is 30, please check"
-                       break
+                       #reset PRIORITY to 1
+                       PRIORITY=1
                   fi
             fi
             if [[ $IF_NEW_TENANT -eq 0 ]];then                   
@@ -1771,38 +1771,36 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
            create_client_pod_to_access_labeled_node_ports $SOURCE_NS_FILTER "node-role.kubernetes.io/worker" $NODE_TRAFFIC_CLT_EXPECT_RPLICAS
            export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
            get_ovn_node_system_usage_info
-           sleep 300
-           echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-           oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-           oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
-           echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
-           cat /tmp/ocp-node-ovn-pods-old.lst
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
-           scale_out_worker_nodes
-    
-           oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-           oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-           echo "New worker node and ovn pods when scaling out worker node"
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-           cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
-           echo 
-           cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-    
-           sleep 300           
-           scale_down_worker_nodes  
-    
-           sleep 300
-           export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
-           export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-           restartOVNPODs
-       fi
 
-       ###################################Create Default BANP#################################
-       export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
-       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
-       echo "Create BANP to deny traffic to host network/cidir cluster network and egress/ingress to specifiec ns"
+      fi
+      #sleep 300
+      echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+      oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+      oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+      echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+      cat /tmp/ocp-node-ovn-pods-old.lst
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+      scale_out_worker_nodes
+      oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+      oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+      echo "New worker node and ovn pods when scaling out worker node"
+      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+      cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
+      echo 
+      cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+      #sleep 300           
+      scale_down_worker_nodes  
+      #sleep 300
+      export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
+      export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+      restartOVNPODs
+
+      ###################################Create Default BANP#################################
+      export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
+      export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
+      echo "Create BANP to deny traffic to host network/cidir cluster network and egress/ingress to specifiec ns"
 
       if [[ $IF_MASTER_CARD_CASE == "false" ]];then       
           oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
