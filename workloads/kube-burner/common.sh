@@ -1471,9 +1471,6 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
     TARGET_NS_FILTER="anp-open"
     IF_MASTER_CARD_CASE=${IF_MASTER_CARD_CASE:="false"}
 
-    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
-    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
-   
     if [[ $IF_MASTER_CARD_CASE == "false" ]];then
 
          echo "#########################################################################"
@@ -1493,6 +1490,9 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
          echo "-------------------------------------------------------------------------"
     
     fi
+    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
+    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
+       
     export TEST_STEP="Creating 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`         
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
@@ -1670,38 +1670,40 @@ function scale_down_worker_nodes(){
 function run_large_networkpolicy_egressfirewall_anp_workload(){
        IF_CIDR_ANP=${IF_CIDR_ANP:="false"}
        IF_NODE_ANP=${IF_NODE_ANP:="false"}
+       IF_MASTER_CARD_CASE=${IF_MASTER_CARD_CASE:="false"}       
        WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
        echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
  
        #################################Recycle Before Creating Large Scale Pods######################################
-      #  echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-      #  oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-      #  oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
-      #  echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
-      #  cat /tmp/ocp-node-ovn-pods-old.lst
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-      #  scale_out_worker_nodes
-
-      #  sleep 300     
-      #  scale_down_worker_nodes    
-
-      #  oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-      #  oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-      #  echo "New worker node and ovn pods when scaling out worker node"
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-      #  cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
-      #  echo 
-      #  cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-
-      #  sleep 300
-      #  export TEST_STEP="Restart OVN Node Pods Without Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
-      #  export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"   
-      #  restartOVNPODs
-      #  export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
-      #  get_ovn_node_system_usage_info
-       
+      if [[ $IF_MASTER_CARD_CASE == "false" ]];then       
+             echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+             oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+             oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+             echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+             cat /tmp/ocp-node-ovn-pods-old.lst
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+             scale_out_worker_nodes
+      
+             sleep 300     
+             scale_down_worker_nodes    
+      
+             oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+             oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+             echo "New worker node and ovn pods when scaling out worker node"
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+             cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
+             echo 
+             cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+      
+             sleep 300
+             export TEST_STEP="Restart OVN Node Pods Without Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
+             export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"   
+             restartOVNPODs
+             export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
+             get_ovn_node_system_usage_info
+       fi
        #########################Recycle Before Creating Large Scale Pods##########################
        export TEST_STEP="Creating Large Scale PODs without BANP/ANP/NetPol/EgressFW[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`   
@@ -1709,14 +1711,23 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        ###################################Create Large Scale Pods#################################
        echo "Prepare Testing Environment for BANP and ANP - Creating NS and Pods - Mixed Scenario"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-      #  echo "Create http server pods on each worker nodes in namespace anp-node-http"
-      #  oc create ns anp-node-http
-      #  oc -n anp-node-http apply -f workloads/large-networkpolicy-egress/anp-node-traffic-daemonset.yaml
-      #  check_if_pods_is_ready anp-node-http daemonset node-traffic-httpsvr
 
-       #unlabel_all_nodes
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then           
+           echo "Create http server pods on each worker nodes in namespace anp-node-http"
+           oc create ns anp-node-http
+           oc -n anp-node-http apply -f workloads/large-networkpolicy-egress/anp-node-traffic-daemonset.yaml
+           check_if_pods_is_ready anp-node-http daemonset node-traffic-httpsvr
+           
+           unlabel_all_nodes
+       fi
        #for anptype in anp-restricted-pods anp-cidr-pods anp-open-pods anp-unknown-pods anp-test-pods
-       for anptype in anp-cidr-pods anp-open-pods anp-test-pods          
+       if [[ $IF_MASTER_CARD_CASE == "true" ]];then     
+             ANP_PODS="anp-cidr-pods anp-open-pods anp-test-pods"
+       else
+             ANP_PODS="anp-restricted-pods anp-cidr-pods anp-open-pods anp-unknown-pods anp-test-pods"
+       fi
+
+       for anptype in $ANP_PODS         
        do
             #EXPECT_RPLICAS used for scale node-traffic-clt
             NODE_TRAFFIC_CLT_EXPECT_RPLICAS=$POD_RPLICAS
@@ -1737,61 +1748,68 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        SOURCE_NS_FILTER="anp-restricted"
        TARGET_NS_FILTER="anp-test"
 
-      #create_client_pod_to_access_labeled_node_ports $SOURCE_NS_FILTER "node-role.kubernetes.io/worker" $NODE_TRAFFIC_CLT_EXPECT_RPLICAS
-      #export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
-      #get_ovn_node_system_usage_info
-      sleep 300
-      #  echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-      #  oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-      #  oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
-      #  echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
-      #  cat /tmp/ocp-node-ovn-pods-old.lst
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
-      #  scale_out_worker_nodes
-
-      #  oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-      #  oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-      #  echo "New worker node and ovn pods when scaling out worker node"
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-      #  cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
-      #  echo 
-      #  cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-
-      #  sleep 300           
-      #  scale_down_worker_nodes  
-
-      #  sleep 300
-      # export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
-      # export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      # restartOVNPODs
+      if [[ $IF_MASTER_CARD_CASE == "false" ]];then     
+           create_client_pod_to_access_labeled_node_ports $SOURCE_NS_FILTER "node-role.kubernetes.io/worker" $NODE_TRAFFIC_CLT_EXPECT_RPLICAS
+           export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
+           get_ovn_node_system_usage_info
+           sleep 300
+           echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+           oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+           oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+           echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
+           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+           cat /tmp/ocp-node-ovn-pods-old.lst
+           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+           scale_out_worker_nodes
+    
+           oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+           oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+           echo "New worker node and ovn pods when scaling out worker node"
+           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+           cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
+           echo 
+           cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+    
+           sleep 300           
+           scale_down_worker_nodes  
+    
+           sleep 300
+           export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
+           export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+           restartOVNPODs
+       fi
 
        ###################################Create Default BANP#################################
        export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        echo "Create BANP to deny traffic to host network/cidir cluster network and egress/ingress to specifiec ns"
-      #  oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
-      #  printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
-       oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-mastercard.yaml
-       printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-mastercard.yaml             
+
+
+      if [[ $IF_MASTER_CARD_CASE == "false" ]];then       
+          oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
+          printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
+      else
+          oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-mastercard.yaml
+          printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-mastercard.yaml  
+      fi           
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
        get_ovn_node_system_usage_info
   
-       ###################################Create Node Selector Policy#################################
-       #create_anp_banp_egress_rule_verify_traffic_from_two_different_groups_to_host
-       
-       ###################################Create CIDR Selector Policy#################################    
-       create_anp_banp_cidr_verify_traffic_tween_different_zones
-
-       ###################################Create POD Selector Policy#################################  
-      #  echo "Creating 14 POD Selector ANP to deny egress/ingress policy[Min]." 
-      #  export TEST_STEP="Creating 14 POD Selector ANP to deny egress/ingress policy[Min]."
-      #  export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      #  create_anp_banp_verify_traffic_between_different_zones
-      #  export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
-      #  get_ovn_node_system_usage_info  
-
+      ###################################Create CIDR Selector Policy#################################    
+      create_anp_banp_cidr_verify_traffic_tween_different_zones
+      if [[ $IF_MASTER_CARD_CASE == "false" ]];then    
+           ###################################Create Node Selector Policy#################################
+           create_anp_banp_egress_rule_verify_traffic_from_two_different_groups_to_host
+           
+           ###################################Create POD Selector Policy#################################  
+           echo "Creating 14 POD Selector ANP to deny egress/ingress policy[Min]." 
+           export TEST_STEP="Creating 14 POD Selector ANP to deny egress/ingress policy[Min]."
+           export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+           create_anp_banp_verify_traffic_between_different_zones
+           export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
+           get_ovn_node_system_usage_info  
+       fi
        export TEST_STEP="Creating ANP to Allow Egress to Kube API"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        create_anp_allow_egress_api "anp-test anp-restricted"
@@ -1812,8 +1830,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        export TEST_STEP="Scaling Out Worker Nodes with Large Scale PODs and BANP/ANP/[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
-       scale_down_worker_nodes       
-       
+       scale_down_worker_nodes
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
@@ -1836,59 +1853,61 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
       export TEST_STEP="Restart OVN Node POD with  Large Scale PODs and BANP/ANP"
       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
       restartOVNPODs
+      if [[ $IF_MASTER_CARD_CASE == "false" ]];then
+             sleep 300
+             export TEST_STEP="Creating Large Scale NetPol and Egress Firewall[Min]"
+             export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+             echo "Creating networkpolicy enable pod traffic within the same namespace"
+             for anptype in anp-restricted-np anp-cidr-np anp-open-np anp-unknown-np 
+             do
+               WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
+               run_workload
+             done
+             export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+             get_ovn_node_system_usage_info
+             #       
+             sleep 300
+             echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+             oc -n openshift-ovn-kubernetes get pods|grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+             oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+      
+             export TEST_STEP="Scaling Out Worker Nodes With Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
+             export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
+             scale_out_worker_nodes
+             export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+             get_ovn_node_system_usage_info
+      
+             oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+             oc get nodes|grep -v -i NAME |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+             echo "New worker node and ovn pods when scaling out worker node"
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+             cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
+             echo 
+             cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+       fi
+       networkPolicyInitSyncDurationCheck
 
-      #  sleep 300
-      #  export TEST_STEP="Creating Large Scale NetPol and Egress Firewall[Min]"
-      #  export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      #  echo "Creating networkpolicy enable pod traffic within the same namespace"
-      #  for anptype in anp-restricted-np anp-cidr-np anp-open-np anp-unknown-np 
-      #  do
-      #    WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
-      #    run_workload
-      #  done
-      #  export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      #  get_ovn_node_system_usage_info
-  
-      #  sleep 300
-      #  echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-      #  oc -n openshift-ovn-kubernetes get pods|grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-      #  oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
-
-      #  export TEST_STEP="Scaling Out Worker Nodes With Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
-      #  export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-      #  scale_out_worker_nodes
-      #  export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      #  get_ovn_node_system_usage_info
-
-      #  oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-      #  oc get nodes|grep -v -i NAME |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-      #  echo "New worker node and ovn pods when scaling out worker node"
-      #  awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-      #  cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
-      #  echo 
-      #  cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-
-      #  networkPolicyInitSyncDurationCheck
-
-      #  sleep 300
-      #  export TEST_STEP="Scaling Down Worker Nodes With Large Scale PODs and BANP/ANP/NetPol/EgressFW"
-      #  export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-      #  scale_down_worker_nodes    
-      #  export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      #  get_ovn_node_system_usage_info 
-
-      # sleep 300
-      # export TEST_STEP="Restart OVN Node POD With Large Scale PODs and BANP/ANP/NetPol/EgressFW"
-      # export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-      # restartOVNPODs
-
+      if [[ $IF_MASTER_CARD_CASE == "false" ]];then
+            sleep 300
+            export TEST_STEP="Scaling Down Worker Nodes With Large Scale PODs and BANP/ANP/NetPol/EgressFW"
+            export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
+            scale_down_worker_nodes    
+            export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+            get_ovn_node_system_usage_info 
+     
+            sleep 300
+            export TEST_STEP="Restart OVN Node POD With Large Scale PODs and BANP/ANP/NetPol/EgressFW"
+            export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+            restartOVNPODs
+      fi
       #  export NODES_COUNT=`oc get nodes | grep worker |wc -l`
       #  export NAMESPACES=`oc get ns |grep anp| grep -v anp-node-http |wc -l`
       #  export PODS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get pods -n |wc -l`
       #  export NETPOLS_PER_NAMESPACE=`oc get ns |grep anp-restricted | awk '{print $1}' | head -1 | xargs oc get networkpolicy -n |wc -l`
       #  WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-anp-convergence-tracker.yml
       #  run_workload
+ 
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        cat /tmp/system_resource_info.csv
        sleep 300
