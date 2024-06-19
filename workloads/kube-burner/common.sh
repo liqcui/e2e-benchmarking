@@ -1469,24 +1469,30 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
     WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
     SOURCE_NS_FILTER="anp-cidr"
     TARGET_NS_FILTER="anp-open"
-
-    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
-    echo "#########################################################################"
-    echo "#        Dely traffic $SOURCE_NS_FILTER to internet zones               #"
-    echo "#########################################################################"   
-    echo "-------------------------------------------------------------------------"
-    check_traffic_to_internet $SOURCE_NS_FILTER false
-    echo "-------------------------------------------------------------------------"
+    IF_MASTER_CARD_CASE=${IF_MASTER_CARD_CASE:="false"}
 
     format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
-    
-    echo "#########################################################################"
-    echo "#        Allow traffic $TARGET_NS_FILTER to internet zones               #"
-    echo "#########################################################################"       
-    echo "-------------------------------------------------------------------------"
-    check_traffic_to_internet $TARGET_NS_FILTER true
-    echo "-------------------------------------------------------------------------"
+    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
+   
+    if [[ $IF_MASTER_CARD_CASE == "false" ]];then
 
+         echo "#########################################################################"
+         echo "#        Dely traffic $SOURCE_NS_FILTER to internet zones               #"
+         echo "#########################################################################"   
+         echo "-------------------------------------------------------------------------"
+         check_traffic_to_internet $SOURCE_NS_FILTER false
+         echo "-------------------------------------------------------------------------"
+
+  
+         
+         echo "#########################################################################"
+         echo "#        Allow traffic $TARGET_NS_FILTER to internet zones               #"
+         echo "#########################################################################"       
+         echo "-------------------------------------------------------------------------"
+         check_traffic_to_internet $TARGET_NS_FILTER true
+         echo "-------------------------------------------------------------------------"
+    
+    fi
     export TEST_STEP="Creating 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`         
     oc apply -f ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
@@ -1628,7 +1634,7 @@ function scale_out_worker_nodes(){
        export ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
        export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
        export PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
-       export DESIRED_REPLICAS=$(( $ADDITIONAL_REPLICAS + $PREVIOUS_REPLICAS ))
+       export DESIRED_REPLICAS=$(( $PREVIOUS_REPLICAS + $ADDITIONAL_REPLICAS ))
        echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
        oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
        sleep 60
@@ -1647,12 +1653,17 @@ function scale_out_worker_nodes(){
 }
 
 function scale_down_worker_nodes(){
+      
+       export ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
+       export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
+       export PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
+       export DESIRED_REPLICAS=$(( $PREVIOUS_REPLICAS - $ADDITIONAL_REPLICAS ))
        echo "Scaling down worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-       echo "Scale Down woker node from $DESIRED_REPLICAS to $PREVIOUS_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${PREVIOUS_REPLICAS}
+       echo "Scale Down woker node from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
+       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
        sleep 60
-       check_if_machineset_ready ${PREVIOUS_REPLICAS}
+       check_if_machineset_ready ${DESIRED_REPLICAS}
        sleep 120    
 }
 
