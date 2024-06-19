@@ -416,9 +416,9 @@ spec:
     action: Allow   # Allows connection 
     from:
     - namespaces:
-        namespaceSelector:
-          matchLabels:
-            customer_tenat: tenant${TENANT_ID}    
+        # namespaceSelector:
+        matchLabels:
+          customer_tenat: tenant${TENANT_ID}    
   egress:
   - name: "pass-egress-to-cluster-network"
     action: "Pass"
@@ -1832,7 +1832,6 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
            get_ovn_node_system_usage_info  
        fi
 
-
        export TEST_STEP="Creating ANP to Allow Egress to Kube API"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        create_anp_allow_egress_api "anp-test anp-restricted"
@@ -1844,7 +1843,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc apply -f ${WORKLOAD_TEMPLATE_PATH}/01_anp_allow-monitor.yaml
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
-       
+
        sleep 300
        echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
