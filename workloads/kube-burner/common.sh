@@ -1815,6 +1815,18 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
        get_ovn_node_system_usage_info
   
+       export TEST_STEP="Creating ANP to Allow Egress to Kube API"
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       create_anp_allow_egress_api "anp-test anp-restricted"
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       get_ovn_node_system_usage_info
+
+       export TEST_STEP="Creating ANP to Allow Monitor ANP "
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       oc apply -f ${WORKLOAD_TEMPLATE_PATH}/01_anp_allow-monitor.yaml
+       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+       get_ovn_node_system_usage_info
+         
       ###################################Create CIDR Selector Policy#################################    
       create_anp_banp_cidr_verify_traffic_tween_different_zones
 
@@ -1832,18 +1844,6 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
            export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
            get_ovn_node_system_usage_info  
        fi
-
-       export TEST_STEP="Creating ANP to Allow Egress to Kube API"
-       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-       create_anp_allow_egress_api "anp-test anp-restricted"
-       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-       get_ovn_node_system_usage_info
-
-       export TEST_STEP="Creating ANP to Allow Monitor ANP "
-       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-       oc apply -f ${WORKLOAD_TEMPLATE_PATH}/01_anp_allow-monitor.yaml
-       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-       get_ovn_node_system_usage_info
 
        sleep 300
        echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
