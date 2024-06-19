@@ -1590,7 +1590,7 @@ function check_if_machineset_ready(){
     MAX_RETRT=360
     for((i=1;i<=$MAX_RETRT;i++))
     do
-      AVAILABLE_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.status.readyReplicas}'`
+      AVAILABLE_REPLICAS=`oc -n openshift-machine-api get machineset $FIRST_MACHINESET_NAME -ojsonpath='{.status.readyReplicas}'`
       if [[ $AVAILABLE_REPLICAS -eq $DESIRED_REPLICAS ]];then
           echo -e "\nAll the node is ready, actual replicas is $AVAILABLE_REPLICAS\n"
     	  break
@@ -1914,7 +1914,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
        echo 
        cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-             
+
       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              sleep 300
              export TEST_STEP="Creating Large Scale NetPol and Egress Firewall[Min]"
