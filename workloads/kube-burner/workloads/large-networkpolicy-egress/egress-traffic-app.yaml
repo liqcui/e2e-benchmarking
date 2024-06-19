@@ -33,7 +33,7 @@ spec:
         args:
         - while true;
           do
-              do curl -Is http://www.google.com | head -n 1;
+              curl -Is http://www.google.com | head -n 1;
               sleep 5;
               ping -c 5 8.8.8.8;
               sleep 5;
