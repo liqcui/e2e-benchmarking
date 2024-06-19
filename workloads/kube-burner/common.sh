@@ -412,7 +412,8 @@ spec:
       matchLabels:
         customer_tenat: tenant${TENANT_ID}
   ingress:
-  - action: Allow   # Allows connection 
+  - name: "all-ingress-from-same-tenant"  
+    action: Allow   # Allows connection 
     from:
     - namespaces:
         namespaceSelector:
