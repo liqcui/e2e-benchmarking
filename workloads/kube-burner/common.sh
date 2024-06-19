@@ -429,6 +429,8 @@ EOF
             fi            
             oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
             echo oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
+            oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
+            echo oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
 
             if [[ -z $tns ]];then
                  echo "No target ns was found inside generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant, please check"
