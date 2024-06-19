@@ -1471,6 +1471,9 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
     TARGET_NS_FILTER="anp-open"
     IF_MASTER_CARD_CASE=${IF_MASTER_CARD_CASE:="false"}
 
+    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
+    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
+
     if [[ $IF_MASTER_CARD_CASE == "false" ]];then
 
          echo "#########################################################################"
@@ -1489,33 +1492,32 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
          check_traffic_to_internet $TARGET_NS_FILTER true
          echo "-------------------------------------------------------------------------"
     
+
+
+  
+         export TEST_STEP="Creating 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
+         export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`         
+         oc apply -f ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
+         echo "-----The egress of $SOURCE_NS_FILTER open to all cluster network--------"
+         printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
+         export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
+         get_ovn_node_system_usage_info
+     
+         format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
+         format_Output_ANP_BANP_Source2Target  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
+     
+         SOURCE_NS_FILTER="anp-cidr"
+         TARGET_NS_FILTER="anp-test"
+         format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
+         format_Output_ANP_BANP_Target2Source  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 true
+     
+         export TEST_STEP="Deleting 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
+         export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
+         oc delete -f ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
+         export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`    
+         get_ovn_node_system_usage_info    
+         echo ----------------------------------------------------------
     fi
-    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
-    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
-       
-    export TEST_STEP="Creating 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
-    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`         
-    oc apply -f ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
-    echo "-----The egress of $SOURCE_NS_FILTER open to all cluster network--------"
-    printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
-    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
-    get_ovn_node_system_usage_info
-
-    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
-    format_Output_ANP_BANP_Source2Target  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
-
-    SOURCE_NS_FILTER="anp-cidr"
-    TARGET_NS_FILTER="anp-test"
-    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
-    format_Output_ANP_BANP_Target2Source  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 true
-
-    export TEST_STEP="Deleting 1 CIDR ANP to Allow Egress to The Whole Cluster Network"
-    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
-    oc delete -f ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-cluster-network-p20.yaml
-    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`    
-    get_ovn_node_system_usage_info    
-    echo ----------------------------------------------------------
-
 
     generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
 
@@ -1812,7 +1814,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
            export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
            get_ovn_node_system_usage_info  
        fi
-       
+
        export TEST_STEP="Creating ANP to Allow Egress to Kube API"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        create_anp_allow_egress_api "anp-test anp-restricted"
