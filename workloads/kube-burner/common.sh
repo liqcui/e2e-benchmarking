@@ -354,7 +354,7 @@ function getOVNICDBInfo()
    echo $EGRESS_RULES_NUMS_BY_NS | tr " " "\n"
 }
 
-function generated_anp_cidr_selector_egress_multi_ips_multi_rules_multipolicy_bytenant(){
+function generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant(){
     #Create multiple anp
     #Each ANP contains multi rules
     #25 IPs per rule 
@@ -411,6 +411,13 @@ spec:
     namespaces:
       matchLabels:
         customer_tenat: tenant${TENANT_ID}
+  ingress:
+  - action: Allow   # Allows connection 
+    from:
+    - namespaces:
+        namespaceSelector:
+          matchLabels:
+            customer_tenat: tenant${TENANT_ID}    
   egress:
   - name: "pass-egress-to-cluster-network"
     action: "Pass"
@@ -432,7 +439,7 @@ EOF
             echo oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
 
             if [[ -z $tns ]];then
-                 echo "No target ns was found inside generated_anp_cidr_selector_egress_multi_ips_multi_rules_multipolicy_bytenant, please check"
+                 echo "No target ns was found inside generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant, please check"
             fi             
 
             POD_IPs=`oc -n $tns get pods -owide |grep app | awk '{print $6}'`
@@ -1654,8 +1661,8 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
          get_ovn_node_system_usage_info    
          echo ----------------------------------------------------------
     fi
-    generated_anp_cidr_selector_ingress_multi_ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
-    generated_anp_cidr_selector_egress_multi_ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
+    #generated_anp_cidr_selector_ingress_multi_ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
+    generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
 
     TOTAL_LINE=`cat ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst |wc -l`
     for ((i=1;i<=$TOTAL_LINE;i++))
