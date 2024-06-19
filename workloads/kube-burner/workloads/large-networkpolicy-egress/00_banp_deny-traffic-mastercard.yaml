@@ -11,9 +11,9 @@ spec:
     from:
     - namespaces:
         namespaceSelector: {}
-  # egress:
-  # - name: "deny-all-egress-to-any-ns"
-  #   action: "Deny"
-  #   to:
-  #   - namespaces:
-  #       namespaceSelector: {}
+  egress:
+  - name: "deny-all-egress-to-any-ns"
+    action: "Deny"
+    to:
+    - namespaces:
+        namespaceSelector: {}
