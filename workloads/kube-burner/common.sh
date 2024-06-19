@@ -1642,6 +1642,7 @@ function restartOVNPODs(){
       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
       echo 
       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u| tr -s "\n" "|"
+      echo
 }
 function scale_out_worker_nodes(){
        echo "Scaling out worker nodes ...."
@@ -1716,6 +1717,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
              echo 
              cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+             echo
       
              sleep 300
              export TEST_STEP="Restart OVN Node Pods Without Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
@@ -1789,6 +1791,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
       echo 
       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+      echo
 
       echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
@@ -1806,6 +1809,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
       echo 
       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+      echo
       #sleep 300           
 
       #sleep 300
@@ -1876,6 +1880,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
        echo 
        cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+       echo
    
        #sleep 300
 
@@ -1898,6 +1903,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
        echo 
        cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+       echo
 
       sleep 300
       echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
@@ -1915,6 +1921,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
        echo 
        cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+       echo
 
       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              sleep 300
@@ -1947,6 +1954,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
              echo 
              cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+             echo
        fi
        networkPolicyInitSyncDurationCheck
 
