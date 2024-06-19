@@ -1648,10 +1648,10 @@ function scale_out_worker_nodes(){
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        export ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
        export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
-       export PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
+       export PREVIOUS_REPLICAS=`oc -n openshift-machine-api get machineset $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
        export DESIRED_REPLICAS=$(( $PREVIOUS_REPLICAS + $ADDITIONAL_REPLICAS ))
        echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
+       oc -n openshift-machine-api scale machineset $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
        sleep 60
        check_if_machineset_ready ${DESIRED_REPLICAS}
        for((i=0;i<=600;i++))
@@ -1680,7 +1680,7 @@ function scale_down_worker_nodes(){
        echo "Scaling down worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        echo "Scale Down woker node from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
-       oc -n openshift-machine-api scale $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
+       oc -n openshift-machine-api scale machineset $FIRST_MACHINESET_NAME --replicas=${DESIRED_REPLICAS}
        sleep 60
        check_if_machineset_ready ${DESIRED_REPLICAS}
        sleep 120    
