@@ -1785,7 +1785,6 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        echo "Create BANP to deny traffic to host network/cidir cluster network and egress/ingress to specifiec ns"
 
-
       if [[ $IF_MASTER_CARD_CASE == "false" ]];then       
           oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
           printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
@@ -1798,11 +1797,14 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
   
       ###################################Create CIDR Selector Policy#################################    
       create_anp_banp_cidr_verify_traffic_tween_different_zones
+
+      ###################################Create Node Selector Policy#################################
       if [[ $IF_MASTER_CARD_CASE == "false" ]];then    
-           ###################################Create Node Selector Policy#################################
            create_anp_banp_egress_rule_verify_traffic_from_two_different_groups_to_host
-           
-           ###################################Create POD Selector Policy#################################  
+      fi
+
+      ###################################Create POD Selector Policy################################# 
+      if [[ $IF_MASTER_CARD_CASE == "false" ]];then  
            echo "Creating 14 POD Selector ANP to deny egress/ingress policy[Min]." 
            export TEST_STEP="Creating 14 POD Selector ANP to deny egress/ingress policy[Min]."
            export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
@@ -1810,6 +1812,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
            export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
            get_ovn_node_system_usage_info  
        fi
+       
        export TEST_STEP="Creating ANP to Allow Egress to Kube API"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        create_anp_allow_egress_api "anp-test anp-restricted"
