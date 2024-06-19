@@ -354,8 +354,7 @@ function getOVNICDBInfo()
    echo $EGRESS_RULES_NUMS_BY_NS | tr " " "\n"
 }
 
-
-function generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant(){
+function generated_anp_cidr_selector_egress_multi_ips_multi_rules_multipolicy_bytenant(){
     #Create multiple anp
     #Each ANP contains multi rules
     #25 IPs per rule 
@@ -433,7 +432,7 @@ EOF
             echo oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
 
             if [[ -z $tns ]];then
-                 echo "No target ns was found inside generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant, please check"
+                 echo "No target ns was found inside generated_anp_cidr_selector_egress_multi_ips_multi_rules_multipolicy_bytenant, please check"
             fi             
 
             POD_IPs=`oc -n $tns get pods -owide |grep app | awk '{print $6}'`
@@ -485,6 +484,141 @@ EOF
     echo "---------------------------------------------------------------------------------"
     oc get anp | grep allow-traffic-egress-cidr-anp-open-network-tenant
     export TOTAL_ANP=`oc get anp | grep allow-traffic-egress-cidr-anp-open-network-tenant|wc -l`
+    echo "---------------------------------------------------------------------------------"
+    echo "The total anp is $TOTAL_ANP"
+    echo
+    export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`     
+    get_ovn_node_system_usage_info
+
+    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+    cat ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst
+    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+}
+
+
+function generated_anp_cidr_selector_ingress_multi_ips_multi_rules_multipolicy_bytenant(){
+    #Create multiple anp
+    #Each ANP contains multi rules
+    #25 IPs per rule 
+    SOURCE_NS_PREFIX=$1
+    TARGET_NS_PREFIX=$2
+    TOTAL_NS_BY_TA=${TOTAL_NS_BY_TA:=5}
+    TOTAL_IP_BLOCK_NUM_BY_RULE=${TOTAL_IP_BLOCK_NUM_BY_RULE:=5}    
+    PRIORITY=0 #Max priority is 99
+    WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
+
+    if [[ -z $TARGET_NS_PREFIX || -z $SOURCE_NS_PREFIX ]];then
+            echo please specify TARGET_NS_PREFIX $TARGET_NS_PREFIX or SOURCE_NS_PREFIX $SOURCE_NS_PREFIX 
+            exit 1
+    fi
+
+    SOURCE_NS=`oc get ns |grep -w $SOURCE_NS_PREFIX | awk '{print $1}'`
+    if [[ -z $SOURCE_NS ]];then
+            echo "No SOURCE_NS_PREFIX $SOURCE_NS_PREFIX was found"
+            exit 1
+    fi
+
+    >${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst
+    NS_INIT=0
+    TENANT_ID=0
+
+    #NODE_INDEX=1
+    for sns in $SOURCE_NS
+    do      
+            tns=`echo $sns | sed "s/${SOURCE_NS_PREFIX}/${TARGET_NS_PREFIX}/"`
+            echo $sns $tns>>${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst
+            # 4 ns per tenant
+            IF_NEW_TENANT=$(( $NS_INIT % $TOTAL_NS_BY_TA ))
+            TENANT_STEP=$(( $NS_INIT / $TOTAL_NS_BY_TA ))
+            if [[ $IF_NEW_TENANT -eq 0 ]];then
+                  TENANT_ID=$(( $TENANT_ID + 1 ))
+                  PRIORITY=$(( $PRIORITY + 1 ))
+                  echo PRIORITY is $PRIORITY
+                  POD_INIT=0
+                  RULE_INDEX=0
+                  if [[ $PRIORITY -gt 99 ]];then
+                       echo "limited priority $PRIORITY to 70, the max anp of cidr selector is 30, please check"
+                       break
+                  fi
+            fi
+            if [[ $IF_NEW_TENANT -eq 0 ]];then                   
+cat>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-ingress-cidr-open-network-p${PRIORITY}.yaml<<EOF
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-traffic-ingress-cidr-anp-open-network-tenant${TENANT_ID}-p${PRIORITY}
+spec:
+  priority: ${PRIORITY}
+  subject:
+    namespaces:
+      matchLabels:
+        customer_tenat: tenant${TENANT_ID}        
+  ingress:
+  - name: "pass-ingress-from-cluster-network"
+    action: "Pass" 
+    from:
+    - networks:
+      - 10.128.0.0/14      
+EOF
+            fi            
+            oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
+            echo oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
+            oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
+            echo oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
+
+            if [[ -z $tns ]];then
+                 echo "No target ns was found inside generated_anp_cidr_selector_ingress_multi_ips_multi_rules_multipolicy_bytenant, please check"
+            fi             
+
+            POD_IPs=`oc -n $tns get pods -owide |grep app | awk '{print $6}'`
+            TOTAL_APP_POD_NUM=$(oc -n $tns get pods -owide |grep -w app | wc -l)
+            TOTAL_DB_POD_NUM=$(oc -n $tns get pods -owide |grep -w db | wc -l)
+            if [[ $TOTAL_APP_POD_NUM -ne $TOTAL_DB_POD_NUM ]];then
+                 echo TOTAL_APP_POD_NUM is $TOTAL_APP_POD_NUM TOTAL_DB_POD_NUM is $TOTAL_DB_POD_NUM
+                 echo "Make sure perfapp pod and db pod with same replicas"
+                 exit 1
+            fi
+
+            for appPodName in `oc -n $tns get pods -oname |grep -w app`
+            do
+                 POD_LABEL=`oc -n $tns get $appPodName -ojsonpath='{.metadata.labels.podsn}'`
+                 echo POD_LABEL $POD_LABEL
+                 APP_POD_IP=`oc -n $tns get $appPodName -ojsonpath='{.status.podIP}'`
+                 DB_POD_NAME=`oc -n $tns get pod -lpodsn=${POD_LABEL} -oname | grep -w db`
+                 DB_POD_IP=`oc -n $tns  get $DB_POD_NAME -ojsonpath='{.status.podIP}'`
+                 echo APP_POD_IP is $APP_POD_IP  DB_POD_NAME is $DB_POD_NAME DB_POD_IP is $DB_POD_IP 
+          
+                 #IF_NEW_POLICY=$(( $POD_INIT % 250 )) #maybe delete later
+                 #PRIORITY_STEP=$(( $POD_INIT / 250 )) #maybe delete later
+                 
+                 IF_NEW_RULE=$(( $POD_INIT % $TOTAL_IP_BLOCK_NUM_BY_RULE ))
+                 if [[ $IF_NEW_RULE -eq 0 ]];then
+                     RULE_INDEX=$(( $RULE_INDEX + 1 ))
+                 fi
+                 #RULE_STEP=$(( $POD_INIT / 25 )) #maybe delete later
+            
+                if [[ $IF_NEW_RULE -eq 0 ]];then
+                   echo -e "  - name: \"deny-ingress-from-anp-open-network-${RULE_INDEX}\"\n    action: \"Deny\"\n    from:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-ingress-cidr-open-network-p${PRIORITY}.yaml
+                   echo -e "  - name: \"allow-ingress-from-anp-open-network-${RULE_INDEX}\"\n    action: \"Allow\"\n    from:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-ingress-cidr-open-network-p${PRIORITY}.yaml
+                fi
+                sed -i "/allow-ingress-from-anp-open-network-${RULE_INDEX}/i\      - ${DB_POD_IP}/32" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-ingress-cidr-open-network-p${PRIORITY}.yaml
+                echo -e "      - ${APP_POD_IP}/32">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-ingress-cidr-open-network-p${PRIORITY}.yaml           
+                POD_INIT=$(( $POD_INIT + 1 ))
+            done
+            NS_INIT=$(( $NS_INIT + 1 ))
+    done
+
+    #oc -n openshift-kube-apiserver get pods -owide |grep kube-apiserver | awk '{print $6}'
+    export TEST_STEP="Creating $TOTAL_ANP Multi ANP with Multi Rule/$TOTAL_IP_BLOCK_NUM_BY_RULE IP Per Rule"
+    export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`    
+    for yamlfile in `ls ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-ingress-cidr-open-network-*.yaml`
+    do
+        oc apply -f $yamlfile
+        printYAMLFile $yamlfile
+    done
+    echo "---------------------------------------------------------------------------------"
+    oc get anp | grep allow-traffic-ingress-cidr-anp-open-network-tenant
+    export TOTAL_ANP=`oc get anp | grep allow-traffic-ingress-cidr-anp-open-network-tenant|wc -l`
     echo "---------------------------------------------------------------------------------"
     echo "The total anp is $TOTAL_ANP"
     echo
@@ -1520,8 +1654,8 @@ function create_anp_banp_cidr_verify_traffic_tween_different_zones(){
          get_ovn_node_system_usage_info    
          echo ----------------------------------------------------------
     fi
-
-    generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
+    generated_anp_cidr_selector_ingress_multi_ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
+    generated_anp_cidr_selector_egress_multi_ips_multi_rules_multipolicy_bytenant anp-cidr anp-open
 
     TOTAL_LINE=`cat ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst |wc -l`
     for ((i=1;i<=$TOTAL_LINE;i++))
