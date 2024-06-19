@@ -1812,7 +1812,8 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        export TEST_STEP="Scaling Out Worker Nodes with Large Scale PODs and BANP/ANP/[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
-       scale_out_worker_nodes
+       scale_down_worker_nodes       
+       
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
@@ -1827,7 +1828,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        sleep 300
        export TEST_STEP="Scaling Down Worker Nodes Large Scale PODs and BANP/ANP[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-       scale_down_worker_nodes
+       scale_out_worker_nodes       
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info 
 
