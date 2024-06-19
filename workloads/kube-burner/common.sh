@@ -1666,9 +1666,13 @@ function scale_out_worker_nodes(){
 function scale_down_worker_nodes(){
       
        export ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
-       export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
-       export PREVIOUS_REPLICAS=`oc -n openshift-machine-api get $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
+       export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api | grep -w -v -E '0|NAME' | grep worker| awk '{print $1}'| head -1`
+       export PREVIOUS_REPLICAS=`oc -n openshift-machine-api get machineset $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
        export DESIRED_REPLICAS=$(( $PREVIOUS_REPLICAS - $ADDITIONAL_REPLICAS ))
+       if [[ DESIRED_REPLICAS -lt 0 ]];then
+           echo "No enough worker node to scale down"
+           exit 1
+       fi
        echo "Scaling down worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        echo "Scale Down woker node from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
