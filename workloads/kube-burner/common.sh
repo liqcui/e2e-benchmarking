@@ -400,11 +400,11 @@ function generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant(
                   fi
             fi
             if [[ $IF_NEW_TENANT -eq 0 ]];then                   
-cat>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-open-network-p${PRIORITY}.yaml<<EOF
+cat>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml<<EOF
 apiVersion: policy.networking.k8s.io/v1alpha1
 kind: AdminNetworkPolicy
 metadata:
-  name: allow-traffic-egress-cidr-anp-open-network-tenant${TENANT_ID}-p${PRIORITY}
+  name: allow-traffic-cidr-anp-open-network-tenant${TENANT_ID}-p${PRIORITY}
 spec:
   priority: ${PRIORITY}
   subject:
@@ -471,11 +471,11 @@ EOF
                  #RULE_STEP=$(( $POD_INIT / 25 )) #maybe delete later
             
                 if [[ $IF_NEW_RULE -eq 0 ]];then
-                   echo -e "  - name: \"deny-egress-to-anp-open-network-${RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-open-network-p${PRIORITY}.yaml
-                   echo -e "  - name: \"allow-egress-to-anp-open-network-${RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-open-network-p${PRIORITY}.yaml
+                   echo -e "  - name: \"deny-egress-to-anp-open-network-${RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml
+                   echo -e "  - name: \"allow-egress-to-anp-open-network-${RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml
                 fi
-                sed -i "/allow-egress-to-anp-open-network-${RULE_INDEX}/i\      - ${DB_POD_IP}/32" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-open-network-p${PRIORITY}.yaml
-                echo -e "      - ${APP_POD_IP}/32">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-open-network-p${PRIORITY}.yaml           
+                sed -i "/allow-egress-to-anp-open-network-${RULE_INDEX}/i\      - ${DB_POD_IP}/32" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml
+                echo -e "      - ${APP_POD_IP}/32">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml           
                 POD_INIT=$(( $POD_INIT + 1 ))
             done
             NS_INIT=$(( $NS_INIT + 1 ))
@@ -484,14 +484,14 @@ EOF
     #oc -n openshift-kube-apiserver get pods -owide |grep kube-apiserver | awk '{print $6}'
     export TEST_STEP="Creating $TOTAL_ANP Multi ANP with Multi Rule/25 IP Per Rule"
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`    
-    for yamlfile in `ls ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-egress-cidr-open-network-*.yaml`
+    for yamlfile in `ls ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-*.yaml`
     do
         oc apply -f $yamlfile
         printYAMLFile $yamlfile
     done
     echo "---------------------------------------------------------------------------------"
-    oc get anp | grep allow-traffic-egress-cidr-anp-open-network-tenant
-    export TOTAL_ANP=`oc get anp | grep allow-traffic-egress-cidr-anp-open-network-tenant|wc -l`
+    oc get anp | grep allow-traffic-cidr-anp-open-network-tenant
+    export TOTAL_ANP=`oc get anp | grep allow-traffic-cidr-anp-open-network-tenant|wc -l`
     echo "---------------------------------------------------------------------------------"
     echo "The total anp is $TOTAL_ANP"
     echo
@@ -1183,8 +1183,7 @@ spec:
   priority: ${PRIORITY}
   subject:
     namespaces:
-      matchLabels:
-        anplabel: ${TARGET_NS}
+      namespaces: {}
   egress:
   - name: "allow-egress-to-kube-apiserver"
     action: "Allow"
@@ -1826,7 +1825,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc apply -f ${WORKLOAD_TEMPLATE_PATH}/01_anp_allow-monitor.yaml
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
-         
+
       ###################################Create CIDR Selector Policy#################################    
       create_anp_banp_cidr_verify_traffic_tween_different_zones
 
