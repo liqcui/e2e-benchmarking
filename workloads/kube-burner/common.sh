@@ -1647,7 +1647,8 @@ function scale_out_worker_nodes(){
        echo "Scaling out worker nodes ...."
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
        export ADDITIONAL_REPLICAS=${ADDITIONAL_REPLICAS:=1}
-       export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
+       #export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api -oname| grep worker | head -1`
+       export FIRST_MACHINESET_NAME=`oc get machineset -n openshift-machine-api | grep -w -v -E '0|NAME' | grep worker| awk '{print $1}'| head -1`
        export PREVIOUS_REPLICAS=`oc -n openshift-machine-api get machineset $FIRST_MACHINESET_NAME -ojsonpath='{.spec.replicas}'`
        export DESIRED_REPLICAS=$(( $PREVIOUS_REPLICAS + $ADDITIONAL_REPLICAS ))
        echo "Scale out $FIRST_MACHINESET_NAME from $PREVIOUS_REPLICAS to $DESIRED_REPLICAS"
