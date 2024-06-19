@@ -1786,7 +1786,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
       oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
       oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-      echo "New worker node and ovn pods when scaling out worker node"
+      echo "Diff worker node and ovn pods when scaling down worker node"
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
       echo 
@@ -1875,7 +1875,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        oc -n openshift-ovn-kubernetes get pods|grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
        oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-       echo "New worker node and ovn pods when scaling out worker node"
+       echo "Diff worker node and ovn pods when scaling down worker node"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
        cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
        echo 
