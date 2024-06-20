@@ -345,7 +345,7 @@ function getOVNICDBInfo()
    echo $DUMP_FLOW_BR_INT       
    echo "----------ACL find external_ids by uuid for each namespace----------";
    EGRESS_RULES_LIST=()
-   for ns in `oc get ns |grep anp| awk '{print $1}'`
+   for ns in `oc get ns |grep anp| awk '{print $1}'|tail 100`
    do
       EGRESS_RULES_NUMS=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c "ovn-nbctl --format=table --no-heading --columns=action,priority,match find acl external_ids:k8s.ovn.org/name=${ns}|wc -l"`;
       EGRESS_RULES_LIST+=(${ns}:${EGRESS_RULES_NUMS})
@@ -1723,8 +1723,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              export TEST_STEP="Restart OVN Node Pods Without Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
              export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
              restartOVNPODs
-             export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
-             get_ovn_node_system_usage_info
+
        fi
        #########################Recycle Before Creating Large Scale Pods##########################
        export TEST_STEP="Creating Large Scale PODs without BANP/ANP/NetPol/EgressFW[Min]"
@@ -1814,7 +1813,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        restartOVNPODs
- 
+
        ###################################Create Default BANP#################################
        export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
@@ -1903,22 +1902,10 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo
    
        sleep 300
-       echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-       oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-       oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst   
-
        export TEST_STEP="Restart OVN Node POD with  Large Scale PODs and BANP/ANP"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        restartOVNPODs
-       oc -n openshift-ovn-kubernetes get pods|grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-       oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-       echo "New worker node and ovn pods when scaling out worker node"
-       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
-       echo 
-       cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-       echo
+
  
        if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              sleep 300
