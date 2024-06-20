@@ -1636,7 +1636,8 @@ function restartOVNPODs(){
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
       get_ovn_node_system_usage_info
-
+      sleep 30
+      
       oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
       oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
       echo "New ovn pods after restart OVN Node Pods"
