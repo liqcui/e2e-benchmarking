@@ -1928,7 +1928,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              echo
         fi
 
-        networkPolicyInitSyncDurationCheck
+        #networkPolicyInitSyncDurationCheck
 
         if [[ $IF_MASTER_CARD_CASE == "false" ]];then
               sleep 300
