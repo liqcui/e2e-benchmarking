@@ -994,7 +994,7 @@ function check_traffic_between_anp_zones(){
             exit 1
     fi
 
-    TARGET_NS=`oc get ns |grep -w $TARGET_NS | awk '{print $1}'|head -100`
+    TARGET_NS=`oc get ns |grep -w $TARGET_NS | awk '{print $1}'|head -30`
     if [[ -z $TARGET_NS ]];then
             echo "No TARGET_NS was found"
             exit 1
