@@ -1699,7 +1699,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        #################################Recycle Nodes Without Large Scale Pods######################################
-       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
              
              sleep 300
              scale_down_worker_nodes
@@ -1780,10 +1780,10 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
            get_ovn_node_system_usage_info
 
        fi
-       #################################Recycle Nodes Without Large Scale Pods Without BANP/ANP/NetPol#########################       
-       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
+       #################################Recycle Nodes With Large Scale Pods Without BANP/ANP/NetPol#########################       
+       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
            
-             sleep 300
+             sleep 900
              scale_down_worker_nodes
              
              sleep 300
@@ -1859,7 +1859,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
 
        #################################Recycle With Large Scale Pods And BANP/ANP#########################       
-       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
              sleep 300
              scale_down_worker_nodes
              
@@ -1928,7 +1928,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              echo
         fi
 
-        #networkPolicyInitSyncDurationCheck
+        networkPolicyInitSyncDurationCheck
 
         if [[ $IF_MASTER_CARD_CASE == "false" ]];then
               sleep 300
