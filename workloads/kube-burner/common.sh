@@ -1618,7 +1618,7 @@ function verify_if_mcp_be_in_updated_state_by_name() {
 }
 
 function restartOVNPODs(){
-      echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+      echo "Save old node name and ovn pod list to old-node-ovn-pods.lst when ovn pod restart"
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
       oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
       oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst
@@ -1637,7 +1637,7 @@ function restartOVNPODs(){
 
       oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
       oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-      echo "New worker node and ovn pods when scaling out worker node"
+      echo "New ovn pods after restart OVN Node Pods"
       awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
       cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
       echo 
