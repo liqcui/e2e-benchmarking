@@ -400,7 +400,7 @@ function generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant(
                   fi
             fi
             if [[ $IF_NEW_TENANT -eq 0 ]];then                   
-cat>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml<<EOF
+cat>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml<<EOF
 apiVersion: policy.networking.k8s.io/v1alpha1
 kind: AdminNetworkPolicy
 metadata:
@@ -474,8 +474,8 @@ EOF
                    echo -e "  - name: \"deny-egress-to-anp-open-network-${RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml
                    echo -e "  - name: \"allow-egress-to-anp-open-network-${RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml
                 fi
-                sed -i "/allow-egress-to-anp-open-network-${RULE_INDEX}/i\      - ${DB_POD_IP}/32" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml
-                echo -e "      - ${APP_POD_IP}/32">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-p${PRIORITY}.yaml           
+                sed -i "/allow-egress-to-anp-open-network-${RULE_INDEX}/i\      - ${DB_POD_IP}/32" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                echo -e "      - ${APP_POD_IP}/32">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml           
                 POD_INIT=$(( $POD_INIT + 1 ))
             done
             NS_INIT=$(( $NS_INIT + 1 ))
@@ -1699,7 +1699,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        #################################Recycle Nodes Without Large Scale Pods######################################
-       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              
              sleep 300
              scale_down_worker_nodes
@@ -1781,7 +1781,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        fi
        #################################Recycle Nodes Without Large Scale Pods Without BANP/ANP/NetPol#########################       
-       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
            
              sleep 300
              scale_down_worker_nodes
@@ -1859,7 +1859,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
 
        #################################Recycle With Large Scale Pods And BANP/ANP#########################       
-       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              sleep 300
              scale_down_worker_nodes
              
