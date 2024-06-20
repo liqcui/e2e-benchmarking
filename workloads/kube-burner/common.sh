@@ -362,7 +362,7 @@ function generated_anp_cidr_selector_multi_ips_multi_rules_multipolicy_bytenant(
     TARGET_NS_PREFIX=$2
     TOTAL_NS_BY_TA=${TOTAL_NS_BY_TA:=5}
     TOTAL_IP_BLOCK_NUM_BY_RULE=${TOTAL_IP_BLOCK_NUM_BY_RULE:=5}    
-    PRIORITY=0 #Max priority is 99
+    PRIORITY=1 #Max priority is 99
     WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
 
     if [[ -z $TARGET_NS_PREFIX || -z $SOURCE_NS_PREFIX ]];then
@@ -1637,7 +1637,7 @@ function restartOVNPODs(){
       export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
       get_ovn_node_system_usage_info
       sleep 30
-      
+
       oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
       oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
       echo "New ovn pods after restart OVN Node Pods"
