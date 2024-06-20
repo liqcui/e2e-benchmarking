@@ -1696,7 +1696,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        #################################Recycle Before Creating Large Scale Pods######################################
-       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
              echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
              oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
