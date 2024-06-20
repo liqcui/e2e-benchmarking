@@ -1725,14 +1725,15 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              restartOVNPODs
 
        fi
-       #########################Recycle Before Creating Large Scale Pods##########################
-       export TEST_STEP="Creating Large Scale PODs without BANP/ANP/NetPol/EgressFW[Min]"
-       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`   
+  
 
-       ###################################Create Large Scale Pods#################################
+       ###################################Prepare Testing Environment#################################
        echo "Prepare Testing Environment for BANP and ANP - Creating NS and Pods - Mixed Scenario"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
+       #########################Creating Large Scale Pods##########################
+       export TEST_STEP="Creating Large Scale PODs without BANP/ANP/NetPol/EgressFW[Min]"
+       export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
        if [[ $IF_MASTER_CARD_CASE == "false" ]];then           
            echo "Create http server pods on each worker nodes in namespace anp-node-http"
            oc create ns anp-node-http
@@ -1775,6 +1776,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
            get_ovn_node_system_usage_info
 
        fi
+       #################################Recycle After Creating Large Scale Pods Without BANP/ANP/NetPol#########################       
        if [[ $IF_MASTER_CARD_CASE == "false" ]];then       
        sleep 300
        echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
@@ -1861,6 +1863,8 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
+
+       #################################Recycle With Large Scale Pods And BANP/ANP#########################       
        if [[ $IF_MASTER_CARD_CASE == "false" ]];then
        sleep 300
        echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
@@ -1869,7 +1873,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst   
        
        sleep 300
-       export TEST_STEP="Scaling Down Worker Nodes Large Scale PODs and BANP/ANP[Min]"
+       export TEST_STEP="Scaling Out Worker Nodes Large Scale PODs and BANP/ANP[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
        scale_out_worker_nodes       
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
@@ -1889,7 +1893,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
        oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
        oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst   
-       export TEST_STEP="Scaling Out Worker Nodes with Large Scale PODs and BANP/ANP/[Min]"
+       export TEST_STEP="Scaling Down Worker Nodes with Large Scale PODs and BANP/ANP/[Min]"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`    
        scale_down_worker_nodes
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
@@ -1909,7 +1913,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        restartOVNPODs
        fi
- 
+       #################################Creating Large Scale NetPol and Egress FW#########################  
        if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              sleep 300
              export TEST_STEP="Creating Large Scale NetPol and Egress Firewall[Min]"
@@ -1922,6 +1926,11 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              done
              export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
              get_ovn_node_system_usage_info      
+            
+        fi
+
+       #################################Recycle With Large Scale Pods And BANP/ANP/NetPol/EFW#########################               
+        if [[ $IF_MASTER_CARD_CASE == "false" ]];then        
              sleep 300
              echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
