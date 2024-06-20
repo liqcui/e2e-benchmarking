@@ -1696,7 +1696,12 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        #################################Recycle Before Creating Large Scale Pods######################################
-       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
+             
+             sleep 300
+             scale_down_worker_nodes
+             
+             sleep 300
              echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
              oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
@@ -1706,9 +1711,6 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              cat /tmp/ocp-node-ovn-pods-old.lst
              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
              scale_out_worker_nodes
-      
-             sleep 300     
-             scale_down_worker_nodes    
       
              oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
              oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
@@ -1723,7 +1725,6 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              export TEST_STEP="Restart OVN Node Pods Without Large Scale PODs and BANP/ANP/NetPol/EgressFW[Min]"
              export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
              restartOVNPODs
-
        fi
   
 
@@ -1777,45 +1778,35 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        fi
        #################################Recycle After Creating Large Scale Pods Without BANP/ANP/NetPol#########################       
-       if [[ $IF_MASTER_CARD_CASE == "true" ]];then       
-           sleep 300
-           echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-           oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-           oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
-           echo    "#############"   ocp-node-ovn-pods-old.lst  "#############" 
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
-           cat /tmp/ocp-node-ovn-pods-old.lst
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
-           scale_out_worker_nodes
-           oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-           oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-           echo "New worker node and ovn pods when scaling out worker node"
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-           cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
-           echo 
-           cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-           echo
-     
-           sleep 300
-           echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-           oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-           oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst          
-           scale_down_worker_nodes   
-           oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-           oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-           echo "Diff worker node and ovn pods when scaling down worker node"
-           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-           cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
-           echo 
-           cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-           echo
-              
-           sleep 300
-           export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
-           export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-           restartOVNPODs
+       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
+           
+             sleep 300
+             scale_down_worker_nodes
+             
+             sleep 300
+             echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+             oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+             oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+             echo    "#############   ocp-node-ovn-pods-old.lst  #############" 
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+             cat /tmp/ocp-node-ovn-pods-old.lst
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+             scale_out_worker_nodes
+      
+             oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+             oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+             echo "New worker node and ovn pods when scaling out worker node"
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+             cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
+             echo 
+             cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+             echo
+      
+             sleep 300              
+             export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
+             export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+             restartOVNPODs
        fi
 
        ###################################Create Default BANP#################################
@@ -1866,51 +1857,34 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        #################################Recycle With Large Scale Pods And BANP/ANP#########################       
        if [[ $IF_MASTER_CARD_CASE == "true" ]];then
-            sleep 300
-            echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-            awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-            oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-            oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst   
-            
-            export TEST_STEP="Scaling Out Worker Nodes Large Scale PODs and BANP/ANP[Min]"
-            export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`             
-            scale_out_worker_nodes       
-            export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-            get_ovn_node_system_usage_info
-     
-            oc -n openshift-ovn-kubernetes get pods|grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-            oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-            echo "New worker node and ovn pods when scaling out worker node"
-            awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-            cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
-            echo 
-            cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-            echo
-     
-            sleep 300
-            echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
-            awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-            oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
-            oc get nodes |grep -v -i NAME| awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst   
-            export TEST_STEP="Scaling Down Worker Nodes with Large Scale PODs and BANP/ANP/[Min]"
-            export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`    
-            scale_down_worker_nodes
-            export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-            get_ovn_node_system_usage_info
-     
-            oc -n openshift-ovn-kubernetes get pods|grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
-            oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
-            echo "Diff worker node and ovn pods when scaling down worker node"
-            awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
-            cat /tmp/ocp-node-ovn-pods-*.lst |sort -r| uniq -u
-            echo 
-            cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
-            echo
+             sleep 300
+             scale_down_worker_nodes
+             
+             sleep 300
+             echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+             oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
+             oc get nodes|grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-old.lst  
+             echo    "#############   ocp-node-ovn-pods-old.lst  #############" 
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+             cat /tmp/ocp-node-ovn-pods-old.lst
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+             scale_out_worker_nodes
+      
+             oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME| awk '{print $1}'>/tmp/ocp-node-ovn-pods-new.lst
+             oc get nodes |grep -v -i NAME | awk '{print $1}'>>/tmp/ocp-node-ovn-pods-new.lst
+             echo "New worker node and ovn pods when scaling out worker node"
+             awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'        
+             cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u 
+             echo 
+             cat /tmp/ocp-node-ovn-pods-*.lst | sort -r| uniq -u | tr -s "\n" "|"
+             echo
+      
+             sleep 300
         
-            sleep 300
-            export TEST_STEP="Restart OVN Node POD with  Large Scale PODs and BANP/ANP"
-            export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
-            restartOVNPODs
+             export TEST_STEP="Restart OVN Node POD with  Large Scale PODs and BANP/ANP"
+             export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
+             restartOVNPODs
        fi
        #################################Creating Large Scale NetPol and Egress FW#########################  
        if [[ $IF_MASTER_CARD_CASE == "false" ]];then
