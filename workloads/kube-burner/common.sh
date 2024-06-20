@@ -345,7 +345,7 @@ function getOVNICDBInfo()
    echo $DUMP_FLOW_BR_INT       
    echo "----------ACL find external_ids by uuid for each namespace----------";
    EGRESS_RULES_LIST=()
-   for ns in `oc get ns |grep anp| awk '{print $1}'|tail 50`
+   for ns in `oc get ns |grep anp| awk '{print $1}'|tail -50`
    do
       EGRESS_RULES_NUMS=`oc -n openshift-ovn-kubernetes exec -c northd $OVNKUBE_NODE_POD -- sh -c "ovn-nbctl --format=table --no-heading --columns=action,priority,match find acl external_ids:k8s.ovn.org/name=${ns}|wc -l"`;
       EGRESS_RULES_LIST+=(${ns}:${EGRESS_RULES_NUMS})
@@ -994,7 +994,7 @@ function check_traffic_between_anp_zones(){
             exit 1
     fi
 
-    TARGET_NS=`oc get ns |grep -w $TARGET_NS | awk '{print $1}'`
+    TARGET_NS=`oc get ns |grep -w $TARGET_NS | awk '{print $1}'|head -100`
     if [[ -z $TARGET_NS ]];then
             echo "No TARGET_NS was found"
             exit 1
