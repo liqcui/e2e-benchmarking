@@ -1696,7 +1696,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        #################################Recycle Before Creating Large Scale Pods######################################
-       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
              oc -n openshift-ovn-kubernetes get pods |grep -v -i NAME | awk '{print $1}'>/tmp/ocp-node-ovn-pods-old.lst
@@ -1775,6 +1775,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
            get_ovn_node_system_usage_info
 
        fi
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then       
        sleep 300
        echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
@@ -1813,6 +1814,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export TEST_STEP="Restart OVN NODE POD With Large Scale PODs without BANP/ANP/"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        restartOVNPODs
+       fi
 
        ###################################Create Default BANP#################################
        export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
@@ -1859,6 +1861,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        get_ovn_node_system_usage_info
 
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
        sleep 300
        echo "Save old node name and ovn pod list to old-node-ovn-pods.lst"
        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
@@ -1905,7 +1908,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export TEST_STEP="Restart OVN Node POD with  Large Scale PODs and BANP/ANP"
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
        restartOVNPODs
-
+       fi
  
        if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              sleep 300

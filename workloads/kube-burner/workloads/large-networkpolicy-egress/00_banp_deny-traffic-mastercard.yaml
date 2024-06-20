@@ -4,10 +4,11 @@ metadata:
   name: default
 spec:
   subject:
-    matchExpressions:
-    - key: anplabel
-      operator: In
-      values: ["anp-restricted","anp-cidr","anp-open","anp-test"]      
+    namespaces:
+      matchExpressions:
+      - key: anplabel
+        operator: In
+        values: ["anp-restricted","anp-cidr","anp-open","anp-test","anp-unknown"]       
     #namespaces: {}
   ingress:
   - name: "deny-all-ingress-to-any-ns"
