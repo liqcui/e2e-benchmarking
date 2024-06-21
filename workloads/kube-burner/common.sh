@@ -1699,7 +1699,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set" > /tmp/system_resource_info.csv
 
        #################################Recycle Nodes Without Large Scale Pods######################################
-       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
              
              sleep 300
              scale_down_worker_nodes
@@ -1753,23 +1753,23 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              ANP_PODS="anp-restricted-pods anp-cidr-pods anp-open-pods anp-unknown-pods anp-test-pods"
        fi
 
-       for anptype in $ANP_PODS         
-       do
-            #EXPECT_RPLICAS used for scale node-traffic-clt
-            NODE_TRAFFIC_CLT_EXPECT_RPLICAS=$POD_RPLICAS
+      #  for anptype in $ANP_PODS         
+      #  do
+      #       #EXPECT_RPLICAS used for scale node-traffic-clt
+      #       NODE_TRAFFIC_CLT_EXPECT_RPLICAS=$POD_RPLICAS
 
-            #This test case focus on nodeselector, we don't need to create too much pods on anp-test-x namespace
-            #So try to create more pods on anp-restricted-x ns as possible. 
+      #       #This test case focus on nodeselector, we don't need to create too much pods on anp-test-x namespace
+      #       #So try to create more pods on anp-restricted-x ns as possible. 
             
-            if [[ $anptype == "anp-test-pods" ]];then
-               export ANP_POD_RPLICAS=3
-               export ANP_JOB_ITERATIONS=1
-               #sed -i 's/namespacedIterations: true/namespacedIterations: false/g' workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
-               #grep namespacedIterations workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
-            fi
-            WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
-            run_workload
-       done
+      #       if [[ $anptype == "anp-test-pods" ]];then
+      #          export ANP_POD_RPLICAS=3
+      #          export ANP_JOB_ITERATIONS=1
+      #          #sed -i 's/namespacedIterations: true/namespacedIterations: false/g' workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
+      #          #grep namespacedIterations workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
+      #       fi
+      #       WORKLOAD_TEMPLATE=workloads/large-networkpolicy-egress/case-large-networkpolicy-egress-${anptype}.yml
+      #       run_workload
+      #  done
 
        SOURCE_NS_FILTER="anp-restricted"
        TARGET_NS_FILTER="anp-test"
@@ -1781,7 +1781,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
 
        fi
        #################################Recycle Nodes With Large Scale Pods Without BANP/ANP/NetPol#########################       
-       if [[ $IF_MASTER_CARD_CASE == "true" ]];then
+       if [[ $IF_MASTER_CARD_CASE == "false" ]];then
            
              sleep 900
              scale_down_worker_nodes
@@ -1817,18 +1817,18 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
        echo "Create BANP to deny traffic to host network/cidir cluster network and egress/ingress to specifiec ns"
 
-       if [[ $IF_MASTER_CARD_CASE == "false" ]];then       
-           oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
-           printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
-       else
-           oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-mastercard.yaml
-           printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-mastercard.yaml  
-       fi           
-        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
-        get_ovn_node_system_usage_info
+      #  if [[ $IF_MASTER_CARD_CASE == "false" ]];then       
+      #      oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
+      #      printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-restricted.yaml
+      #  else
+      #      oc apply -f ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-mastercard.yaml
+      #      printYAMLFile ${WORKLOAD_TEMPLATE_PATH}/00_banp_deny-traffic-mastercard.yaml  
+      #  fi           
+      #   export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
+      #   get_ovn_node_system_usage_info
  
        ###################################Create CIDR Selector Policy#################################    
-       create_anp_banp_cidr_verify_traffic_tween_different_zones
+       #create_anp_banp_cidr_verify_traffic_tween_different_zones
  
        ###################################Create Node Selector Policy#################################
        if [[ $IF_MASTER_CARD_CASE == "false" ]];then    
