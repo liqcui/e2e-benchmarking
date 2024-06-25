@@ -1037,7 +1037,7 @@ function check_traffic_between_anp_zones(){
                     echo "The traffic between $SOURCE_NS and $ns is denied"
                     #Retry once again
                     oc -n $SOURCE_NS exec -i $SOURCE_POD -- nc -vz $pod_ip $PORT_NUMBER -w 5
-                    if [[ $? -eq 0 ]]
+                    if [[ $? -eq 0 ]];then
                        RESULT="true"
                     else
                        RESULT="false"
