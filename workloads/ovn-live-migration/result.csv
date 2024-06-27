@@ -1,0 +1,13 @@
+Checking Items, Result, Command,Output
+Network connection testing from pod to pod(same node),Passed,oc -n ovn-live-migration-1 logs pod/live-migration-1-app-1-78c86994cb-p8j4q --tail=6 |grep 'Timestamp inserted in',time="2024-06-26 15:30:19" level=info msg="Timestamp inserted in 886583 ns"
+Network connection testing from pod to pod(cross node),Passed,oc -n ovn-live-migration-1 exec -it pod/live-migration-1-external-traffic-1-79956c655b-4spbr -- nc -vz 10.129.4.9 8080,Ncat: Connected to 10.129.4.9:8080.
+Network connection testing from pod to host(same node),Passed,oc -n ovn-live-migration-1 exec -it pod/live-migration-1-external-traffic-1-79956c655b-4spbr -- nc -vz 10.242.64.6 10250,Ncat: Connected to 10.242.64.6:10250.
+Network connection testing from pod to host(cross node),Passed,oc -n ovn-live-migration-1 exec -it pod/live-migration-1-external-traffic-1-79956c655b-4spbr -- nc -vz 10.242.0.6 10250,Ncat: Connected to 10.242.0.6:10250.
+Network connection testing from pod to ClusterIP service,Passed,oc -n ovn-live-migration-1 exec -it pod/live-migration-1-external-traffic-1-79956c655b-4spbr -- nc -vz keepalive-detect-nginx-cluster-ip-service 8080,Ncat: Connected to 172.30.65.221:8080.
+Network connection testing from pod to NodePort service(same node),Passed,oc -n ovn-live-migration-1 exec -it pod/live-migration-1-workload-tool-1-6dd69bf7c7-jn9gf -- nc -vz 10.242.0.6 30036,Ncat: Connected to 10.242.0.6:30036.
+Network connection testing from pod to NodePort service(cross node),Passed,oc -n ovn-live-migration-1 exec -it pod/live-migration-1-external-traffic-1-79956c655b-4spbr -- nc -vz 10.242.0.6 30036,Ncat: Connected to 10.242.0.6:30036.
+Network connection testing from external to NodePort service(cross node),Passed,oc -n ovn-live-migration-1 debug node/liqcui-ocp4sdn-crlcc-master-0 -q -- chroot /host nc -vz 10.242.0.6 30036,Ncat: Connected to 10.242.0.6:30036.
+Network connection testing from pod to external,Passed,oc -n ovn-live-migration-1 logs pod/live-migration-1-external-traffic-1-79956c655b-4spbr --tail=20|grep 'HTTP/.* 200',HTTP/2 200
+Network connection testing from pod to external,Failure,oc -n ovn-live-migration-1 debug node/liqcui-ocp4sdn-crlcc-master-0 -q -- chroot /host nc -vz  8080 | grep Connected,
+Network connection testing from pod with netpol(cross ns),Passed,oc -n anp-restricted-1 logs pod/anp-restricted-1-ata-1-6bb8d64f7b-cxr87 --tail=20|grep 'HTTP/.* 200',HTTP/1.1 200 OK
+Network connection testing from pod with netpol(same ns),Passed,oc -n anp-restricted-1 logs pod/anp-restricted-1-app-1-668bbd7f5d-s8j8c --tail=20|grep 'Timestamp inserted',time="2024-06-26 15:29:50" level=info msg="Timestamp inserted in 5500744 ns"
