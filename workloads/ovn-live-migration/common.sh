@@ -229,11 +229,11 @@ function enable_kube_burner_index(){
     OLD_PATH=`pwd`
     echo OLD_PATH is $OLD_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
-    git clone https://github.com/liqcui/e2e-benchmarking
+    git clone -b live-migration https://github.com/liqcui/e2e-benchmarking
     cd e2e-benchmarking/workloads/kube-burner-ocp-wrapper
-    ls
-    echo cp $METRICS_PROFILE /tmp/
-    cp $METRICS_PROFILE /tmp/
+    ls ./$METRICS_PROFILE
+    echo cp ./$METRICS_PROFILE /tmp/
+    cp ./$METRICS_PROFILE /tmp/
     ls /tmp/
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     NEW_PATH=`pwd`
