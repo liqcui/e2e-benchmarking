@@ -239,7 +239,10 @@ function enable_kube_burner_index(){
     echo NEW_PATH is $NEW_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     START_TIME=`date "+%s"`
-    START_TIME=${START_TIME} END_TIME=${START_TIME} WORKLOAD=index ./run.sh
+    #START_TIME=${START_TIME} END_TIME=${START_TIME} WORKLOAD=index ./run.sh
+    echo $START_TIME $END_TIME
+    ES_INDEX=ripsaw-kube-burner ES_SERVER=$ES_SERVER EXTRA_FLAGS="" KUBECONFIG=~/.kube/kubeconfig WORKLOAD=index ./run.sh
+
     cd $OLD_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     CUR_PATH=`pwd`
