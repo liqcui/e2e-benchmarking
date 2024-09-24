@@ -177,9 +177,9 @@ if [[ ${WORKLOAD} == "concurrent-builds" ]]; then
 elif [[ ${WORKLOAD} == "large-networkpolicy-egress" ]]; then
    run_large_networkpolicy_egressfirewall_anp_workload
 elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
-   if [[ ${EnableIndex} == "true" ]];then
-       enable_kube_burner_index
-   fi
+  #  if [[ ${EnableIndex} == "true" ]];then
+  #      enable_kube_burner_index
+  #  fi
    if [[ $ONLY_POST_CHECKING == "false" ]];then
         LABEL_NODE=`oc get nodes |grep worker | awk '{print $1}' | head -1`
         oc label node $LABEL_NODE node-role.kubernetes.io/backend=
@@ -192,9 +192,9 @@ elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
         sleep 180
         sleep 600
         #live-migration-post-check
-        if [[ ${EnableIndex} == "true" ]];then
-           enable_kube_burner_index
-        fi
+        # if [[ ${EnableIndex} == "true" ]];then
+        #    enable_kube_burner_index
+        # fi
    fi
    else
          live-migration-post-check
