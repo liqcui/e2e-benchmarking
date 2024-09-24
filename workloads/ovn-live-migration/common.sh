@@ -222,7 +222,7 @@ function enable_kube_burner_index(){
     unset METRICS_PROFILE
     export METRICS_PROFILE=metrics-profiles/metrics.yml
     export LOG_LEVEL=debug
-    cp $METRICS_PROFILE /tmp/
+   
     echo "INFO: Indexing the cluster results"
     pushd "${TEMP_DIR}"
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
@@ -231,6 +231,8 @@ function enable_kube_burner_index(){
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     git clone https://github.com/cloud-bulldozer/e2e-benchmarking
     cd e2e-benchmarking/workloads/kube-burner-ocp-wrapper
+    cp $METRICS_PROFILE /tmp/
+    ls /tmp/
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     NEW_PATH=`pwd`
     echo NEW_PATH is $NEW_PATH
