@@ -220,7 +220,7 @@ function enable_kube_burner_index(){
     export END_TIME=${END_TIME:-""}
     export ES_INDEX="${ES_INDEX:-perfscale-qe-sdn2ovn}"
     unset METRICS_PROFILE
-    export METRICS_PROFILE=metrics-profiles/metrics.yml
+    export METRICS_PROFILE=metrics-profiles/metrics-report.yml
     export LOG_LEVEL=debug
    
     echo "INFO: Indexing the cluster results"
@@ -231,15 +231,15 @@ function enable_kube_burner_index(){
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     git clone -b live-migration https://github.com/liqcui/e2e-benchmarking
     cd e2e-benchmarking/workloads/kube-burner-ocp-wrapper
-    ls ./$METRICS_PROFILE
-    echo cp ./$METRICS_PROFILE /tmp/
-    cp ./$METRICS_PROFILE /tmp/
-    ls /tmp/
+    # ls ./$METRICS_PROFILE
+    # echo cp ./$METRICS_PROFILE /tmp/
+    # cp ./$METRICS_PROFILE /tmp/
+    # ls /tmp/
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     NEW_PATH=`pwd`
     echo NEW_PATH is $NEW_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
-    START_TIME=`date "+%s"`
+    START_TIME=`date --date="15 min ago" +"%s"`
     START_TIME=${START_TIME} END_TIME=${START_TIME} WORKLOAD=index ./run.sh
     echo $START_TIME $END_TIME
     #ES_INDEX=ripsaw-kube-burner ES_SERVER=$ES_SERVER EXTRA_FLAGS="" KUBECONFIG=~/.kube/config WORKLOAD=index ./run.sh
