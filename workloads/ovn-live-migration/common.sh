@@ -231,6 +231,7 @@ function enable_kube_burner_index(){
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     git clone https://github.com/cloud-bulldozer/e2e-benchmarking
     cd e2e-benchmarking/workloads/kube-burner-ocp-wrapper
+    echo cp $METRICS_PROFILE /tmp/
     cp $METRICS_PROFILE /tmp/
     ls /tmp/
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
