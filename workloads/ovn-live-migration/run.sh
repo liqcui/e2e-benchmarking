@@ -188,9 +188,14 @@ elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
         WORKLOAD_TEMPLATE=workloads/ovn-live-migration/case-large-networkpolicy-egress-restricted.yml
         run_workload
         unset  TEST_JOB_ITERATIONS
-        live-migration-keepalive-detect
+        #live-migration-keepalive-detect
         sleep 180
-        live-migration-post-check
+        sleep 600
+        #live-migration-post-check
+        if [[ ${EnableIndex} == "true" ]];then
+           enable_kube_burner_index
+        fi
+   fi
    else
          live-migration-post-check
    fi

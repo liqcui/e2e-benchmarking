@@ -218,7 +218,7 @@ function verify_if_mcp_be_in_updated_state_by_name() {
 function enable_kube_burner_index(){
     export START_TIME=${START_TIME:=""}
     export END_TIME=${END_TIME:-""}
-    
+    export ES_INDEX="${ES_INDEX:-perfscale-qe-sdn2ovn}"
     echo "INFO: Indexing the cluster results"
     pushd "${TEMP_DIR}"
     OLD_PATH=`pwd`
