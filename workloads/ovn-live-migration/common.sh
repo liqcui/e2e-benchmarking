@@ -231,6 +231,7 @@ function enable_kube_burner_index(){
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     git clone https://github.com/liqcui/e2e-benchmarking
     cd e2e-benchmarking/workloads/kube-burner-ocp-wrapper
+    ls
     echo cp $METRICS_PROFILE /tmp/
     cp $METRICS_PROFILE /tmp/
     ls /tmp/
@@ -239,9 +240,9 @@ function enable_kube_burner_index(){
     echo NEW_PATH is $NEW_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     START_TIME=`date "+%s"`
-    #START_TIME=${START_TIME} END_TIME=${START_TIME} WORKLOAD=index ./run.sh
+    START_TIME=${START_TIME} END_TIME=${START_TIME} WORKLOAD=index ./run.sh
     echo $START_TIME $END_TIME
-    ES_INDEX=ripsaw-kube-burner ES_SERVER=$ES_SERVER EXTRA_FLAGS="" KUBECONFIG=~/.kube/config WORKLOAD=index ./run.sh
+    #ES_INDEX=ripsaw-kube-burner ES_SERVER=$ES_SERVER EXTRA_FLAGS="" KUBECONFIG=~/.kube/config WORKLOAD=index ./run.sh
 
     cd $OLD_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
