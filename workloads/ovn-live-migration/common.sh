@@ -230,6 +230,27 @@ function enable_kube_burner_index(){
     cd $OLD_PATH
 }
 
+
+
+sdn2ovn_index_results(){
+  export es_index="${ES_INDEX:-perfscale-qe-sdn2ovn}"
+    METADATA=$(cat <<EOF
+{
+  "uuid": "${UUID}",
+  "cluster_name": "$(oc get infrastructure.config.openshift.io cluster -o json 2>/dev/null | jq -r .status.infrastructureName)",
+  "before_network_type": "$1",
+  "after_network_type": "$2",
+  "ovn_live_migration_duration": "$3",
+  "ocp_version": "$4",
+  "timestamp": "$(date +%s%3N)"
+}
+EOF
+)
+    printf "Indexing installation timings to ${ES_SERVER}/${_es_index}"
+    curl -k -sS -X POST -H "Content-type: application/json" ${ES_SERVER}/${_es_index}/_doc -d "${METADATA}" -o /dev/null
+    return 0
+}
+
 function live-migration-keepalive-detect(){
     LIVE_MIGRATION_DETECT_INTERVAL=${LIVE_MIGRATION_DETECT_INTERVAL:=1}
     INIT=1
@@ -575,28 +596,6 @@ function migration_checkpoint(){
 
 }
 
-index_results(){
-    METADATA=$(cat <<EOF
-{
-  "uuid": "${UUID}",
-  "cluster_name": "$(oc get infrastructure.config.openshift.io cluster -o json 2>/dev/null | jq -r .status.infrastructureName)",
-  "before_network_type": "$1",
-  "after_network_type": "$2",
-  "network_migration_duration": "$3",
-  "master_count": "$(oc get node -l node-role.kubernetes.io/master= --no-headers 2>/dev/null | wc -l)",
-  "worker_count": "$(oc get node --no-headers -l node-role.kubernetes.io/workload!="",node-role.kubernetes.io/infra!="",node-role.kubernetes.io/worker="" 2>/dev/null | wc -l)",
-  "infra_count": "$(oc get node -l node-role.kubernetes.io/infra= --no-headers --ignore-not-found 2>/dev/null | wc -l)",
-  "total_node_count": "$(oc get nodes --no-headers 2>/dev/null | wc -l)",
-  "ocp_version": "$4",
-  "timestamp": "$(date +%s%3N)"
-}
-EOF
-)
-    printf "Indexing installation timings to ${ES_SERVER}/${_es_index}"
-    curl -k -sS -X POST -H "Content-type: application/json" ${ES_SERVER}/${_es_index}/_doc -d "${METADATA}" -o /dev/null
-    return 0
-}
-
 function live-migration-post-check(){
     INIT=1
     MAX_RETRY=${MAX_RETRY:=7200}
@@ -643,5 +642,5 @@ function live-migration-post-check(){
     
     NW_MIGRATION_DURATION=$((NW_MIGRATION_STOP - NW_MIGRATION_START - 300))
     export AFTER_N_TYPE=$(oc get Network.operator.openshift.io cluster  -o json | jq -r '.spec.defaultNetwork.type')
-    index_results "$BEFORE_N_TYPE" "$AFTER_N_TYPE" "$NW_MIGRATION_DURATION" "$VERSION"
+    sdn2ovn_index_results "$BEFORE_N_TYPE" "$AFTER_N_TYPE" "$NW_MIGRATION_DURATION" "$OPENSHIFT_VERSION"
 }
