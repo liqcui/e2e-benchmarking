@@ -222,6 +222,7 @@ function enable_kube_burner_index(){
     unset METRICS_PROFILE
     export METRICS_PROFILE=metrics-profiles/metrics.yml
     export LOG_LEVEL=debug
+    cp $METRICS_PROFILE /tmp/
     echo "INFO: Indexing the cluster results"
     pushd "${TEMP_DIR}"
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
@@ -240,7 +241,10 @@ function enable_kube_burner_index(){
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     CUR_PATH=`pwd`
     echo CUR_PATH is $CUR_PATH
-    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
+    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+    if [ -d e2e-benchmarking/ ];then
+       rm -rf e2e-benchmarking/  
+    fi 
 }
 
 
