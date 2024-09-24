@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-nginx-{{.Replica}}
+  labels:
+    app: keepalive-detect-nginx
+spec:
+  selector:
+    matchLabels:
+      app: keepalive-detect-nginx
+  replicas: 1     
+  template:
+    metadata:
+      labels:
+        app: keepalive-detect-nginx
+    spec:
+      nodeSelector: {{.nodeSelector}} 
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - keepalive-detect-nginx
+            topologyKey: "kubernetes.io/hostname"         
+      containers:
+      - name: nginx
+        image: quay.io/openshift-psap-qe/nginx-alpine:multiarch
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL        
+        env:
+          - name: JAVA_OPTS
+            value: -Djenkins.install.runSetupWizard=false
+        ports:
+          - name: http-port
+            containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10                 
+        volumeMounts:
+          - name: jenkins-vol
+            mountPath: /var/jenkins_home/
+      volumes:
+        - name: jenkins-vol
+          emptyDir: {}

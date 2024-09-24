@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+  labels:
+    type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+    anplabel: {{.anplabel}}
+    trafficapp: perfata
+spec:
+  selector:
+    matchLabels:
+       type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+       anplabel: {{.anplabel}}
+       trafficapp: perfata
+  replicas: 1
+  strategy:
+    type: RollingUpdate       
+  template:  
+    metadata:
+      labels:
+        type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+        anplabel: {{.anplabel}}
+        trafficapp: perfata
+    spec:
+      nodeSelector: {{.nodeSelector}}
+      containers:
+      - name: egress-firewall-traffic
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do
+          curl -Is http://keepalive-detect-nginx-cluster-ip-service.ovn-live-migration-1.svc.cluster.local:8080 | head -n 1;
+          sleep 2;
+          curl -Is http://workload-app-service.ovn-live-migration-1.svc.cluster.local:8080 | head -n 1;
+          done

@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: large-networkpolicy-egress-firewall-anp-egress-{{.selected_pod_type}}-{{.Iteration}}-{{.Replica}}
+spec:
+  podSelector:
+    matchLabels:
+      type: {{.selected_pod_type}}-{{.Iteration}}-{{.Replica}}
+  policyTypes:
+  - Egress  
+  egress:        
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          {{.ns_label}}: {{.ns_label_value}}
+      podSelector:
+        matchLabels:
+          {{.pod_label}}: {{.pod_label_value}}-{{.Iteration}}-{{.Replica}}
+    ports:
+    # - protocol: TCP
+    #   port: 6443
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 8080          
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: openshift-dns
+      podSelector:
+        matchLabels:
+          dns.operator.openshift.io/daemonset-dns: default
+    ports:
+    # - protocol: TCP
+    #   port: 443
+    # - protocol: TCP
+    #   port: 80                   
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53  
