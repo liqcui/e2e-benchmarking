@@ -219,10 +219,9 @@ function enable_kube_burner_index(){
     export START_TIME=${START_TIME:=""}
     export END_TIME=${END_TIME:-""}
     export ES_INDEX="${ES_INDEX:-perfscale-qe-sdn2ovn}"
-    unset METRICS_PROFILE
-    export METRICS_PROFILE=metrics-profiles/metrics-report.yml
     export LOG_LEVEL=debug
-   
+    METRICS_PROFILE=metrics-profiles/metrics.yml
+    
     echo "INFO: Indexing the cluster results"
     pushd "${TEMP_DIR}"
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
