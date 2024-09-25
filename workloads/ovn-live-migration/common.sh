@@ -241,7 +241,8 @@ function enable_kube_burner_index(){
     echo NEW_PATH is $NEW_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     START_TIME=`date --date="15 min ago" +"%s"`
-    START_TIME=${START_TIME} END_TIME=${START_TIME} WORKLOAD=index ./run.sh
+    END_TIME=`date +"%s"`
+    START_TIME=${START_TIME} END_TIME=${END_TIME} WORKLOAD=index ./run.sh
     echo $START_TIME $END_TIME
     #ES_INDEX=ripsaw-kube-burner ES_SERVER=$ES_SERVER EXTRA_FLAGS="" KUBECONFIG=~/.kube/config WORKLOAD=index ./run.sh
 
