@@ -666,7 +666,7 @@ function live-migration-post-check(){
     migration_checkpoint
     echo "Finished CNI migration"
     
-    NW_MIGRATION_DURATION=$((NW_MIGRATION_STOP - NW_MIGRATION_START - 300))
-    export AFTER_N_TYPE=$(oc get Network.operator.openshift.io cluster  -o json | jq -r '.spec.defaultNetwork.type')
-    sdn2ovn_index_results "$BEFORE_N_TYPE" "$AFTER_N_TYPE" "$NW_MIGRATION_DURATION" "$OPENSHIFT_VERSION"
+    # NW_MIGRATION_DURATION=$((NW_MIGRATION_STOP - NW_MIGRATION_START - 300))
+    # export AFTER_N_TYPE=$(oc get Network.operator.openshift.io cluster  -o json | jq -r '.spec.defaultNetwork.type')
+    # sdn2ovn_index_results "$BEFORE_N_TYPE" "$AFTER_N_TYPE" "$NW_MIGRATION_DURATION" "$OPENSHIFT_VERSION"
 }
