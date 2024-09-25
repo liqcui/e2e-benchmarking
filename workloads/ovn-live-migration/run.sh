@@ -198,6 +198,10 @@ elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
          #live-migration-post-check
          if [[ ${EnableIndex} == "true" ]];then
            enable_kube_burner_index
+           echo "#######################################################"
+           NW_MIGRATION_DURATION=$((NW_MIGRATION_STOP - NW_MIGRATION_START - 300))
+           export AFTER_N_TYPE=$(oc get Network.operator.openshift.io cluster  -o json | jq -r '.spec.defaultNetwork.type')
+           sdn2ovn_index_results "$BEFORE_N_TYPE" "$AFTER_N_TYPE" "$NW_MIGRATION_DURATION" "$OPENSHIFT_VERSION"
          fi
    fi
 else
