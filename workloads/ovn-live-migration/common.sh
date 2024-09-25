@@ -259,7 +259,7 @@ function enable_kube_burner_index(){
 
 
 sdn2ovn_index_results(){
-  export es_index="${ES_INDEX:-perfscale-qe-sdn2ovn}"
+    ES_INDEX="perfscale-qe-sdn2ovn"
     METADATA=$(cat <<EOF
 {
   "uuid": "${UUID}",
@@ -272,8 +272,8 @@ sdn2ovn_index_results(){
 }
 EOF
 )
-    printf "Indexing SDN2OVN Live Migration Timings to ${ES_SERVER}/${es_index}"
-    curl -k -sS -X POST -H "Content-type: application/json" ${ES_SERVER}/${es_index}/_doc -d "${METADATA}" -o /dev/null
+    printf "Indexing SDN2OVN Live Migration Timings to ${ES_SERVER}/${ES_INDEX}"
+    curl -k -sS -X POST -H "Content-type: application/json" ${ES_SERVER}/${ES_INDEX}/_doc -d "${METADATA}" -o /dev/null
     return 0
 }
 
