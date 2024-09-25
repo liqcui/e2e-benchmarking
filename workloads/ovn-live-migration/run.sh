@@ -215,7 +215,10 @@ if [[ ${ENABLE_SNAPPY_BACKUP} == "true" ]] ; then
   tar czf pprof.tar.gz ./pprof-data
   snappy_backup "" "pprof.tar.gz" ${WORKLOAD}
 fi
-run_benchmark_comparison
+
+if [[ ${WORKLOAD} != "ovn-live-migration" ]];then
+    run_benchmark_comparison
+fi
 
 if [ $rc -eq 0 ]; then
   JOB_STATUS="success"

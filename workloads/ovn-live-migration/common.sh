@@ -221,19 +221,21 @@ function enable_kube_burner_index(){
     export ES_INDEX="${ES_INDEX:-perfscale-qe-sdn2ovn}"
     export LOG_LEVEL=debug
     METRICS_PROFILE=metrics-profiles/metrics.yml
-
+    if [[ -d /tmp/${{UUID}} ]];then
+        rm -rf /tmp/${{UUID}}
+    fi
     echo "INFO: Indexing the cluster results"
     pushd "${TEMP_DIR}"
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     OLD_PATH=`pwd`
     echo OLD_PATH is $OLD_PATH
-    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
+    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+    if [ -d e2e-benchmarking/ ];then
+       rm -rf e2e-benchmarking/  
+    fi      
     git clone -b live-migration https://github.com/liqcui/e2e-benchmarking
     cd e2e-benchmarking/workloads/kube-burner-ocp-wrapper
-    # ls ./$METRICS_PROFILE
-    # echo cp ./$METRICS_PROFILE /tmp/
-    # cp ./$METRICS_PROFILE /tmp/
-    # ls /tmp/
+
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'    
     NEW_PATH=`pwd`
     echo NEW_PATH is $NEW_PATH
@@ -248,9 +250,6 @@ function enable_kube_burner_index(){
     CUR_PATH=`pwd`
     echo CUR_PATH is $CUR_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
-    if [ -d e2e-benchmarking/ ];then
-       rm -rf e2e-benchmarking/  
-    fi 
 }
 
 
