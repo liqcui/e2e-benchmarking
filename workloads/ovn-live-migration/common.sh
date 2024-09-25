@@ -250,6 +250,9 @@ function enable_kube_burner_index(){
     CUR_PATH=`pwd`
     echo CUR_PATH is $CUR_PATH
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+    if [[ -d /tmp/$UUID ]];then
+        rm -rf /tmp/$UUID
+    fi
 }
 
 
