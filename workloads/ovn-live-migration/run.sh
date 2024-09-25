@@ -190,13 +190,15 @@ elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
         unset  TEST_JOB_ITERATIONS
         live-migration-keepalive-detect
         sleep 180
-        sleep 600
         live-migration-post-check
         if [[ ${EnableIndex} == "true" ]];then
            enable_kube_burner_index
         fi
    else
          live-migration-post-check
+         if [[ ${EnableIndex} == "true" ]];then
+           enable_kube_burner_index
+         fi
    fi
 else
    run_workload
