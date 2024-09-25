@@ -221,8 +221,8 @@ function enable_kube_burner_index(){
     export ES_INDEX="${ES_INDEX:-perfscale-qe-sdn2ovn}"
     export LOG_LEVEL=debug
     METRICS_PROFILE=metrics-profiles/metrics.yml
-    if [[ -d /tmp/${{UUID}} ]];then
-        rm -rf /tmp/${{UUID}}
+    if [[ -d /tmp/$UUID ]];then
+        rm -rf /tmp/$UUID
     fi
     echo "INFO: Indexing the cluster results"
     pushd "${TEMP_DIR}"
