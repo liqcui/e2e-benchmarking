@@ -272,8 +272,8 @@ sdn2ovn_index_results(){
 }
 EOF
 )
-    printf "Indexing installation timings to ${ES_SERVER}/${_es_index}"
-    curl -k -sS -X POST -H "Content-type: application/json" ${ES_SERVER}/${_es_index}/_doc -d "${METADATA}" -o /dev/null
+    printf "Indexing SDN2OVN Live Migration Timings to ${ES_SERVER}/${es_index}"
+    curl -k -sS -X POST -H "Content-type: application/json" ${ES_SERVER}/${es_index}/_doc -d "${METADATA}" -o /dev/null
     return 0
 }
 
