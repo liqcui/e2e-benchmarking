@@ -2117,7 +2117,7 @@ function run_large_networkpolicy_egressfirewall_anp_workload(){
              export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`       
              restartOVNPODs
        fi
-       sleep 1800
+       #sleep 1800
        ###################################Create Default BANP#################################
        export TEST_STEP="Creating 1 BANP to setup zero trust deny egress/ingress policy."
        export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
