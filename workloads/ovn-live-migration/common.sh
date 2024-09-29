@@ -645,8 +645,8 @@ function live-migration-post-check(){
                 INFRA_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name infra`
                 WORKLOAD_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name workload`
     
-                if [[ $MASTER_MCP_STATUS == "true" && $WORKER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" ]];then
-                #if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
+                #if [[ $MASTER_MCP_STATUS == "true" && $WORKER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" ]];then
+                if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                    echo "#            OVN Live Migration Successfully at `date +"%Y-%m-%d %H:%M:%S"`            #"
                    echo "#                     Current Network Type is $NETWORK_TYPE                    #"
