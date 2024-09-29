@@ -196,7 +196,7 @@ prep_networkpolicy_workload() {
 function verify_if_mcp_be_in_updated_state_by_name() {
 	
     MCP_NAME=$1
-    oc get mcp |grep $MCP_NAME
+    oc get mcp |grep $MCP_NAME>/dev/null
     if [[ $? -ne 0 ]];then
        echo "No mcp $MCP_NAME found, please check ..."
        exit 1
