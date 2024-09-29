@@ -358,7 +358,7 @@ function live-migration-keepalive-detect(){
                 if [[ $NETWORK_TYPE == "OVNKubernetes" ]];then
                 #if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
-                   echo "#       The OCP Network Type Changed to NETWORK_TYPE at `date +"%Y-%m-%d %H:%M:%S"`         #"
+                   echo "#       The OCP Network Type Changed to $NETWORK_TYPE at `date +"%Y-%m-%d %H:%M:%S"`         #"
                    echo "#                     Current Network Type is $NETWORK_TYPE                    #"
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'     
                    break
@@ -644,9 +644,9 @@ function live-migration-post-check(){
                 WORKER_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name worker`
                 INFRA_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name infra`
                 WORKLOAD_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name workload`
-    
-                #if [[ $MASTER_MCP_STATUS == "true" && $WORKER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" ]];then
-                if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
+                echo $MASTER_MCP_STATUS $WORKER_MCP_STATUS $INFRA_MCP_STATUS $WORKLOAD_MCP_STATUS
+                if [[ $MASTER_MCP_STATUS == "true" && $WORKER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" ]];then
+                #if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                    echo "#            OVN Live Migration Successfully at `date +"%Y-%m-%d %H:%M:%S"`            #"
                    echo "#                     Current Network Type is $NETWORK_TYPE                    #"
