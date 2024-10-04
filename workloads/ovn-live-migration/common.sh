@@ -620,7 +620,28 @@ function migration_checkpoint(){
      echo "###############################Summary Report##################################"
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
      cat /tmp/checkResult.csv
-
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo oc get co
+     oc get co 
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo oc get nodes
+     oc get nodes
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo oc get mcp
+     oc get mcp
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo oc get mc
+     oc get mc
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo oc -n openshift-ovn-kubernetes get pods
+     oc -n openshift-ovn-kubernetes get pods
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo oc get network cluster -ojsonpath='{.status.networkType}'
+     oc get network cluster -ojsonpath='{.status.networkType}'    
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
+     echo oc get pods -A |grep -v -E 'Running|Complete'
+     oc get pods -A |grep -v -E 'Running|Complete'
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
 }
 
 function live-migration-post-check(){
