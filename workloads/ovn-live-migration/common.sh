@@ -621,6 +621,9 @@ function migration_checkpoint(){
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
      cat /tmp/checkResult.csv
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+     echo oc get csr
+     oc get csr    
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
      echo oc get co
      oc get co 
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
