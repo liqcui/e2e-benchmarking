@@ -153,7 +153,7 @@ spec:
   namespaceSelector:
     matchLabels:
       kube-burner-job: cluster-density-v2
-  replicas: 1
+  replicas: 4
   routeAdmission:
     wildcardPolicy: WildcardsDisallowed
   routeSelector:
