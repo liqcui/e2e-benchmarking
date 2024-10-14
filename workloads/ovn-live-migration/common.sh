@@ -256,8 +256,6 @@ function enable_kube_burner_index(){
     fi
 }
 
-
-
 sdn2ovn_index_results(){
     ES_INDEX="perfscale-qe-sdn2ovn"
     METADATA=$(cat <<EOF

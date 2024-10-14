@@ -120,7 +120,52 @@ EOF
   export MC_OBO MC_PROMETHEUS MC_PROMETHEUS_TOKEN HOSTED_PROMETHEUS HOSTED_PROMETHEUS_TOKEN HCP_NAMESPACE MGMT_WORKER_NODES HC_PRODUCT MC_NAME
 
 }
+create_ingress_controller(){
+  MAX_INGRESS_CONTROLLER=${MAX_INGRESS_CONTROLLER:=300}
+OCP_COMMON_DOMAIN_NAME=`oc -n openshift-ingress-operator get ingresscontroller default -ojsonpath={.status.domain}`
+openssl req -x509 -newkey rsa:4096 -sha256 -days 3650   -nodes -keyout tls.key -out tls.crt -subj "/CN=perfsale-qe.com"   -addext "subjectAltName=DNS:*.${OCP_COMMON_DOMAIN_NAME}"
+oc --namespace openshift-ingress create secret tls customized-tls --cert=tls.crt --key=tls.key
+INDEX=1
 
+for routename in `oc get route -A | grep cluster-density-2| awk '{print $3}' | tail -${MAX_INGRESS_CONTROLLER}`
+do
+  DOMAIN_NAME=$routename
+oc apply -f-<<EOF
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  name: perfscale-qe-igr${INDEX}
+  namespace: openshift-ingress-operator
+spec:
+  clientTLS:
+    clientCA:
+      name: ""
+    clientCertificatePolicy: ""
+  defaultCertificate:
+    name: customized-tls
+  domain: ${DOMAIN_NAME}
+  endpointPublishingStrategy:
+    type: Private
+  httpCompression: {}
+  httpEmptyRequestsPolicy: Respond
+  httpErrorCodePages:
+    name: ""
+  namespaceSelector:
+    matchLabels:
+      kube-burner-job: cluster-density-v2
+  replicas: 1
+  routeAdmission:
+    wildcardPolicy: WildcardsDisallowed
+  routeSelector:
+    matchLabels:
+      router: internal
+  tlsSecurityProfile:
+    type: Intermediate
+  tuningOptions: {}
+EOF
+INDEX=$(( $INDEX + 1 ))
+done
+}
 download_binary
 if [[ ${WORKLOAD} =~ "index" ]]; then
   cmd="${KUBE_DIR}/kube-burner-ocp index --uuid=${UUID} --start=$START_TIME --end=$((END_TIME + 600)) --metrics-profile=$METRICS_PROFILE --log-level ${LOG_LEVEL}"
@@ -166,4 +211,5 @@ env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UU
 if [[ ${WORKLOAD} =~ "egressip" ]]; then
     cleanup_egressip_external_server
 fi
+create_ingress_controller
 exit $exit_code
