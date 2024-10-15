@@ -642,7 +642,10 @@ function migration_checkpoint(){
      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
      echo oc get pods -A |grep -v -E 'Running|Complete'
      oc get pods -A |grep -v -E 'Running|Complete'
-     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
+     echo  oc -n openshift-ingress  get pods 
+     oc -n openshift-ingress  get pods 
+     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}' 
 }
 
 function live-migration-post-check(){
