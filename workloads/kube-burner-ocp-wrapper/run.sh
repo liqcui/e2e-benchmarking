@@ -214,6 +214,7 @@ fi
 
 if [[ ${WORKLOAD} =~ "cluster-density" ]]; then
     create_ingress_controller
+    sleep 600
 fi
 
 exit $exit_code
