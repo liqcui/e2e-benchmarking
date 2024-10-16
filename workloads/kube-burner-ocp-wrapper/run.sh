@@ -211,5 +211,9 @@ env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UU
 if [[ ${WORKLOAD} =~ "egressip" ]]; then
     cleanup_egressip_external_server
 fi
-create_ingress_controller
+
+if [[ ${WORKLOAD} =~ "cluster-density" ]]; then
+    create_ingress_controller
+fi
+
 exit $exit_code
