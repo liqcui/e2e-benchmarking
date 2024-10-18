@@ -121,8 +121,10 @@ EOF
 
 }
 create_ingress_controller(){
-  #MAX_INGRESS_CONTROLLER=${MAX_INGRESS_CONTROLLER:=300}
-  MAX_INGRESS_CONTROLLER=`oc get nodes -lnode-role.kubernetes.io/worker |wc -l | tr -d ' '`
+  
+DEFAULT_INGRESS_CONTROLLER=`oc get nodes -lnode-role.kubernetes.io/worker |wc -l | tr -d ' '`
+MAX_INGRESS_CONTROLLER=${MAX_INGRESS_CONTROLLER:=$DEFAULT_INGRESS_CONTROLLER}
+echo "Creating $MAX_INGRESS_CONTROLLER ingress controller, the replicas is 4"
 OCP_COMMON_DOMAIN_NAME=`oc -n openshift-ingress-operator get ingresscontroller default -ojsonpath={.status.domain}`
 openssl req -x509 -newkey rsa:4096 -sha256 -days 3650   -nodes -keyout tls.key -out tls.crt -subj "/CN=perfsale-qe.com"   -addext "subjectAltName=DNS:*.${OCP_COMMON_DOMAIN_NAME}"
 oc --namespace openshift-ingress create secret tls customized-tls --cert=tls.crt --key=tls.key
