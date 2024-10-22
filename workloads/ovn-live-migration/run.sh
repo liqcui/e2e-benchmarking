@@ -192,6 +192,7 @@ elif [[ ${WORKLOAD} == "ovn-live-migration" ]];then
         sleep 180
         live-migration-post-check
         if [[ ${EnableIndex} == "true" ]];then
+           sleep 900
            enable_kube_burner_index
           #  echo "#######################################################"
           #  NW_MIGRATION_DURATION=$((NW_MIGRATION_STOP - NW_MIGRATION_START - 300))
