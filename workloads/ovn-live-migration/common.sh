@@ -224,6 +224,8 @@ function enable_kube_burner_index(){
     if [[ -d /tmp/$UUID ]];then
         rm -rf /tmp/$UUID
     fi
+    echo 
+    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
     echo "INFO: Indexing the cluster results"
     pushd "${TEMP_DIR}"
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
