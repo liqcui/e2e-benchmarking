@@ -1,0 +1,10 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: perfweb-ingress-route-{{.Replica}}
+spec:
+  to:
+    kind: Service
+    name: perfweb-ingress-traffic-service
+  tls:
+    termination: edge

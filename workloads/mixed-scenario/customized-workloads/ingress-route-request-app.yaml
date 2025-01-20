@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-route-request-app
+  labels:
+    app: ingress-request-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: {{.anplabel}}-{{.Iteration}}-ingress-{{.Replica}}
+      anplabel: {{.anplabel}}
+  template:
+    metadata:
+      labels:
+        type: {{.anplabel}}-{{.Iteration}}-ingress-{{.Replica}}
+        anplabel: {{.anplabel}}
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/worker: ""   
+      containers:
+      - name: ingress-request-app
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        env:
+        #For future use 
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+               fieldPath: metadata.namespace
+        #For future use       
+        - name: ROUTE_ENDPOINT
+          value: "https://perfweb-ingress-route-{{.Replica}}-NS.{{ .ingressDomain }}"        
+        securityContext:
+          runAsNonRoot: false
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL 
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always            
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do      
+              echo Checking connectivity to $ROUTE_ENDPOINT from $NAMESPACE;
+              echo $ROUTE_ENDPOINT | sed "s/NS/$NAMESPACE/g";
+              for ns in anp-cidr-0 anp-cidr-1 anp-open-0 anp-open-1 anp-restricted-0 anp-restricted-1;
+              do
+                  curl -k -Is https://perfweb-ingress-route-1-${ns}.apps.liqcui-oc4anp.qe.devcluster.openshift.com | head -n 3| grep OK;
+                  sleep 1;
+              done;
+          done
