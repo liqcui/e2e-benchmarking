@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+  labels:
+    type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+    anplabel: {{.anplabel}}
+    trafficapp: perfata
+spec:
+  selector:
+    matchLabels:
+       type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+       anplabel: {{.anplabel}}
+       trafficapp: perfata
+  replicas: 1
+  strategy:
+    type: RollingUpdate       
+  template:  
+    metadata:
+      labels:
+        type: {{.anplabel}}-{{.Iteration}}-ata-{{.Replica}}
+        anplabel: {{.anplabel}}
+        trafficapp: perfata
+    spec:
+      nodeSelector: {{.nodeSelector}}
+      containers:
+      - name: cross-ns-traffic-app-ata
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do
+              nslookup prometheus-k8s-0.prometheus-operated.openshift-monitoring.svc.cluster.local;
+              RC=$?;
+              curl -Is http://keepalive-detect-nginx-cluster-ip-service.sdn-ovn-migration-0.svc.cluster.local:8080 | head -n 1;
+              sleep 5;
+              curl -Is http://workload-app-service.sdn-ovn-migration-0.svc.cluster.local:8080 | head -n 1;
+              sleep 5;
+              RC2=$?;
+              echo RC is $RC;
+              if [ $RC -eq 0 ] ; then echo across checking SUCCESS; else echo across checking FAILURE; fi;
+              sleep 5;
+          done

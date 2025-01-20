@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: workload-app-service
+spec:
+  selector:
+    app: workload-nginx-app
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+  sessionAffinity: None

@@ -1,0 +1,15 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: keepalive-detect-nginx-cluster-ip-service
+spec:
+  selector:
+    app: keepalive-detect-nginx
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+  sessionAffinity: None
+

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-keepalive-{{.Replica}}
+  labels:
+    app: keepalive-detectd-app
+spec:
+  selector:
+    matchLabels:
+      app: keepalive-detectd-app
+  template:
+    metadata:
+      labels:
+        app: keepalive-detectd-app
+    spec:
+      nodeSelector: {{.nodeSelector}}    
+      containers:
+      - name: keepalive
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL 
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do
+            nslookup prometheus-k8s-0.prometheus-operated.openshift-monitoring.svc.cluster.local;
+            RC1=$?;
+            curl -Is http://probe-detectd-nginx-service.zero-trust-jks.svc.cluster.local:8080 | head -n 1| grep OK;
+            RC2=$?;
+            echo RC1 is $RC1 RC2 is $RC2;
+            if [ $RC1 -eq 0 -a $RC2 -eq 0 ] ; then echo SUCCESS> /tmp/healthy;else rm -rf /tmp/healthy;fi;
+            sleep 30;
+          done
+        startupProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          periodSeconds: 10
+          failureThreshold: 60
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 15
+          periodSeconds: 5

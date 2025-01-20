@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-workload-tool-{{.Replica}}
+  labels:
+    app: workload-tool
+spec:
+  selector:
+    matchLabels:
+      app: workload-tool
+  template:
+    metadata:
+      labels:
+        app: workload-tool
+    spec:
+      nodeSelector: {{.nodeSelector}}    
+      containers:
+      - name: keepalive
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL
+        command: ["/usr/bin/nc"]
+        args: ["-l","-p","8080"]
+

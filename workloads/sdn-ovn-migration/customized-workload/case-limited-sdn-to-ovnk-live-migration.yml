@@ -1,0 +1,161 @@
+---
+global:
+  gc: {{.GC}}
+  gcMetrics: {{.GC_METRICS}}
+  measurements:
+    - name: podLatency
+      thresholds:
+        - conditionType: Ready
+          metric: P99
+          threshold: {{.POD_READY_THRESHOLD}}
+{{ if eq .SVC_LATENCY "true" }}
+    - name: serviceLatency
+      svcTimeout: 10s
+{{ end }}
+{{ if eq .PPROF_COLLECTION "true" }}
+    - name: pprof
+      pprofInterval: {{ .PPROF_COLLECTION_INTERVAL }}
+      pprofDirectory: /tmp/pprof-data
+      pprofTargets:
+
+      - name: kube-apiserver-cpu
+        namespace: "openshift-kube-apiserver"
+        labelSelector: {app: openshift-kube-apiserver}
+        bearerToken: {{ .BEARER_TOKEN }}
+        url: https://localhost:6443/debug/pprof/profile?timeout=30
+
+      - name: kube-apiserver-heap
+        namespace: "openshift-kube-apiserver"
+        labelSelector: {app: openshift-kube-apiserver}
+        bearerToken: {{ .BEARER_TOKEN }}
+        url: https://localhost:6443/debug/pprof/heap
+
+      - name: kube-controller-manager-heap
+        namespace: "openshift-kube-controller-manager"
+        labelSelector: {app: kube-controller-manager}
+        bearerToken: {{ .BEARER_TOKEN }}
+        url: https://localhost:10257/debug/pprof/heap
+
+      - name: kube-controller-manager-cpu
+        namespace: "openshift-kube-controller-manager"
+        labelSelector: {app: kube-controller-manager}
+        bearerToken: {{ .BEARER_TOKEN }}
+        url: https://localhost:10257/debug/pprof/profile?timeout=30
+
+      - name: etcd-heap
+        namespace: "openshift-etcd"
+        labelSelector: {app: etcd}
+        cert: {{ .CERTIFICATE }}
+        key: {{ .PRIVATE_KEY }}
+        url: https://localhost:2379/debug/pprof/heap
+
+      - name: etcd-cpu
+        namespace: "openshift-etcd"
+        labelSelector: {app: etcd}
+        cert: {{ .CERTIFICATE }}
+        key: {{ .PRIVATE_KEY }}
+        url: https://localhost:2379/debug/pprof/profile?timeout=30
+{{ end }}
+metricsEndpoints:
+{{ if .ES_SERVER }}
+  - metrics: [{{.METRICS}}]
+    alerts: [{{.ALERTS}}]
+    indexer:
+      esServers: ["{{.ES_SERVER}}"]
+      insecureSkipVerify: true
+      defaultIndex: {{.ES_INDEX}}
+      type: opensearch
+{{ end }}
+{{ if eq .LOCAL_INDEXING "true" }}
+  - metrics: [{{.METRICS}}]
+    alerts: [{{.ALERTS}}]
+    indexer:
+      type: local
+      metricsDirectory: collected-metrics-{{.UUID}}
+{{ end }}
+
+jobs:
+  - name: limited-sdn-to-ovnk-live-migration
+    namespace: sdn-ovn-migration 
+    jobIterations: {{.SDN_OVN_LIVE_MIGRATION_ITERATION}}
+    qps: {{.QPS}}
+    burst: {{.BURST}}
+    namespacedIterations: true
+    podWait: false
+    waitWhenFinished: true
+    preLoadImages: true
+    preLoadPeriod: 15s
+    churn: {{.CHURN}}
+    churnCycles: {{.CHURN_CYCLES}}
+    churnDuration: {{.CHURN_DURATION}}
+    churnPercent: {{.CHURN_PERCENT}}
+    churnDelay: {{.CHURN_DELAY}}
+    churnDeletionStrategy: {{.CHURN_DELETION_STRATEGY}}
+    namespaceLabels:
+      security.openshift.io/scc.podSecurityLabelSync: false
+      pod-security.kubernetes.io/enforce: privileged
+      pod-security.kubernetes.io/audit: privileged
+      pod-security.kubernetes.io/warn: privileged
+      anplabel: sdn-ovn-migration
+    objects:
+      - objectTemplate: postgres-deployment.yml
+        replicas: {{.POD_RPLICAS}}
+        inputVars:
+          readinessPeriod: 1
+          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          #nodeSelector: "{{.BACKEND_POD_NODE_SELECTOR}}"
+          type: perfdb
+          anplabel: "sdn-ovn-migration"
+
+      - objectTemplate: postgres-service.yml
+        replicas: {{.POD_RPLICAS}}
+        inputVars:
+          anplabel: "sdn-ovn-migration"
+
+      - objectTemplate: perfapp-deployment.yml
+        replicas: {{.POD_RPLICAS}}
+        inputVars:
+          readinessPeriod: 10
+          livenessPeriod: 10
+          #nodeSelector: "{{.BACKEND_POD_NODE_SELECTOR}}"
+          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          anplabel: "sdn-ovn-migration"
+
+      - objectTemplate: egress-external-traffic-app.yml
+        replicas: 1
+        inputVars:
+          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          anplabel: "sdn-ovn-migration"        
+
+      - objectTemplate: keepalive-detect-nginx-app.yml
+        replicas: {{.POD_RPLICAS}}
+        inputVars:
+          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          anplabel: "sdn-ovn-migration"
+
+      - objectTemplate: workload-nginx-app.yml
+        replicas: {{.POD_RPLICAS}}
+        inputVars:
+          nodeSelector: "{{.WORKLOAD_POD_NODE_SELECTOR}}"
+          anplabel: "sdn-ovn-migration"
+
+      - objectTemplate: workload-nginx-app-service.yml
+        replicas: 1
+        inputVars:
+          anplabel: "sdn-ovn-migration"
+
+      - objectTemplate: workload-tool.yml
+        replicas: 1
+        inputVars:
+          nodeSelector: "{{.WORKLOAD_POD_NODE_SELECTOR}}"
+          anplabel: "sdn-ovn-migration"     
+
+      - objectTemplate: service-clusterip-worker-keepalive-detect-nginx-app.yml
+        replicas: 1
+
+      - objectTemplate: service-loadbalance-worker-keepalive-detect-nginx-app.yml
+        replicas: 1
+
+      - objectTemplate: service-nodeport-workload-nginx-app.yml
+        replicas: 1
+

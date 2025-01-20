@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: keepalive-detect-nginx-loadbalancer-service
+spec:
+  selector:
+    app: keepalive-detect-nginx
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer
+  sessionAffinity: None
