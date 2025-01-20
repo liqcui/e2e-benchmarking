@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.anplabel}}-{{.Iteration}}-reqegress-{{.Replica}}
+  labels:
+    app: egress-traffic-app
+spec:
+  replicas: {{.podReplicas}}
+  selector:
+    matchLabels:
+      type: {{.anplabel}}-{{.Iteration}}-reqegress-{{.Replica}}
+      anplabel: {{.anplabel}}  
+  template:
+    metadata:
+      labels:
+        type: {{.anplabel}}-{{.Iteration}}-reqegress-{{.Replica}}
+        anplabel: {{.anplabel}}
+    spec:
+      nodeSelector: {{.nodeSelector}}    
+      containers:
+      - name: keepalive
+        image: quay.io/openshift-psap-qe/ubi9-minimal
+        imagePullPolicy: Always
+        env:
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+               fieldPath: status.hostIP           
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL 
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always            
+        command: [ "/bin/bash", "-c", "--" ]
+        args:
+        - while true;
+          do  
+              echo "Checking Egress connectivity to $NODE_IP for Node IP Selector Request";
+              nc -vz $NODE_IP 30003 -w 5;
+              echo "Checking connectivity to internet for Egress Firewall Test";               
+              sleep 1;
+              curl -Is http://www.google.com | head -n 1;
+              sleep 1;
+              ping -c 5 8.8.8.8;
+              sleep 1;
+              curl -Is https://www.digitalocean.com/robots.txt | head -n 1;
+              sleep 1;
+              ping -c 5 8.8.4.4;
+              echo "Checking connectivity to Egress Request Across NS for Pod IP/CIDR Selector Request";
+              for((i=0;i<=100;i++));
+              do
+              curl -Is http://perfapp-service.anp-restricted-${i}.svc.cluster.local:8080 | head -n 1;
+              curl -Is http://perfapp-service.anp-cidr-${i}.svc.cluster.local:8080 | head -n 1;
+              curl -Is http://perfapp-service.anp-open-${i}.svc.cluster.local:8080 | head -n 1;
+              curl -Is http://perfapp-service.anp-test-${i}.svc.cluster.local:8080 | head -n 1;
+              curl -Is http://perfapp-service.anp-unknown-${i}.svc.cluster.local:8080 | head -n 1; 
+              done;                            
+          done

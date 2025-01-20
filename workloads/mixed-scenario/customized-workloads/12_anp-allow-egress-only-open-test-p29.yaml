@@ -1,0 +1,36 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-egress-only-open-test-p29
+spec:
+  priority: 29
+  subject:
+    pods:
+      namespaceSelector:
+        matchLabels:
+          anplabel: anp-open
+      podSelector:
+        matchLabels:
+          anplabel: anp-open
+  ingress:
+  - name: "deny-all-ingress-from-anp-test"
+    action: "Deny"
+    from:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-test
+        podSelector:
+          matchLabels:
+            anplabel: anp-test
+  egress:
+  - name: "allow-all-egress-to-anp-test"
+    action: "Allow"
+    to:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-test
+        podSelector:
+          matchLabels:
+            anplabel: anp-test

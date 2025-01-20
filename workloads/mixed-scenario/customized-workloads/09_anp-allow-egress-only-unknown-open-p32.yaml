@@ -1,0 +1,36 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-egress-only-unknown-open-p32
+spec:
+  priority: 32
+  subject:
+    pods:
+      namespaceSelector:
+        matchLabels:
+          anplabel: anp-unknown
+      podSelector:
+        matchLabels:
+          anplabel: anp-unknown
+  ingress:
+  - name: "deny-all-ingress-from-anp-open"
+    action: "Deny"
+    from:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-open
+        podSelector:
+          matchLabels:
+            anplabel: anp-open
+  egress:
+  - name: "allow-all-egress-to-anp-open"
+    action: "Allow"
+    to:
+    - pods:
+        namespaceSelector:
+          matchLabels:
+            anplabel: anp-open
+        podSelector:
+          matchLabels:
+            anplabel: anp-open

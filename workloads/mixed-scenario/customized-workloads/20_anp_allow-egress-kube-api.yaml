@@ -1,0 +1,22 @@
+apiVersion: policy.networking.k8s.io/v1alpha1
+kind: AdminNetworkPolicy
+metadata:
+  name: allow-traffic-egress-to-kubeapi-p5
+spec:
+  priority: 5
+  subject:
+    namespaces:
+      matchLabels:
+        anplabel: anp-restricted
+  egress:
+  - name: "allow-to-API-server"
+    action: "Allow"
+    to:
+    - nodes:
+       matchExpressions:
+       - key: node-role.kubernetes.io/control-plane
+         operator: Exists
+    ports:
+    - portNumber:
+        port: 6443
+        protocol: TCP   
