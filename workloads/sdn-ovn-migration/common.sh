@@ -846,9 +846,9 @@ function sdn-ovn-live-migration-keepalive-detect-phaseII(){
                 WORKLOAD_MCP_STATUS=`verify_if_mcp_be_in_updated_state_by_name workload`
                 # echo $MASTER_MCP_STATUS $WORKER_MCP_STATUS $INFRA_MCP_STATUS $WORKLOAD_MCP_STATUS
                 #if [[ $MASTER_MCP_STATUS == "true" && $WORKER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" && $NETWORK_TYPE == "OpenShiftSDN" ]];then
-                oc get network cluster -oyaml |grep NetworkTypeMigrationInProgress>/dev/null
+                oc get network cluster -oyaml |grep NetworkTypeMigrationCompleted>/dev/null
                 RC2=$?
-                if [[ $MASTER_MCP_STATUS == "true" && $WORKER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" && $RC2 -ne 0 ]];then
+                if [[ $MASTER_MCP_STATUS == "true" && $WORKER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" && $RC2 -eq 0 ]];then
                 #if [[ $MASTER_MCP_STATUS == "true" && $WORKER_MCP_STATUS == "true" && $INFRA_MCP_STATUS == "true" && $WORKLOAD_MCP_STATUS == "true" && $NETWORK_TYPE == "OVNKubernetes" ]];then
                 #if [[ $NETWORK_TYPE == "OpenShiftSDN" ]];then
                    awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
