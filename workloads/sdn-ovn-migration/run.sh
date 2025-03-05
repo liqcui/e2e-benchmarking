@@ -315,9 +315,9 @@ EOF
                  get_ovn_node_system_usage_info
                 fi
             
-                #sdn-ovn-live-migration-keepalive-detect-phaseI
-                #sleep 180
-                #sdn-ovn-live-migration-keepalive-detect-phaseII
+                sdn-ovn-live-migration-keepalive-detect-phaseI
+                sleep 180
+                sdn-ovn-live-migration-keepalive-detect-phaseII
             
                 if [[ ${EnableIndex} == "true" ]];then
                    echo "waiting for 300s, then save kubeburner index"
