@@ -229,7 +229,7 @@ EOF
                   sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
                   sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
                   sed -i 's/replicas: 5/replicas: 6/' cluster-density-v2.yml
-                  sed -i 's/replicas: 10/replicas: 5/' cluster-density-v2.yml                  
+                  # sed -i 's/replicas: 10/replicas: 5/' cluster-density-v2.yml                  
                   # #Remove Network Policy
                   # sed -i '/np-deny-all.yml/, +9d' cluster-density-v2.yml
                   # sed -i '/np-deny-all.yml/{N;N;d;}' cluster-density-v2.yml
@@ -315,9 +315,9 @@ EOF
                  get_ovn_node_system_usage_info
                 fi
             
-                sdn-ovn-live-migration-keepalive-detect-phaseI
-                sleep 180
-                sdn-ovn-live-migration-keepalive-detect-phaseII
+                # sdn-ovn-live-migration-keepalive-detect-phaseI
+                # sleep 180
+                # sdn-ovn-live-migration-keepalive-detect-phaseII
             
                 if [[ ${EnableIndex} == "true" ]];then
                    echo "waiting for 300s, then save kubeburner index"
