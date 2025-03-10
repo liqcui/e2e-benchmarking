@@ -40,7 +40,7 @@ export KUBE_BURNER_POD_REPLICAS=${KUBE_BURNER_POD_REPLICAS:="1"}
 export PPROF_COLLECTION=${PPROF_COLLECTION:-false}
 export PPROF_COLLECTION_INTERVAL=${PPROF_COLLECTION_INTERVAL:-5m}
 export IF_SCLAE_OUT_NODES=${IF_SCLAE_OUT_NODES:="false"}
-
+export ONLY_POST_CHECKING=${ONLY_POST_CHECKING:="false"}
 
 download_binary(){
   KUBE_BURNER_URL="https://github.com/kube-burner/kube-burner-ocp/releases/download/v${KUBE_BURNER_VERSION}/kube-burner-ocp-V${KUBE_BURNER_VERSION}-linux-x86_64.tar.gz"
