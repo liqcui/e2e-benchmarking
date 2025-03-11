@@ -135,9 +135,6 @@ jobs:
         inputVars:
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
           anplabel: "sdn-ovn-restricted"
-          workload: "{{.WORKLOAD}}"
-          es_server: "{{.ES_SERVER}}"
-          es_index: "{{.ES_INDEX}}"
 
       - objectTemplate: networkpolicy-deny-all.yml
         replicas: 1

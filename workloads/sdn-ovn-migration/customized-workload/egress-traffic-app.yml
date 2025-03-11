@@ -26,13 +26,6 @@ spec:
     volumeMounts:
       - name: podinfo
         mountPath: /etc/podinfo
-    env:
-    - name: WORKLOAD
-      value: {{.workload}}
-    - name: ES_SERVER
-      value: {{.es_server}}
-    - name: ES_INDEX_NETPOL
-      value: {{.es_index}}
   volumes:
     - name: podinfo
       downwardAPI:
