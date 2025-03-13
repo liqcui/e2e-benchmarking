@@ -747,9 +747,9 @@ function sdn-ovn-live-migration-keepalive-detect-phaseI(){
                     awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                 fi
                 #Temp solution for pr649 and will remove later
-                if [ $RC3 -eq 0 -a $(( $INIT%60 )) -eq 0 ];then
-                   capture_sdn_log4minSyncPeriod
-                fi
+                # if [ $RC3 -eq 0 -a $(( $INIT%60 )) -eq 0 ];then
+                #    capture_sdn_log4minSyncPeriod
+                # fi
 
                 sleep $LIVE_MIGRATION_DETECT_INTERVAL;
                 INIT=$(( $INIT + 1 ))
@@ -760,9 +760,9 @@ function sdn-ovn-live-migration-keepalive-detect-phaseI(){
     done
 
     #Temp solution for pr649 and will remove later
-    if [[ -f /tmp/minSyncPeriod.log ]];then
-       cat /tmp/minSyncPeriod.log
-    fi
+    # if [[ -f /tmp/minSyncPeriod.log ]];then
+    #    cat /tmp/minSyncPeriod.log
+    # fi
 }
 
 function sdn-ovn-live-migration-keepalive-detect-phaseII(){
