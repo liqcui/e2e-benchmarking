@@ -1,8 +1,5 @@
 #!/usr/bin/bash
-#set -m
-#set +x
 source ../../utils/common.sh
-#source env.sh
 
 openshift_login
 
