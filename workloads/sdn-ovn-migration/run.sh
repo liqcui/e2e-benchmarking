@@ -267,6 +267,7 @@ UUID: ${UUID}
 JOB_START: ${JOB_START}
 ###############################################
 EOF
+                #Used for prow ci job, we need to execute cluster-density-v2 job first before upgrade
                 if [[ ${ENABLE_EGRESS_POLICY} == "true" ]];then
                     cd customized-workload
                     EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
