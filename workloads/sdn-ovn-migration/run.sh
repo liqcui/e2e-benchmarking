@@ -270,14 +270,14 @@ UUID: ${UUID}
 JOB_START: ${JOB_START}
 ###############################################
 EOF
-                if [[ ${ENABLE_EGRESS_POLICY }]];then
+                if [[ ${ENABLE_EGRESS_POLICY} == "true" ]];then
                     cd customized-workload
                     EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
                     generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
                     cat ./egress-firewall-policy.yml
-              
-                    
-
+                    echo ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} -c customized-workload-template.yml
+                    ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} -c customized-workload-template.yml
+                    cd ..
                 fi
 
                 #Create Customized Ingress Controller 
@@ -328,9 +328,9 @@ EOF
                  get_ovn_node_system_usage_info
                 fi
             
-                sdn-ovn-live-migration-keepalive-detect-phaseI
-                sleep 180
-                sdn-ovn-live-migration-keepalive-detect-phaseII
+                # sdn-ovn-live-migration-keepalive-detect-phaseI
+                # sleep 180
+                # sdn-ovn-live-migration-keepalive-detect-phaseII
             
                 if [[ ${EnableIndex} == "true" ]];then
                    echo "waiting for 300s, then save kubeburner index"

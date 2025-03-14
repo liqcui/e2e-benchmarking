@@ -31,7 +31,7 @@ metricsEndpoints:
 {{ end }}
 
 jobs:
-  - name: cluster-density-v2
+  - name: additional-egress-polices
     namespace: cluster-density-v2
     jobIterations: {{.JOB_ITERATIONS}}
     qps: {{.QPS}}
@@ -54,5 +54,5 @@ jobs:
       pod-security.kubernetes.io/warn: privileged
     objects:
 
-      - objectTemplate: imagestream.yml
+      - objectTemplate: egress-firewall-policy.yml
         replicas: 1
