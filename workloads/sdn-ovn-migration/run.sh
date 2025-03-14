@@ -42,7 +42,7 @@ export PPROF_COLLECTION_INTERVAL=${PPROF_COLLECTION_INTERVAL:-5m}
 export IF_SCLAE_OUT_NODES=${IF_SCLAE_OUT_NODES:="false"}
 export ONLY_POST_CHECKING=${ONLY_POST_CHECKING:="false"}
 export EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM=52
-
+export ENABLE_EGRESS_POLICY=${ENABLE_EGRESS_POLICY:="false"}
 download_binary(){
   KUBE_BURNER_URL="https://github.com/kube-burner/kube-burner-ocp/releases/download/v${KUBE_BURNER_VERSION}/kube-burner-ocp-V${KUBE_BURNER_VERSION}-linux-x86_64.tar.gz"
   curl --fail --retry 8 --retry-all-errors -sS -L "${KUBE_BURNER_URL}" | tar -xzC "${KUBE_DIR}/" kube-burner-ocp
@@ -244,12 +244,11 @@ EOF
                   # sed -i 's/replicas: 5/replicas: 18/' cluster-density-v2.yml
                   # sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
                   # sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
-
+                  echo -e "\n      - objectTemplate: egress-firewall-policy.yml\n        replicas: 1">>cluster-density-v2.yml 
+                  echo "---------------------------------------------------"
+                  cat    cluster-density-v2.yml
+                  echo "---------------------------------------------------"                  
               fi
-              echo -e "\n      - objectTemplate: egress-firewall-policy.yml\n        replicas: 1">>cluster-density-v2.yml 
-              echo "---------------------------------------------------"
-              cat    cluster-density-v2.yml
-              echo "---------------------------------------------------"
               $cmd
               cd ..                         
       fi
