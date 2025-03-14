@@ -215,16 +215,14 @@ UUID: ${UUID}
 JOB_START: ${JOB_START}
 ###############################################
 EOF
-
-              cd customized-workload
-              EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
-              generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
-              cat ./egress-firewall-policy.yml
-              
-              ${KUBE_DIR}/kube-burner-ocp cluster-density-v2 --extract
         
               if [[ $IF_CUSTOMIZED_KUBE_BURNER_WORKLOAD == "true" ]];then
-                 
+                  cd customized-workload
+                  EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
+                  generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
+                  cat ./egress-firewall-policy.yml
+                  
+                  ${KUBE_DIR}/kube-burner-ocp cluster-density-v2 --extract                 
                   sed -i "s/podReplicas: 2/podReplicas: ${KUBE_BURNER_POD_REPLICAS}/" cluster-density-v2.yml
                   sed -i 's/replicas: 3/replicas: 11/' cluster-density-v2.yml
                   sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
