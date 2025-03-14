@@ -251,7 +251,7 @@ EOF
               $cmd
               JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
               env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
-              echo                                                            
+              echo
       fi
 
 
@@ -272,6 +272,7 @@ JOB_START: ${JOB_START}
 EOF
                 #Used for prow ci job, we need to execute cluster-density-v2 job first before upgrade
                 if [[ ${ENABLE_EGRESS_POLICY} == "true" ]];then
+                    export JOB_ITERATIONS=$ITERATIONS
                     cd customized-workload
                     EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
                     generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
@@ -329,9 +330,9 @@ EOF
                  get_ovn_node_system_usage_info
                 fi
             
-                # sdn-ovn-live-migration-keepalive-detect-phaseI
-                # sleep 180
-                # sdn-ovn-live-migration-keepalive-detect-phaseII
+                sdn-ovn-live-migration-keepalive-detect-phaseI
+                sleep 180
+                sdn-ovn-live-migration-keepalive-detect-phaseII
             
                 if [[ ${EnableIndex} == "true" ]];then
                    echo "waiting for 300s, then save kubeburner index"
