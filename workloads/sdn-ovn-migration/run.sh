@@ -270,6 +270,16 @@ UUID: ${UUID}
 JOB_START: ${JOB_START}
 ###############################################
 EOF
+                if [[ ${ENABLE_EGRESS_POLICY }]];then
+                    cd customized-workload
+                    EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
+                    generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
+                    cat ./egress-firewall-policy.yml
+              
+                    
+
+                fi
+
                 #Create Customized Ingress Controller 
                 if [[ ${ENABLE_INGRESS_CONTROLLER} == "true" ]]; then             
                       create_ingress_controller               
@@ -277,7 +287,7 @@ EOF
                 JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
                 env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
                 echo
-                 
+
                 cd customized-workload
                 LABEL_NODE=`oc get nodes |grep worker | awk '{print $1}' | head -1`
                 oc label node $LABEL_NODE node-role.kubernetes.io/backend=
