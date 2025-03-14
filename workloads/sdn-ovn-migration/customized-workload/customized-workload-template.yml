@@ -33,7 +33,7 @@ metricsEndpoints:
 jobs:
   - name: additional-egress-polices
     namespace: cluster-density-v2
-    jobIterations: {{.JOB_ITERATIONS}}
+    jobIterations: {{.ITERATIONS}}
     qps: {{.QPS}}
     burst: {{.BURST}}
     namespacedIterations: true
