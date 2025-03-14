@@ -273,14 +273,14 @@ EOF
                 #Used for prow ci job, we need to execute cluster-density-v2 job first before upgrade
                 if [[ ${ENABLE_EGRESS_POLICY} == "true" ]];then
                     #export JOB_ITERATIONS=$ITERATIONS
-                    echo ITERATIONS is $ITERATIONS
+                    # echo ITERATIONS is $ITERATIONS
                     cd customized-workload
                     EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
                     generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
                     cat ./egress-firewall-policy.yml
                     echo ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID}  --iterations=${ITERATIONS} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} -c customized-workload-template.yml
                     ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --iterations=${ITERATIONS} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} -c customized-workload-template.yml
-                    cat customized-workload-template.yml
+                    # cat customized-workload-template.yml
                     cd ..
                 fi
 
