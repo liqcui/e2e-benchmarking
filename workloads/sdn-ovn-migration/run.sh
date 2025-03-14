@@ -273,6 +273,7 @@ EOF
                 #Used for prow ci job, we need to execute cluster-density-v2 job first before upgrade
                 if [[ ${ENABLE_EGRESS_POLICY} == "true" ]];then
                     #export JOB_ITERATIONS=$ITERATIONS
+                    echo ITERATIONS is $ITERATIONS
                     cd customized-workload
                     EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
                     generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
