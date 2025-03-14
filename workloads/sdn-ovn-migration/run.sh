@@ -245,10 +245,10 @@ EOF
                   echo -e "\n      - objectTemplate: egress-firewall-policy.yml\n        replicas: 1">>cluster-density-v2.yml 
                   echo "---------------------------------------------------"
                   cat    cluster-density-v2.yml
-                  echo "---------------------------------------------------"                  
+                  echo "---------------------------------------------------"  
+                  cd ..                   
               fi
-              $cmd
-              cd ..                         
+              $cmd                                 
       fi
 
 
