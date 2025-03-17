@@ -10,7 +10,8 @@ LOG_LEVEL=${LOG_LEVEL:-info}
 if [ "$KUBE_BURNER_VERSION" = "default" ]; then
     unset KUBE_BURNER_VERSION
 fi
-KUBE_BURNER_VERSION=${KUBE_BURNER_VERSION:-1.3.2}
+KUBE_BURNER_VERSION=${KUBE_BURNER_VERSION:-1.6.3}
+#KUBE_BURNER_VERSION=${KUBE_BURNER_VERSION:-1.3.2}
 CHURN=${CHURN:-true}
 WORKLOAD=${WORKLOAD:?}
 QPS=${QPS:-20}
@@ -241,9 +242,7 @@ EOF
         oc adm policy add-scc-to-user privileged -z default -n perfscale-workload-0
         oc -n perfscale-workload-0 apply -f perfnode-daemonset.yaml
         oc -n perfscale-workload-0 wait --timeout=120s --for=condition=Ready pod -l app=node-traffic-httpsvr
-        oc -n perfscale-workload-0 apply -f ingress-nodeip-request-app.yaml
-        oc -n perfscale-workload-0 wait --timeout=120s --for=condition=Ready pod -l app=ingress-nodeip-request-app
-
+  
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
         echo "Creating large scale workload for ANP/NetPol/EgressFirewall Testing"
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
