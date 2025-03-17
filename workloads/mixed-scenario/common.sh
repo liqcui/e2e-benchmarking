@@ -683,7 +683,7 @@ metricsEndpoints:
         url: https://localhost:2379/debug/pprof/profile?timeout=30
 {{ end }}
 jobs:
-  - name: ${WORKLOAD_NAME}
+  - name: ${WORKLOAD_NAME}  
     namespace: ${NAMESPACE}
     jobIterations: ${CUSTOMIZED_ITERATIONS}
     qps: {{.QPS}}
@@ -703,9 +703,17 @@ jobs:
       security.openshift.io/scc.podSecurityLabelSync: false
       pod-security.kubernetes.io/enforce: privileged
       pod-security.kubernetes.io/audit: privileged
-      pod-security.kubernetes.io/warn: privileged    
+      pod-security.kubernetes.io/warn: privileged
+      k8s.ovn.org/primary-user-defined-network: "" 
       anplabel: ${NAMESPACE}
     objects:
+      {{ if eq .ENABLE_LAYER_3 "true" }}
+      - objectTemplate: udn_l3.yml
+        replicas: 1
+      {{ else if eq .ENABLE_LAYER_2 "true" }}
+      - objectTemplate: udn_l2.yml
+        replicas: 1
+      {{ end }}
 EOF
 
 }
