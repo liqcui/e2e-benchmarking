@@ -707,13 +707,13 @@ jobs:
       k8s.ovn.org/primary-user-defined-network: "" 
       anplabel: ${NAMESPACE}
     objects:
-      {{ if eq .ENABLE_LAYER_3 "true" }}
-      - objectTemplate: udn_l3.yml
-        replicas: 1
-      {{ else if eq .ENABLE_LAYER_2 "true" }}
-      - objectTemplate: udn_l2.yml
-        replicas: 1
-      {{ end }}
+      # {{ if eq .ENABLE_LAYER_3 "true" }}
+      # - objectTemplate: udn_l3.yml
+      #   replicas: 1
+      # {{ else if eq .ENABLE_LAYER_2 "true" }}
+      # - objectTemplate: udn_l2.yml
+      #   replicas: 1
+      # {{ end }}
 EOF
 
 }
