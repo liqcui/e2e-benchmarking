@@ -638,50 +638,6 @@ metricsEndpoints:
       type: local
       metricsDirectory: collected-metrics-{{.UUID}}
 {{ end }}
-{{ if eq .PPROF_COLLECTION "true" }}
-    - name: pprof
-      pprofInterval: {{ .PPROF_COLLECTION_INTERVAL }}
-      pprofDirectory: /tmp/pprof-data
-      pprofTargets:
-
-      - name: kube-apiserver-cpu
-        namespace: "openshift-kube-apiserver"
-        labelSelector: {app: openshift-kube-apiserver}
-        bearerToken: {{ .BEARER_TOKEN }}
-        url: https://localhost:6443/debug/pprof/profile?timeout=30
-
-      - name: kube-apiserver-heap
-        namespace: "openshift-kube-apiserver"
-        labelSelector: {app: openshift-kube-apiserver}
-        bearerToken: {{ .BEARER_TOKEN }}
-        url: https://localhost:6443/debug/pprof/heap
-
-      - name: kube-controller-manager-heap
-        namespace: "openshift-kube-controller-manager"
-        labelSelector: {app: kube-controller-manager}
-        bearerToken: {{ .BEARER_TOKEN }}
-        url: https://localhost:10257/debug/pprof/heap
-
-      - name: kube-controller-manager-cpu
-        namespace: "openshift-kube-controller-manager"
-        labelSelector: {app: kube-controller-manager}
-        bearerToken: {{ .BEARER_TOKEN }}
-        url: https://localhost:10257/debug/pprof/profile?timeout=30
-
-      - name: etcd-heap
-        namespace: "openshift-etcd"
-        labelSelector: {app: etcd}
-        cert: {{ .CERTIFICATE }}
-        key: {{ .PRIVATE_KEY }}
-        url: https://localhost:2379/debug/pprof/heap
-
-      - name: etcd-cpu
-        namespace: "openshift-etcd"
-        labelSelector: {app: etcd}
-        cert: {{ .CERTIFICATE }}
-        key: {{ .PRIVATE_KEY }}
-        url: https://localhost:2379/debug/pprof/profile?timeout=30
-{{ end }}
 jobs:
   - name: ${WORKLOAD_NAME}  
     namespace: ${NAMESPACE}
@@ -707,13 +663,6 @@ jobs:
       k8s.ovn.org/primary-user-defined-network: "" 
       anplabel: ${NAMESPACE}
     objects:
-      # {{ if eq .ENABLE_LAYER_3 "true" }}
-      # - objectTemplate: udn_l3.yml
-      #   replicas: 1
-      # {{ else if eq .ENABLE_LAYER_2 "true" }}
-      # - objectTemplate: udn_l2.yml
-      #   replicas: 1
-      # {{ end }}
 EOF
 
 }
