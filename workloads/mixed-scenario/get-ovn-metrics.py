@@ -72,7 +72,7 @@ def convertStr2Time(time_str):
         # Convert to time format from string
         dt = datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%SZ")
 
-        # 转换为时间戳       
+        # Convert to unix timestamp      
         unix_timestamp_sec = int(dt.timestamp())
         #print(f"Unix Timestamp (Seconds): {unix_timestamp_sec}")
         return unix_timestamp_sec
