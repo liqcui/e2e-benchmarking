@@ -660,7 +660,6 @@ jobs:
       pod-security.kubernetes.io/enforce: privileged
       pod-security.kubernetes.io/audit: privileged
       pod-security.kubernetes.io/warn: privileged
-      k8s.ovn.org/primary-user-defined-network: "" 
       anplabel: ${NAMESPACE}
     objects:
 EOF

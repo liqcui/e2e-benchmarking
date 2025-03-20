@@ -213,6 +213,7 @@ if [[ $WORKLOAD == "cluster-density-v2" ]];then
         sed -i 's:--enable-interconnect  :--enable-interconnect \\\\\\n:' ovnkube-script-lib.yaml
         oc -n openshift-ovn-kubernetes delete configmap ovnkube-script-lib
         oc -n openshift-ovn-kubernetes create -f ovnkube-script-lib.yaml
+        sleep 30
         echo "Restart all ovn-node-xxx pod after change the  metrics-enable-scale"
         oc -n openshift-ovn-kubernetes get pods | grep ovnkube-node| awk '{print $1}'| xargs oc -n openshift-ovn-kubernetes delete pod
         oc -n openshift-ovn-kubernetes wait --timeout=120s --for=condition=Ready pod -l app=ovnkube-node
