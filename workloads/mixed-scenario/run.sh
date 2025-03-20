@@ -202,6 +202,20 @@ echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Wo
 #Excute customized kube-burner-ocp workload, will change the WORKLOAD to mixed-scenario later
 #if [[ $WORKLOAD == "mixed-scenario" ]];then
 if [[ $WORKLOAD == "cluster-density-v2" ]];then
+        
+        #Prepare Testing Environment
+        echo "Enable metrics-enable-scale for ovn-node-xxx pods in ns openshift-ovn-kubernetes"
+        oc scale deployment cluster-version-operator -n openshift-cluster-version --replicas=0
+        oc scale deployment network-operator -n openshift-network-operator --replicas=0
+        oc -n openshift-ovn-kubernetes get configmap ovnkube-script-lib -oyaml>ovnkube-script-lib.yaml
+        
+        sed -i 's:--enable-interconnect:--enable-interconnect      --metrics-enable-scale:' ovnkube-script-lib.yaml
+        sed -i 's:--enable-interconnect  :--enable-interconnect \\\\\\n:' ovnkube-script-lib.yaml
+        oc -n openshift-ovn-kubernetes delete configmap ovnkube-script-lib
+        oc -n openshift-ovn-kubernetes create -f ovnkube-script-lib.yaml
+        echo "Restart all ovn-node-xxx pod after change the  metrics-enable-scale"
+        oc -n openshift-ovn-kubernetes get pods | grep ovnkube-node| awk '{print $1}'| xargs oc -n openshift-ovn-kubernetes delete pod
+        oc -n openshift-ovn-kubernetes wait --timeout=120s --for=condition=Ready pod -l app=ovnkube-node
 
         waiting_for_during_each_phase "Phase I" 900 "before creating large scale pods"
 
@@ -395,6 +409,7 @@ EOF
         cat /tmp/system_resource_info.csv
         JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
         env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
+        python3 mixed-scenario/get-ovn-metrics.py -s $JOB_START -e $JOB_END
         echo        
 fi
 
