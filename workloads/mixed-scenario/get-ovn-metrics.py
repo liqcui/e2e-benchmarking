@@ -128,8 +128,8 @@ def get_ovn_metrics(promQL, start_time,end_time):
         results = prom_metrics_json['data']['result']
         for r in results:
             #print(r)
-            if "ovnkube_controller_pod_event_latency_seconds_bucket" in promQL:
-               metricName="ovnkube_controller_pod_event_latency_seconds_bucket"
+            if "ovnkube_controller_pod_event_latency_seconds" in promQL:
+               metricName="ovnkube_controller_pod_event_latency_seconds_sum-count-bucket"
                metricEvent=r['metric']['event']
                print(metricEvent)
             else:
@@ -225,6 +225,13 @@ def generatedPayload():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "-q",
+        "--query",
+        help="PromQL query string",
+        required=True,
+        type=str,
+    )
+    parser.add_argument(
         "-s",
         "--start_time",
         help="Start Time: 2025-03-18T07:00:00Z",
@@ -243,12 +250,13 @@ if __name__ == "__main__":
     unixStartTime=convertStr2Time(args.start_time)
     unixEndTime=convertStr2Time(args.end_time)
     #payload={}
-    promQL='topk(10, ovnkube_controller_ready_duration_seconds)'   
-    get_ovn_metrics(promQL,int(unixStartTime), int(unixEndTime))
-    promQL1='topk(10, ovnkube_node_ready_duration_seconds)'   
-    get_ovn_metrics(promQL1,int(unixStartTime), int(unixEndTime))
-    promQL2='topk(10, ovnkube_controller_sync_duration_seconds)'
-    get_ovn_metrics(promQL2,int(unixStartTime), int(unixEndTime))
-    #promQL3='sum by(pod, event) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m]))'
+    # promQL='topk(10, ovnkube_controller_ready_duration_seconds)'   
+    # get_ovn_metrics(promQL,int(unixStartTime), int(unixEndTime))
+    # promQL1='topk(10, ovnkube_node_ready_duration_seconds)'   
+    # get_ovn_metrics(promQL1,int(unixStartTime), int(unixEndTime))
+    # promQL2='topk(10, ovnkube_controller_sync_duration_seconds)'
+    # get_ovn_metrics(promQL2,int(unixStartTime), int(unixEndTime))
+    # #promQL3='sum by(pod, event) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m]))'
     promQL3="histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))"
-    get_ovn_metrics(promQL3,int(unixStartTime), int(unixEndTime))
+    promQL4="rate(ovnkube_controller_pod_event_latency_seconds_sum[5m]) / rate(ovnkube_controller_pod_event_latency_seconds_count[5m])"
+    get_ovn_metrics(args.query,int(unixStartTime), int(unixEndTime))

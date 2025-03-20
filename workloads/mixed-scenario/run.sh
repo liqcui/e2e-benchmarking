@@ -410,8 +410,28 @@ EOF
         cat /tmp/system_resource_info.csv
         JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
         env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
-        python3 mixed-scenario/get-ovn-metrics.py -s $JOB_START -e $JOB_END
-        echo        
+        
+
+        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+        echo "Query metric from prometheus and compare the result ..."
+        awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+        # promQL='topk(10, ovnkube_controller_ready_duration_seconds)'   
+    
+        # promQL1='topk(10, ovnkube_node_ready_duration_seconds)'   
+      
+        # promQL2='topk(10, ovnkube_controller_sync_duration_seconds)'
+       
+        # promQL3='sum by(pod, event) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m]))'
+        # promQL3="histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))"
+        # promQL4="rate(ovnkube_controller_pod_event_latency_seconds_sum[5m]) / rate(ovnkube_controller_pod_event_latency_seconds_count[5m])"
+        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_controller_ready_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovnkube_controller_ready_duration_seconds.result
+
+        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_node_ready_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovnkube_node_ready_duration_seconds.result
+
+        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_controller_sync_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovnkube_controller_sync_duration_seconds.result
+
+        python3 ./get-ovn-metrics.py -q "histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))" -s $JOB_START -e $JOB_END | tee ovnkube_controller_pod_event_latency_seconds_bucket.result
+        echo
 fi
 
 exit_code=$?
