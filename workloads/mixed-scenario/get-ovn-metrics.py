@@ -114,22 +114,24 @@ def get_ovn_metrics(promQL, start_time,end_time):
         #Disable InsecureRequestWarning: Unverified HTTPS request is being made.
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         prom_metrics=requests.post(url=requestMetricUrl, headers={'Authorization': 'Bearer {}'.format(token)},verify=False).content.decode('utf8', 'ignore')
+        # print(prom_metrics)
 
         prom_metrics_json=json.loads(prom_metrics)
-        print("The metrics of {} in prometheus:\n{}\n{}".format(promQL,"-" * 118,prom_metrics_json))
-        print("-" * 118)
-        print()
+        # print("The metrics of {} in prometheus:\n{}\n{}".format(promQL,"-" * 118,prom_metrics_json))
+        # print("-" * 118)
+        # print()
 
         
-        print("MetricName"+" " * 36+" "+"PodName/ResourceName"+" " * 20+"Value")
+        print("MetricName"+" " * 40+" "+"PodName/ResourceName"+" " * 20+"Value")
         print("=" * 118)
         payload=generatedPayload()
               
         results = prom_metrics_json['data']['result']
+        i=1
         for r in results:
             #print(r)
-            if "ovnkube_controller_pod_event_latency_seconds" in promQL:
-               metricName="ovnkube_controller_pod_event_latency_seconds_sum-count-bucket"
+            if "ovnkube_controller_pod_event_latency_seconds_bucket" in promQL:
+               metricName="ovnkube_controller_pod_event_latency_seconds_bucket"
                metricEvent=r['metric']['event']
                print(metricEvent)
             else:
@@ -147,13 +149,14 @@ def get_ovn_metrics(promQL, start_time,end_time):
             payload["metric"]=metricName
             if metricName=="ovnkube_controller_sync_duration_seconds":
               payload[podName+":"+resourceName]=metricValue
-              print(metricName+',    '+podName+":"+resourceName+',    '+str(metricValue))
+              print("No."+str(i)+" "+metricName+',    '+podName+":"+resourceName+',    '+str(metricValue))
             elif metricName=="ovnkube_controller_pod_event_latency_seconds_bucket":
               payload[podName+":"+metricEvent]=metricValue
-              print(metricName+',    '+podName+":"+metricEvent+',    '+str(metricValue))
+              print("No."+str(i)+" "+metricName+',    '+podName+":"+metricEvent+',    '+str(metricValue))
             else:
               payload[podName]=metricValue
-              print(metricName+',    '+podName+',    '+str(metricValue))
+              print("No."+str(i)+" "+metricName+',    '+podName+',    '+str(metricValue))
+            i +=1
             
         print()
         print("The payload will save to elasticsearch:\n{}\n{}".format("-" * 118,payload))
@@ -199,7 +202,7 @@ def generatedPayload():
             print("Fail to get network type, please check")
             exit(1)
 
-        returnCode,total_workernode=invokecmd("oc get nodes -L node-role.kubernetes.io/worker= --no-headers|wc -l")
+        returnCode,total_workernode=invokecmd("oc get nodes -lnode-role.kubernetes.io/worker= --no-headers|wc -l")
         if returnCode:
             print("Fail to get total worker nodes, please check")
             exit(1)
@@ -249,14 +252,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     unixStartTime=convertStr2Time(args.start_time)
     unixEndTime=convertStr2Time(args.end_time)
-    #payload={}
-    # promQL='topk(10, ovnkube_controller_ready_duration_seconds)'   
-    # get_ovn_metrics(promQL,int(unixStartTime), int(unixEndTime))
-    # promQL1='topk(10, ovnkube_node_ready_duration_seconds)'   
-    # get_ovn_metrics(promQL1,int(unixStartTime), int(unixEndTime))
-    # promQL2='topk(10, ovnkube_controller_sync_duration_seconds)'
-    # get_ovn_metrics(promQL2,int(unixStartTime), int(unixEndTime))
-    # #promQL3='sum by(pod, event) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m]))'
-    promQL3="histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))"
-    promQL4="rate(ovnkube_controller_pod_event_latency_seconds_sum[5m]) / rate(ovnkube_controller_pod_event_latency_seconds_count[5m])"
+
     get_ovn_metrics(args.query,int(unixStartTime), int(unixEndTime))

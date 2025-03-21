@@ -415,22 +415,31 @@ EOF
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
         echo "Query metric from prometheus and compare the result ..."
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-        # promQL='topk(10, ovnkube_controller_ready_duration_seconds)'   
-    
-        # promQL1='topk(10, ovnkube_node_ready_duration_seconds)'   
-      
-        # promQL2='topk(10, ovnkube_controller_sync_duration_seconds)'
-       
-        # promQL3='sum by(pod, event) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m]))'
-        # promQL3="histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))"
-        # promQL4="rate(ovnkube_controller_pod_event_latency_seconds_sum[5m]) / rate(ovnkube_controller_pod_event_latency_seconds_count[5m])"
-        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_controller_ready_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovnkube_controller_ready_duration_seconds.result
 
-        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_node_ready_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovnkube_node_ready_duration_seconds.result
-
-        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_controller_sync_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovnkube_controller_sync_duration_seconds.result
-
-        python3 ./get-ovn-metrics.py -q "histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))" -s $JOB_START -e $JOB_END | tee ovnkube_controller_pod_event_latency_seconds_bucket.result
+        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_controller_ready_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
+        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
+        if [[ $(echo "$maxValue" | cut -d. -f1) gt 100 ]];then
+            echo "The max value of ovnkube_controller_ready_duration_seconds is great than expected value"
+            exit 1
+        fi
+        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_node_ready_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
+        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
+        if [[ $(echo "$maxValue" | cut -d. -f1) gt 100 ]];then
+            echo "The max value of ovnkube_node_ready_duration_seconds is great than expected value"
+            exit 1
+        fi
+        python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_controller_sync_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
+        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
+        if [[ $(echo "$maxValue" | cut -d. -f1) gt 100 ]];then
+            echo "The max value of ovnkube_controller_sync_duration_seconds is great than expected value"
+            exit 1
+        fi
+        python3 ./get-ovn-metrics.py -q "histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
+        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
+        if [[ $(echo "$maxValue" | cut -d. -f1) gt 100 ]];then
+            echo "The max value of ovnkube_controller_pod_event_latency_seconds_bucket is great than expected value"
+            exit 1
+        fi        
         echo
 fi
 
