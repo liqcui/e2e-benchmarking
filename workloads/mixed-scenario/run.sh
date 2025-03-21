@@ -6,6 +6,7 @@ set -e
 source ./egressip.sh
 
 ES_SERVER=${ES_SERVER=https://search-perfscale-dev-chmf5l4sh66lvxbnadi4bznl3a.us-west-2.es.amazonaws.com}
+ES_INDEX=${ES_INDEX:="large-scale-anp-netpol"}
 LOG_LEVEL=${LOG_LEVEL:-info}
 if [ "$KUBE_BURNER_VERSION" = "default" ]; then
     unset KUBE_BURNER_VERSION
@@ -23,7 +24,6 @@ KUBE_DIR=${KUBE_DIR:-/tmp}
 #KUBE_DIR=./customized-workload
 
 #Mixed Workload Scenaio
-export ES_INDEX=${ES_INDEX:="ovn-live-migration"}
 export IF_MIXED_SCENARIO=${IF_MIXED_SCENARIO:="false"}
 export POD_REPLICAS=${POD_REPLICAS:=1}
 export NETWORKPOLICY_RPLICAS=${NETWORKPOLICY_RPLICAS:=3}
@@ -417,29 +417,39 @@ EOF
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
         python3 -m pip install elasticsearch requests urllib3
         python3 get-ovn-metrics.py -q "topk(10, max_over_time(ovnkube_controller_ready_duration_seconds[12h]))" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
-        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
+        #curl -sS --insecure -X POST -H "Content-Type:application/json" -H "Cache-Control:no-cache" -d @ovn-metric-es-payload.json "$url"
+        curl -k -sS -X POST -H "Content-type: application/json"  -H "Cache-Control:no-cache" ${ES_SERVER}/${ES_INDEX}/_doc -d "${METADATA}" -o /dev/null
+
+        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $NF}'| tr -d ' '`
         IntValue=$(echo "$maxValue" | cut -d. -f1)
         if [ $IntValue -gt 100 ];then
             echo "The max value of ovnkube_controller_ready_duration_seconds is great than expected value"
             exit 1
         fi
-        
+      
+
         python3 get-ovn-metrics.py -q "topk(10, max_over_time(ovnkube_node_ready_duration_seconds[12h]))" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
-        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
+        curl -k -sS -X POST -H "Content-type: application/json"  -H "Cache-Control:no-cache" ${ES_SERVER}/${ES_INDEX}/_doc -d "${METADATA}" -o /dev/null
+        
+        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $NF}'| tr -d ' '`
         IntValue=$(echo "$maxValue" | cut -d. -f1)
         if [ $IntValue -gt 100 ];then
             echo "The max value of ovnkube_node_ready_duration_seconds is great than expected value"
             exit 1
         fi
         python3 get-ovn-metrics.py -q "topk(10, max_over_time(ovnkube_controller_sync_duration_seconds[12h]))" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
-        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
+        curl -k -sS -X POST -H "Content-type: application/json"  -H "Cache-Control:no-cache" ${ES_SERVER}/${ES_INDEX}/_doc -d "${METADATA}" -o /dev/null
+
+        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $NF}'| tr -d ' '`
         IntValue=$(echo "$maxValue" | cut -d. -f1)
         if [ $IntValue -gt 100 ];then
             echo "The max value of ovnkube_controller_sync_duration_seconds is great than expected value"
             exit 1
         fi
         python3 get-ovn-metrics.py -q "histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
-        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
+        curl -k -sS -X POST -H "Content-type: application/json"  -H "Cache-Control:no-cache" ${ES_SERVER}/${ES_INDEX}/_doc -d "${METADATA}" -o /dev/null
+        
+        maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $NF}'| tr -d ' '`
         IntValue=$(echo "$maxValue" | cut -d. -f1)
         if [ $IntValue -gt 100 ];then
             echo "The max value of ovnkube_controller_pod_event_latency_seconds_bucket is great than expected value"
