@@ -424,19 +424,22 @@ EOF
         fi
         python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_node_ready_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
         maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
-        if [[ $(echo "$maxValue" | cut -d. -f1) gt 100 ]];then
+        IntValue=$(echo "$maxValue" | cut -d. -f1)
+        if [ $IntValue -gt 100 ];then
             echo "The max value of ovnkube_node_ready_duration_seconds is great than expected value"
             exit 1
         fi
         python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_controller_sync_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
         maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
-        if [[ $(echo "$maxValue" | cut -d. -f1) gt 100 ]];then
+        IntValue=$(echo "$maxValue" | cut -d. -f1)
+        if [ $IntValue -gt 100 ];then
             echo "The max value of ovnkube_controller_sync_duration_seconds is great than expected value"
             exit 1
         fi
         python3 ./get-ovn-metrics.py -q "histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
         maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
-        if [[ $(echo "$maxValue" | cut -d. -f1) gt 100 ]];then
+        IntValue=$(echo "$maxValue" | cut -d. -f1)
+        if [ $IntValue -gt 100 ];then
             echo "The max value of ovnkube_controller_pod_event_latency_seconds_bucket is great than expected value"
             exit 1
         fi        
