@@ -415,7 +415,7 @@ EOF
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
         echo "Query metric from prometheus and compare the result ..."
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-
+        python3 -m pip install elasticsearch
         python3 ./get-ovn-metrics.py -q "topk(10, ovnkube_controller_ready_duration_seconds)" -s $JOB_START -e $JOB_END | tee ovn_metric_result.txt
         maxValue=`cat ovn_metric_result.txt |grep No.1| awk -F',' '{print  $3}'| tr -d ' '`
         IntValue=$(echo "$maxValue" | cut -d. -f1)
