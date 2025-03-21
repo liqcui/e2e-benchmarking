@@ -4,6 +4,7 @@ set -e
 . build_helper.sh
 . ../../utils/compare.sh
 source ./egressip.sh
+set -x
 
 ES_SERVER=${ES_SERVER=https://search-perfscale-dev-chmf5l4sh66lvxbnadi4bznl3a.us-west-2.es.amazonaws.com}
 ES_INDEX=${ES_INDEX:="large-scale-anp-netpol"}

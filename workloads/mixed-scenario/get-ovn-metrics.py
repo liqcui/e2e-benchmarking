@@ -168,9 +168,10 @@ def get_ovn_metrics(promQL, start_time,end_time):
         print("The payload will save to elasticsearch:\n{}\n{}".format("-" * 118,payload))
         print("-" * 118+'\n')
 
+        payload_json = json.dumps(payload, indent=4)
         try:
            with open("ovn-metric-es-payload.json", "w") as file:
-             file.write(payload)
+             file.write(payload_json)
         except IOError as e:
            print(f"An error occurred: {e}")
         
