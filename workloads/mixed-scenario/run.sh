@@ -443,8 +443,7 @@ EOF
         if [ $IntValue -gt 100 ];then
             echo "The max value of ovnkube_controller_pod_event_latency_seconds_bucket is great than expected value"
             exit 1
-        fi        
-        echo
+        fi
 fi
 
 exit_code=$?
