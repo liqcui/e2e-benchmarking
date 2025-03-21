@@ -122,22 +122,28 @@ def get_ovn_metrics(promQL, start_time,end_time):
         # print()
 
         
-        print("MetricName"+" " * 40+" "+"PodName/ResourceName"+" " * 20+"Value")
+        print("MetricName"+" " * 80+" "+"PodName/ResourceName"+" " * 20+"Value")
         print("=" * 118)
         payload=generatedPayload()
               
         results = prom_metrics_json['data']['result']
         i=1
         for r in results:
-            #print(r)
+            # print(r)
             if "ovnkube_controller_pod_event_latency_seconds_bucket" in promQL:
                metricName="ovnkube_controller_pod_event_latency_seconds_bucket"
                metricEvent=r['metric']['event']
-               print(metricEvent)
+            #    print(metricEvent)
             else:
-               metricName=r['metric']['__name__']
-            
+                metricName=promQL
+            # elif "max_over_time" in promQL:
+            #    metricName=promQL
+            # else:
+            #    metricName=r['metric']['__name__']
+
+            #metricName=promQL
             podName=r['metric']['pod']
+            # instanceName=r['metric']['instance']
             
             resourceName=""
             if "ovnkube_controller_sync_duration_seconds" in promQL:
@@ -147,10 +153,10 @@ def get_ovn_metrics(promQL, start_time,end_time):
             if math.isnan(metricValue): 
                metricValue=float(0)            
             payload["metric"]=metricName
-            if metricName=="ovnkube_controller_sync_duration_seconds":
+            if "ovnkube_controller_sync_duration_seconds" in promQL:
               payload[podName+":"+resourceName]=metricValue
               print("No."+str(i)+" "+metricName+',    '+podName+":"+resourceName+',    '+str(metricValue))
-            elif metricName=="ovnkube_controller_pod_event_latency_seconds_bucket":
+            elif "ovnkube_controller_pod_event_latency_seconds_bucket" in promQL:
               payload[podName+":"+metricEvent]=metricValue
               print("No."+str(i)+" "+metricName+',    '+podName+":"+metricEvent+',    '+str(metricValue))
             else:
