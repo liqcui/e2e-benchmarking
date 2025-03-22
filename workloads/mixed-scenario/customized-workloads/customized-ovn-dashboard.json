@@ -55,7 +55,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -70,7 +71,7 @@
             "h": 3,
             "w": 4,
             "x": 0,
-            "y": 9
+            "y": 1
           },
           "id": 151,
           "options": {
@@ -124,7 +125,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -139,7 +141,7 @@
             "h": 3,
             "w": 4,
             "x": 4,
-            "y": 9
+            "y": 1
           },
           "id": 141,
           "options": {
@@ -189,7 +191,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -205,7 +208,7 @@
             "h": 3,
             "w": 4,
             "x": 8,
-            "y": 9
+            "y": 1
           },
           "id": 139,
           "options": {
@@ -268,7 +271,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -284,7 +288,7 @@
             "h": 3,
             "w": 9,
             "x": 12,
-            "y": 9
+            "y": 1
           },
           "id": 143,
           "options": {
@@ -334,7 +338,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -349,7 +354,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 9
+            "y": 1
           },
           "id": 95,
           "options": {
@@ -406,7 +411,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -422,7 +428,7 @@
             "h": 7,
             "w": 9,
             "x": 0,
-            "y": 12
+            "y": 4
           },
           "id": 127,
           "options": {
@@ -471,7 +477,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -487,7 +494,7 @@
             "h": 7,
             "w": 8,
             "x": 9,
-            "y": 12
+            "y": 4
           },
           "id": 133,
           "options": {
@@ -535,7 +542,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -551,7 +559,7 @@
             "h": 7,
             "w": 7,
             "x": 17,
-            "y": 12
+            "y": 4
           },
           "id": 145,
           "options": {
@@ -599,7 +607,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -615,7 +624,7 @@
             "h": 3,
             "w": 5,
             "x": 0,
-            "y": 19
+            "y": 11
           },
           "id": 129,
           "options": {
@@ -665,7 +674,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -681,7 +691,7 @@
             "h": 3,
             "w": 4,
             "x": 5,
-            "y": 19
+            "y": 11
           },
           "id": 131,
           "options": {
@@ -732,7 +742,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -748,7 +759,7 @@
             "h": 3,
             "w": 4,
             "x": 9,
-            "y": 19
+            "y": 11
           },
           "id": 135,
           "options": {
@@ -800,7 +811,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -816,7 +828,7 @@
             "h": 3,
             "w": 4,
             "x": 13,
-            "y": 19
+            "y": 11
           },
           "id": 137,
           "options": {
@@ -866,7 +878,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -882,7 +895,7 @@
             "h": 3,
             "w": 4,
             "x": 17,
-            "y": 19
+            "y": 11
           },
           "id": 147,
           "options": {
@@ -933,7 +946,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -949,7 +963,7 @@
             "h": 3,
             "w": 3,
             "x": 21,
-            "y": 19
+            "y": 11
           },
           "id": 149,
           "options": {
@@ -1803,623 +1817,15 @@
       "type": "row"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 2
       },
-      "id": 157,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "percentunit"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 35
-          },
-          "id": 165,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "mean",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "expr": "(sum(irate(node_cpu_seconds_total[2m])) by (mode,instance) and on (instance) label_replace(kube_node_role{role=\"worker\"}, \"instance\", \"$1\", \"node\", \"(.+)\")) > 0",
-              "legendFormat": "__auto",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "nodeCPU-Workers",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "percentunit"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 35
-          },
-          "id": 167,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "mean",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "expr": "(sum(irate(node_cpu_seconds_total[2m])) by (mode,instance) and on (instance) label_replace(kube_node_role{role=\"master\"}, \"instance\", \"$1\", \"node\", \"(.+)\")) > 0",
-              "legendFormat": "{{instance}}:{{mode}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "nodeCPU-Masters",
-          "type": "timeseries"
-        }
-      ],
-      "title": "Node Usage",
-      "type": "row"
-    },
-    {
-      "collapsed": true,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 3
-      },
       "id": 155,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 4
-          },
-          "id": 201,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "mean",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Max",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "expr": "topk(10, sum by(pod) (irate(container_cpu_usage_seconds_total{container!=\"POD\", pod=~\"sdn-.*\", namespace=~\"openshift-sdn\"}[$interval]))) * 100",
-              "legendFormat": "__auto",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "SDN POD CPU Usage",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "decbytes"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 4
-          },
-          "id": 203,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "mean",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Max",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "asc"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "expr": "topk(10, container_memory_rss{container!=\"POD\", name!=\"\", namespace!=\"\", namespace=~\"openshift-sdn\", pod=~\"sdn-.*\"})",
-              "legendFormat": "{{pod}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "SDN POD RAM Usage",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 12
-          },
-          "id": 205,
-          "options": {
-            "legend": {
-              "calcs": [
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "builder",
-              "expr": "sdn_controller_num_egress_firewall_rules",
-              "legendFormat": "{{pod}}:{{container}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "sdn_controller_num_egress_firewall_rules",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 12
-          },
-          "id": 207,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "mean",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "sum by(pod) (rate(kubeproxy_sync_proxy_rules_duration_seconds_bucket[5m]))",
-              "instant": false,
-              "legendFormat": "{{pod}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "kubeproxy_sync_proxy_rules_duration_seconds_bucket",
-          "type": "timeseries"
-        }
-      ],
+      "panels": [],
       "title": "SDN Statistics",
       "type": "row"
     },
@@ -2429,7 +1835,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 3
       },
       "id": 153,
       "panels": [
@@ -2496,7 +1902,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 5
+            "y": 4
           },
           "id": 115,
           "options": {
@@ -2599,7 +2005,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 5
+            "y": 4
           },
           "id": 159,
           "options": {
@@ -2698,7 +2104,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 13
+            "y": 12
           },
           "id": 113,
           "options": {
@@ -2801,7 +2207,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 13
+            "y": 12
           },
           "id": 185,
           "options": {
@@ -2902,7 +2308,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 21
+            "y": 20
           },
           "id": 183,
           "options": {
@@ -3002,7 +2408,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 21
+            "y": 20
           },
           "id": 117,
           "options": {
@@ -3089,7 +2495,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3105,7 +2512,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 29
+            "y": 28
           },
           "id": 99,
           "options": {
@@ -3192,7 +2599,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3208,7 +2616,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 29
+            "y": 28
           },
           "id": 187,
           "options": {
@@ -3290,7 +2698,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3306,7 +2715,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 37
+            "y": 36
           },
           "id": 114,
           "options": {
@@ -3391,7 +2800,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3407,7 +2817,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 37
+            "y": 36
           },
           "id": 105,
           "options": {
@@ -3490,7 +2900,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3506,7 +2917,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 45
+            "y": 44
           },
           "id": 116,
           "options": {
@@ -3593,7 +3004,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3609,7 +3021,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 45
+            "y": 44
           },
           "id": 100,
           "options": {
@@ -3695,7 +3107,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3711,7 +3124,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 53
+            "y": 52
           },
           "id": 118,
           "options": {
@@ -3794,7 +3207,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3810,7 +3224,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 53
+            "y": 52
           },
           "id": 120,
           "options": {
@@ -3892,7 +3306,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -3907,7 +3322,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 61
+            "y": 60
           },
           "id": 179,
           "options": {
@@ -3991,7 +3406,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4006,7 +3422,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 61
+            "y": 60
           },
           "id": 181,
           "options": {
@@ -4059,7 +3475,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4075,7 +3492,7 @@
             "h": 3,
             "w": 12,
             "x": 0,
-            "y": 69
+            "y": 68
           },
           "id": 175,
           "options": {
@@ -4125,7 +3542,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4140,7 +3558,7 @@
             "h": 3,
             "w": 12,
             "x": 12,
-            "y": 69
+            "y": 68
           },
           "id": 177,
           "options": {
@@ -4184,7 +3602,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 4
       },
       "id": 125,
       "panels": [
@@ -4234,7 +3652,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4249,7 +3668,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 38
+            "y": 5
           },
           "id": 121,
           "options": {
@@ -4334,7 +3753,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4349,7 +3769,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 38
+            "y": 5
           },
           "id": 119,
           "options": {
@@ -4434,7 +3854,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4450,7 +3871,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 46
+            "y": 13
           },
           "id": 189,
           "options": {
@@ -4531,7 +3952,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4546,7 +3968,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 46
+            "y": 13
           },
           "id": 191,
           "options": {
@@ -4628,7 +4050,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4643,7 +4066,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 54
+            "y": 21
           },
           "id": 161,
           "options": {
@@ -4730,7 +4153,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4745,7 +4169,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 54
+            "y": 21
           },
           "id": 163,
           "options": {
@@ -4797,7 +4221,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4812,7 +4237,7 @@
             "h": 3,
             "w": 7,
             "x": 0,
-            "y": 62
+            "y": 29
           },
           "id": 169,
           "options": {
@@ -4862,7 +4287,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4877,7 +4303,7 @@
             "h": 3,
             "w": 8,
             "x": 7,
-            "y": 62
+            "y": 29
           },
           "id": 171,
           "options": {
@@ -4927,7 +4353,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -4942,7 +4369,7 @@
             "h": 3,
             "w": 9,
             "x": 15,
-            "y": 62
+            "y": 29
           },
           "id": 173,
           "options": {
@@ -4981,1250 +4408,599 @@
       "type": "row"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 5
       },
       "id": 123,
-      "panels": [],
-      "title": "OVN Latency",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 7
-      },
-      "id": 98,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "max"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value_and_name"
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "builder",
-          "exemplar": false,
-          "expr": "ovnkube_clustermanager_ready_duration_seconds{namespace=\"openshift-ovn-kubernetes\"}",
-          "format": "heatmap",
-          "instant": true,
-          "key": "Q-f3b0dfa9-d1a8-4213-a6d1-6bf19f713b13-0",
-          "legendFormat": "{{pod}}",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_clustermanager_ready_duration_seconds",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 7
-      },
-      "id": 112,
-      "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "code",
-          "expr": "ovnkube_master_ready_duration_seconds",
-          "instant": false,
-          "key": "Q-bebb7f67-ecd3-4188-b810-c03163921ccc-0",
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_master_ready_duration_seconds",
-      "type": "bargauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 15
-      },
-      "id": 96,
-      "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true,
-        "text": {}
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "topk(10, max_over_time(ovnkube_controller_ready_duration_seconds[12h]))",
-          "format": "heatmap",
-          "instant": true,
-          "interval": "",
-          "key": "Q-d407c9ff-eeb9-40a4-acf3-9a6d6c3f689f-0",
-          "legendFormat": "{{pod}}",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_controller_ready_duration_seconds",
-      "type": "bargauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 15
-      },
-      "id": 97,
-      "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": false
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "topk(10, max_over_time(ovnkube_node_ready_duration_seconds[12h]))",
-          "instant": true,
-          "key": "Q-cd32238b-5286-4d38-a6b2-70ce6e0c6fe3-0",
-          "legendFormat": "{{pod}}",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_node_ready_duration_seconds",
-      "type": "bargauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 23
-      },
-      "id": 208,
-      "options": {
-        "legend": {
-          "calcs": [
-            "max",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Max",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "asc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "builder",
-          "expr": "histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))",
-          "instant": true,
-          "key": "Q-6ab6ac3a-5c30-43fc-8b95-4901a2ea0eec-0",
-          "legendFormat": "{{pod}}:{{event}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_controller_pod_event_latency_seconds_bucket",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 23
-      },
-      "id": 106,
-      "options": {
-        "legend": {
-          "calcs": [
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Max",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "asc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "code",
-          "expr": "topk(10, max_over_time(ovnkube_controller_sync_duration_seconds[12h]))",
-          "instant": false,
-          "key": "Q-0a2a8709-7fdf-434c-a988-f51f4d39ee83-0",
-          "legendFormat": "{{pod}}:{{resource_name}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_controller_sync_duration_seconds",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 31
-      },
-      "id": 94,
-      "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "topk(15, kube_pod_status_ready_time{namespace=~\"zero-trust-longrunning|openshift-ovn-kubernetes|zero-trust-clt\"} - kube_pod_start_time{namespace=~\"zero-trust-longrunning|openshift-ovn-kubernetes|zero-trust-clt\"})",
-          "format": "time_series",
-          "instant": true,
-          "key": "Q-689ccffa-fea5-412f-a490-23e68f9ab9ef-0",
-          "legendFormat": "{{pod}}",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "OVN Pod Startup Latency",
-      "type": "bargauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 31
-      },
-      "id": 103,
-      "options": {
-        "legend": {
-          "calcs": [
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Max",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "builder",
-          "expr": "ovnkube_controller_pod_creation_latency_seconds_count{namespace=\"openshift-ovn-kubernetes\"}",
-          "instant": true,
-          "key": "Q-dde34c18-8b30-4fb8-a8dc-24130038b408-0",
-          "legendFormat": "{{pod}}:{{container}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_controller_pod_creation_latency_seconds_count",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 39
-      },
-      "id": 104,
-      "options": {
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/.*/",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "ovnkube_clustermanager_leader",
-          "format": "time_series",
-          "instant": true,
-          "key": "Q-59cc3890-5093-4cd9-9a72-79061ecbf9be-0",
-          "legendFormat": "{{pod}}",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_clustermanager_leader",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 1,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 39
-      },
-      "id": 102,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Last *",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "builder",
-          "exemplar": false,
-          "expr": "histogram_quantile(0.9, sum by(le, container, pod) (rate(ovnkube_master_sync_service_latency_seconds_bucket{job=\"ovnkube-master\"}[5m])))",
-          "instant": false,
-          "key": "Q-4ebf0976-5309-4ed4-80aa-bb9caed85f38-0",
-          "legendFormat": "{{pod}}:{{db_name}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_master_sync_service_latency_seconds_bucket",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 47
-      },
-      "id": 107,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Max",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "asc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "builder",
-          "expr": "sum by(pod) (rate(ovnkube_controller_sync_service_total{namespace=\"openshift-ovn-kubernetes\"}[1m]))",
-          "instant": false,
-          "key": "Q-341acc03-457b-4647-ba59-44d6dd07ef45-0",
-          "legendFormat": "{{pod}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_controller_sync_service_total",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 47
-      },
-      "id": 101,
-      "options": {
-        "legend": {
-          "calcs": [
-            "min",
-            "max",
-            "mean"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Max",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "9.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "code",
-          "expr": "histogram_quantile(0.9, sum by(le, container, instance) (rate(ovnkube_controller_sync_service_latency_seconds_bucket{job=\"ovnkube-node\"}[2m])))",
-          "instant": true,
-          "key": "Q-7f9b60df-70ce-4cdd-974e-ce208aa4e021-0",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_controller_sync_service_latency_seconds_bucket",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 55
-      },
-      "id": 110,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Max",
-          "sortDesc": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "builder",
-          "expr": "ovnkube_master_sync_duration_seconds",
-          "instant": false,
-          "key": "Q-909121d8-d58b-4cff-bcf8-201826b8f815-0",
-          "legendFormat": "{{pod}}{{resource_name}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_master_sync_duration_seconds",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PF55DCC5EC58ABF5A"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 55
-      },
-      "id": 111,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "editorMode": "builder",
-          "expr": "histogram_quantile(0.99, sum by(le, pod) (rate(ovnkube_master_pod_creation_latency_seconds_bucket{namespace=\"openshift-ovn-kubernetes\"}[5m])))",
-          "instant": true,
-          "key": "Q-6a74daa8-a917-4522-801c-202f1ad14daf-0",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "ovnkube_master_pod_creation_latency_seconds_bucket",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": true,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 63
-      },
-      "id": 75,
       "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PF55DCC5EC58ABF5A"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          "id": 104,
+          "options": {
+            "colorMode": "none",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/.*/",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "9.4.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PF55DCC5EC58ABF5A"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "ovnkube_clustermanager_leader",
+              "format": "time_series",
+              "instant": true,
+              "key": "Q-59cc3890-5093-4cd9-9a72-79061ecbf9be-0",
+              "legendFormat": "{{pod}}",
+              "range": false,
+              "refId": "A"
+            }
+          ],
+          "title": "ovnkube_clustermanager_leader",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PF55DCC5EC58ABF5A"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 6
+          },
+          "id": 98,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "max"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "value_and_name"
+          },
+          "pluginVersion": "9.4.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PF55DCC5EC58ABF5A"
+              },
+              "editorMode": "builder",
+              "exemplar": false,
+              "expr": "ovnkube_clustermanager_ready_duration_seconds{namespace=\"openshift-ovn-kubernetes\"}",
+              "format": "heatmap",
+              "instant": true,
+              "key": "Q-f3b0dfa9-d1a8-4213-a6d1-6bf19f713b13-0",
+              "legendFormat": "{{pod}}",
+              "range": false,
+              "refId": "A"
+            }
+          ],
+          "title": "ovnkube_clustermanager_ready_duration_seconds",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PF55DCC5EC58ABF5A"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 14
+          },
+          "id": 97,
+          "options": {
+            "displayMode": "gradient",
+            "minVizHeight": 10,
+            "minVizWidth": 0,
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": false
+          },
+          "pluginVersion": "9.4.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PF55DCC5EC58ABF5A"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "topk(10, max_over_time(ovnkube_node_ready_duration_seconds[12h]))",
+              "instant": true,
+              "key": "Q-cd32238b-5286-4d38-a6b2-70ce6e0c6fe3-0",
+              "legendFormat": "{{pod}}",
+              "range": false,
+              "refId": "A"
+            }
+          ],
+          "title": "ovnkube_node_ready_duration_seconds",
+          "type": "bargauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PF55DCC5EC58ABF5A"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 14
+          },
+          "id": 106,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "asc"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PF55DCC5EC58ABF5A"
+              },
+              "editorMode": "code",
+              "expr": "topk(10, max_over_time(ovnkube_controller_sync_duration_seconds[12h]))",
+              "instant": false,
+              "key": "Q-0a2a8709-7fdf-434c-a988-f51f4d39ee83-0",
+              "legendFormat": "{{pod}}:{{resource_name}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "ovnkube_controller_sync_duration_seconds",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PF55DCC5EC58ABF5A"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "decimals": 2,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 22
+          },
+          "id": 96,
+          "options": {
+            "displayMode": "gradient",
+            "minVizHeight": 10,
+            "minVizWidth": 0,
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "text": {}
+          },
+          "pluginVersion": "9.4.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PF55DCC5EC58ABF5A"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "topk(10, max_over_time(ovnkube_controller_ready_duration_seconds[12h]))",
+              "format": "heatmap",
+              "instant": true,
+              "interval": "",
+              "key": "Q-d407c9ff-eeb9-40a4-acf3-9a6d6c3f689f-0",
+              "legendFormat": "{{pod}}",
+              "range": false,
+              "refId": "A"
+            }
+          ],
+          "title": "ovnkube_controller_ready_duration_seconds",
+          "type": "bargauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PF55DCC5EC58ABF5A"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 22
+          },
+          "id": 103,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.4.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PF55DCC5EC58ABF5A"
+              },
+              "editorMode": "builder",
+              "expr": "ovnkube_controller_pod_creation_latency_seconds_count{namespace=\"openshift-ovn-kubernetes\"}",
+              "instant": true,
+              "key": "Q-dde34c18-8b30-4fb8-a8dc-24130038b408-0",
+              "legendFormat": "{{pod}}:{{container}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "ovnkube_controller_pod_creation_latency_seconds_count",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PF55DCC5EC58ABF5A"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 30
+          },
+          "id": 208,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Max",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "asc"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PF55DCC5EC58ABF5A"
+              },
+              "editorMode": "builder",
+              "expr": "histogram_quantile(0.9, sum by(pod, event, le) (rate(ovnkube_controller_pod_event_latency_seconds_bucket[5m])))",
+              "instant": true,
+              "key": "Q-6ab6ac3a-5c30-43fc-8b95-4901a2ea0eec-0",
+              "legendFormat": "{{pod}}:{{event}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "ovnkube_controller_pod_event_latency_seconds_bucket",
+          "type": "timeseries"
+        },
         {
           "cards": {},
           "color": {
@@ -6258,8 +5034,8 @@
           "gridPos": {
             "h": 18,
             "w": 12,
-            "x": 0,
-            "y": 40
+            "x": 12,
+            "y": 30
           },
           "heatmap": {},
           "hideZeroBuckets": true,
@@ -6347,184 +5123,6 @@
             "type": "prometheus",
             "uid": "PF55DCC5EC58ABF5A"
           },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "bytes"
-            },
-            "overrides": [
-              {
-                "__systemRef": "hideSeriesFrom",
-                "matcher": {
-                  "id": "byNames",
-                  "options": {
-                    "mode": "exclude",
-                    "names": [
-                      "{container=\"kube-rbac-proxy\", endpoint=\"https\", instance=\"ip-10-0-9-165.us-east-2.compute.internal\", job=\"node-exporter\", namespace=\"openshift-monitoring\", pod=\"node-exporter-rp25l\", service=\"node-exporter\"}"
-                    ],
-                    "prefix": "All except:",
-                    "readOnly": true
-                  }
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 40
-          },
-          "id": 90,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "min",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Max",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "pluginVersion": "9.4.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "node_memory_Active_bytes{instance=~\"$_master_node\"}",
-              "instant": false,
-              "interval": "",
-              "key": "Q-f361981b-3774-4d84-8eed-aac3a4b412fc-0",
-              "legendFormat": "Active",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "expr": "node_memory_MemTotal_bytes{instance=~\"$_master_node\"}",
-              "hide": false,
-              "legendFormat": "Total",
-              "range": true,
-              "refId": "B"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "expr": "node_memory_Cached_bytes{instance=~\"$_master_node\"} + node_memory_Buffers_bytes{instance=~\"$_master_node\"}",
-              "hide": false,
-              "legendFormat": "Cached + Buffers",
-              "range": true,
-              "refId": "C"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "expr": "node_memory_MemAvailable_bytes{instance=~\"$_master_node\"}",
-              "hide": false,
-              "legendFormat": "Available",
-              "range": true,
-              "refId": "D"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "(node_memory_MemTotal_bytes{instance=~\"$_master_node\"} - (node_memory_MemFree_bytes{instance=~\"$_master_node\"} + node_memory_Buffers_bytes{instance=~\"$_master_node\"} +  node_memory_Cached_bytes{instance=~\"$_master_node\"}))",
-              "hide": false,
-              "legendFormat": "Used",
-              "range": true,
-              "refId": "E"
-            }
-          ],
-          "title": "System Memory: $_master_node",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -6565,31 +5163,31 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
                     "value": 80
                   }
                 ]
-              },
-              "unit": "percent"
+              }
             },
             "overrides": []
           },
           "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 48
+            "x": 0,
+            "y": 38
           },
-          "id": 89,
+          "id": 101,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
+                "min",
                 "max",
-                "min"
+                "mean"
               ],
               "displayMode": "table",
               "placement": "bottom",
@@ -6610,112 +5208,15 @@
                 "uid": "PF55DCC5EC58ABF5A"
               },
               "editorMode": "code",
-              "expr": "sum by (instance, mode)(irate(node_cpu_seconds_total{instance=~\"$_master_node\",job=~\".*\"}[$interval])) * 100",
-              "hide": false,
-              "legendFormat": "Busy {{mode}}",
+              "expr": "histogram_quantile(0.9, sum by(le, container, instance) (rate(ovnkube_controller_sync_service_latency_seconds_bucket{job=\"ovnkube-node\"}[2m])))",
+              "instant": true,
+              "key": "Q-7f9b60df-70ce-4cdd-974e-ce208aa4e021-0",
+              "legendFormat": "__auto",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "CPU Basic: $_master_node",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PF55DCC5EC58ABF5A"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 56
-          },
-          "id": 92,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "max",
-                "min"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "pluginVersion": "9.4.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PF55DCC5EC58ABF5A"
-              },
-              "editorMode": "code",
-              "expr": "topk(10, sum by(pod, container, namespace, name, service) (irate(container_cpu_usage_seconds_total{container!=\"POD\", name!=\"\", node=~\"$_master_node\", namespace!=\"\", namespace=~\"$namespace\"}[1m]))) * 100",
-              "instant": false,
-              "key": "Q-387cd998-d748-4f38-83ef-b6ff7213f30f-0",
-              "legendFormat": "{{ pod }}: {{ container }}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "Top 10 container CPU: $_master_node",
+          "title": "ovnkube_controller_sync_service_latency_seconds_bucket",
           "type": "timeseries"
         },
         {
@@ -6736,7 +5237,7 @@
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "drawStyle": "line",
-                "fillOpacity": 10,
+                "fillOpacity": 0,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -6764,15 +5265,15 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
                     "value": 80
                   }
                 ]
-              },
-              "unit": "decbytes"
+              }
             },
             "overrides": []
           },
@@ -6780,15 +5281,14 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 58
+            "y": 46
           },
-          "id": 93,
+          "id": 107,
           "options": {
             "legend": {
               "calcs": [
-                "mean",
-                "max",
-                "min"
+                "lastNotNull",
+                "max"
               ],
               "displayMode": "table",
               "placement": "bottom",
@@ -6798,29 +5298,45 @@
             },
             "tooltip": {
               "mode": "multi",
-              "sort": "desc"
+              "sort": "asc"
             }
           },
-          "pluginVersion": "9.4.3",
           "targets": [
             {
               "datasource": {
                 "type": "prometheus",
                 "uid": "PF55DCC5EC58ABF5A"
               },
-              "editorMode": "code",
-              "expr": "topk(10, container_memory_rss{container!=\"POD\",name!=\"\",node=~\"$_master_node\",namespace!=\"\",namespace=~\"$namespace\"})",
+              "editorMode": "builder",
+              "expr": "sum by(pod) (rate(ovnkube_controller_sync_service_total{namespace=\"openshift-ovn-kubernetes\"}[1m]))",
               "instant": false,
-              "key": "Q-3afacc3a-fbc3-4e69-8105-a939f58fa3bb-0",
-              "legendFormat": "{{ pod }}: {{ container }}",
+              "key": "Q-341acc03-457b-4647-ba59-44d6dd07ef45-0",
+              "legendFormat": "{{pod}}",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "Top 10 container RSS: $_master_node",
+          "title": "ovnkube_controller_sync_service_total",
           "type": "timeseries"
         }
       ],
+      "title": "OVN Latency",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 75,
+      "panels": [],
       "title": "OCP ControlPlane Usage",
       "type": "row"
     }
@@ -6837,8 +5353,8 @@
       {
         "current": {
           "selected": false,
-          "text": "ip-10-0-20-167.us-east-2.compute.internal",
-          "value": "ip-10-0-20-167.us-east-2.compute.internal"
+          "text": "ip-10-0-14-212.us-east-2.compute.internal",
+          "value": "ip-10-0-14-212.us-east-2.compute.internal"
         },
         "datasource": {
           "type": "prometheus",

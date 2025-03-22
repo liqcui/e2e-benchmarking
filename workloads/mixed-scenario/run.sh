@@ -343,7 +343,7 @@ EOF
         fi
 
         if [[ $IF_DEPLOY_CUSTOMIZED_DASHBOARD == "true" ]];then
-                DITTYBOPPER_PARAMS = "-i customized-workloads/customized-ovn-dashboard.json"
+                DITTYBOPPER_PARAMS="-i customized-workloads/customized-ovn-dashboard.json"
                 git clone https://github.com/cloud-bulldozer/performance-dashboards.git
                 performance-dashboards/dittybopper/deploy.sh $DITTYBOPPER_PARAMS
         fi
