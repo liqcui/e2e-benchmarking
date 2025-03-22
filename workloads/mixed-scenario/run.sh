@@ -48,6 +48,7 @@ export IF_EANBLE_ANP_LOGGING=${IF_EANBLE_ANP_LOGGING:="false"}
 export IF_SCALE_NODE_TESTING=${IF_SCALE_NODE_TESTING:="false"}
 export IF_RECYCLE_NODE_TESTING=${IF_RECYCLE_NODE_TESTING:="false"}
 export RESTART_OVN_PODS=${RESTART_OVN_PODS:="false"}
+export METRICS_PROFILE=${METRICS_PROFILE:="metrics-profiles/metrics-report.yml"}
 download_binary(){
   KUBE_BURNER_URL="https://github.com/kube-burner/kube-burner-ocp/releases/download/v${KUBE_BURNER_VERSION}/kube-burner-ocp-V${KUBE_BURNER_VERSION}-linux-x86_64.tar.gz"
   curl --fail --retry 8 --retry-all-errors -sS -L "${KUBE_BURNER_URL}" | tar -xzC "${KUBE_DIR}/" kube-burner-ocp
