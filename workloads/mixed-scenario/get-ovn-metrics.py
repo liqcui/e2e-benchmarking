@@ -74,12 +74,12 @@ def convertStr2Time(time_str):
 
         # Convert to unix timestamp      
         unix_timestamp_sec = int(dt.timestamp())
-        #print(f"Unix Timestamp (Seconds): {unix_timestamp_sec}")
+        print(f"Convert {dt} to Unix Timestamp (Seconds): {unix_timestamp_sec}")
         return unix_timestamp_sec
     except ValueError as e:
         print(f"Error: {e}")
 
-def get_ovn_metrics(promQL, start_time,end_time):
+def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
         if start_time >= end_time:
             print("End time must great than start time")
             exit(1)
@@ -94,22 +94,35 @@ def get_ovn_metrics(promQL, start_time,end_time):
              exit(1)
 
         #Define variable
-        # promQL=''
+        promQL=''
         requestMetricUrl=''       
         timeDuration = getTimeDuration(start_time, end_time)
-        #if timeDuration <= 30:
-        #   timeDuration=30
+        if 0< timeDuration <= 30:
+          timeDuration="30m"
+        elif 30< timeDuration < 60:
+          timeDuration=str(timeDuration)+"m"  
+        elif timeDuration >= 60:
+           timeDuration=math.ceil( timeDuration / 60)
+           timeDuration=str(timeDuration)+"h"
+        else:
+            print("Invalid timeDuration")
+            exit
+
+
         print("#" * 118)
-        print("Query {} data from {} to {}, time duration is {} minutes".format(promQL,datetime.fromtimestamp(start_time),datetime.fromtimestamp(end_time),timeDuration))
+        print("Query {} data from {} to {}, time duration is {} (Min/Hour)".format(promQL,datetime.fromtimestamp(start_time),datetime.fromtimestamp(end_time),timeDuration))
         print("#" * 118)
         print()
         promQueryAPIURL = "https://"+prometheusURL+"/api/v1/query?query="
-        # match QLMethod:
-
-        #    PromQL = "histogram_quantile(0.99, sum by (operation_name, le) (rate(storage_operation_duration_seconds_bucket{{volume_plugin=~\".*{}\"}}[{}m])))".format(provider,timeDuration)
-        #    print("-" * 118)
-        #    print(promQL)
-        #    print("-" * 118)
+        if promQLOperation == "topMaxOverTime":
+            promQL = "topk(10, max_over_time({}[{}]))".format(metricName, timeDuration)
+        elif promQLOperation == "histogramQuantile":
+            promQL = "histogram_quantile(0.9, sum by(pod, event, le) (rate({}[5m])))".format(metricName)
+        else:
+            print("Unsupported prom QL operations, support type is: topMaxOverTime and histogramQuantile")
+        print("-" * 118)
+        print(promQL)
+        print("-" * 118)
         requestMetricUrl=promQueryAPIURL + promQL
 
 
@@ -133,11 +146,11 @@ def get_ovn_metrics(promQL, start_time,end_time):
         for r in results:
             # print(r)
             if "ovnkube_controller_pod_event_latency_seconds_bucket" in promQL:
-               metricName="ovnkube_controller_pod_event_latency_seconds_bucket"
+               #metricName="ovnkube_controller_pod_event_latency_seconds_bucket"
                metricEvent=r['metric']['event']
             #    print(metricEvent)
-            else:
-                metricName=promQL
+            # else:
+            #     metricName=promQL
             # elif "max_over_time" in promQL:
             #    metricName=promQL
             # else:
@@ -263,9 +276,17 @@ if __name__ == "__main__":
         required=True,
         type=str,
     )
+    parser.add_argument(
+        "-t",
+        "--metric_operations",
+        help="metric_operations support type is: topMaxOverTime and histogramQuantile",
+        required=True,
+        type=str,
+    )
+     
 
     args = parser.parse_args()
     unixStartTime=convertStr2Time(args.start_time)
     unixEndTime=convertStr2Time(args.end_time)
 
-    get_ovn_metrics(args.query,int(unixStartTime), int(unixEndTime))
+    get_ovn_metrics(args.query,int(unixStartTime), int(unixEndTime),args.metric_operations)
