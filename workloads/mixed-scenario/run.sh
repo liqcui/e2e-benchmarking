@@ -49,6 +49,8 @@ export IF_SCALE_NODE_TESTING=${IF_SCALE_NODE_TESTING:="false"}
 export IF_RECYCLE_NODE_TESTING=${IF_RECYCLE_NODE_TESTING:="false"}
 export RESTART_OVN_PODS=${RESTART_OVN_PODS:="false"}
 export METRICS_PROFILE=${METRICS_PROFILE:="metrics-profiles/metrics-report.yml"}
+export IF_DEPLOY_CUSTOMIZED_DASHBOARD=${IF_DEPLOY_CUSTOMIZED_DASHBOARD:="true"}
+
 download_binary(){
   KUBE_BURNER_URL="https://github.com/kube-burner/kube-burner-ocp/releases/download/v${KUBE_BURNER_VERSION}/kube-burner-ocp-V${KUBE_BURNER_VERSION}-linux-x86_64.tar.gz"
   curl --fail --retry 8 --retry-all-errors -sS -L "${KUBE_BURNER_URL}" | tar -xzC "${KUBE_DIR}/" kube-burner-ocp
@@ -255,13 +257,9 @@ EOF
                 create_large_scale_network_policy $ns false
             done
         fi
-        cd ..    
+        cd ..  
 
         JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
-
-        START_TIME=$(date -d "$JOB_START" +%s)
-        END_TIME=$(date -d "$JOB_END" +%s)
-        ${KUBE_DIR}/kube-burner-ocp index --uuid=${UUID} --start=$START_TIME --end=$((END_TIME + 600)) --metrics-profile=$METRICS_PROFILE --log-level ${LOG_LEVEL}
         env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
         echo
        
@@ -293,9 +291,13 @@ EOF
         fi
         
         cat /tmp/system_resource_info.csv
+
         JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
         env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
         
+        START_TIME=$(date -d "$JOB_START" +%s)
+        END_TIME=$(date -d "$JOB_END" +%s)
+        ${KUBE_DIR}/kube-burner-ocp index --uuid=${UUID} --start=$START_TIME --end=$((END_TIME + 600)) --metrics-profile=$METRICS_PROFILE --log-level ${LOG_LEVEL}
 
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
         echo "Query metric from prometheus and compare the result ..."
@@ -339,6 +341,14 @@ EOF
             echo "The max value of ovnkube_controller_pod_event_latency_seconds_bucket is great than expected value"
             exit 1
         fi
+
+        if [[ $IF_DEPLOY_CUSTOMIZED_DASHBOARD == "true" ]];then
+                DITTYBOPPER_PARAMS = "-i customized-workloads/customized-ovn-dashboard.json"
+                git clone https://github.com/cloud-bulldozer/performance-dashboards.git
+                performance-dashboards/dittybopper/deploy.sh $DITTYBOPPER_PARAMS
+        fi
+
+
 fi
 
 exit_code=$?
