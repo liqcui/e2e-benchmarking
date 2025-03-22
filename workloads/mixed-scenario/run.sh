@@ -255,9 +255,12 @@ EOF
             done
         fi
         cd ..    
+
         JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
 
-        ${KUBE_DIR}/kube-burner-ocp index --uuid=${UUID} --start=$JOB_START --end=$((JOB_END + 600)) --metrics-profile=$METRICS_PROFILE --log-level ${LOG_LEVEL}
+        START_TIME=$(date -d "$JOB_START" +%s)
+        END_TIME=$(date -d "$JOB_END" +%s)
+        ${KUBE_DIR}/kube-burner-ocp index --uuid=${UUID} --start=$START_TIME --end=$((END_TIME + 600)) --metrics-profile=$METRICS_PROFILE --log-level ${LOG_LEVEL}
         env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
         echo
        

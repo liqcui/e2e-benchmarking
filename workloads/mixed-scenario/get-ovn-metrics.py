@@ -104,10 +104,12 @@ def get_ovn_metrics(promQL, start_time,end_time):
         print("#" * 118)
         print()
         promQueryAPIURL = "https://"+prometheusURL+"/api/v1/query?query="
-        #PromQL = "histogram_quantile(0.99, sum by (operation_name, le) (rate(storage_operation_duration_seconds_bucket{{volume_plugin=~\".*{}\"}}[{}m])))".format(provider,timeDuration)
-        print("-" * 118)
-        print(promQL)
-        print("-" * 118)
+        # match QLMethod:
+
+        #    PromQL = "histogram_quantile(0.99, sum by (operation_name, le) (rate(storage_operation_duration_seconds_bucket{{volume_plugin=~\".*{}\"}}[{}m])))".format(provider,timeDuration)
+        #    print("-" * 118)
+        #    print(promQL)
+        #    print("-" * 118)
         requestMetricUrl=promQueryAPIURL + promQL
 
 
