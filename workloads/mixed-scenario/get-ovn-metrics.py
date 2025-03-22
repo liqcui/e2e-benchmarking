@@ -1,39 +1,12 @@
 #!/usr/bin/env python3
 import argparse
-import elasticsearch
 import subprocess
 import json
 import requests
 import urllib3
 from datetime import datetime
 import math
-import uuid
 import os
-import ast
-import ssl
-
-# es_server = os.getenv("ES_SERVER")
-# es_index = os.getenv("ES_INDEX")
-# def index_result(payload, retry_count=3):
-#     # Environment vars
-#     print(f"Indexing documents in {es_index}")
-#     while retry_count > 0:
-#         try:
-#             ssl_ctx = ssl.create_default_context()
-#             ssl_ctx.check_hostname = False
-#             ssl_ctx.verify_mode = ssl.CERT_NONE
-#             es = elasticsearch.Elasticsearch([es_server], send_get_body_as='POST',ssl_context=ssl_ctx, use_ssl=True)
-#             print("#"*118)
-#             print("ES Information: \n{}".format(es.info()))
-#             print("#"*118)
-#             print()
-#             es.index(index=es_index, body=payload,doc_type='doc')
-
-#             retry_count = 0
-#         except Exception as e:
-#             print("Failed Indexing - \n" + str(e.with_traceback))
-#             print("Retrying again to index...")
-#             retry_count -= 1
 
 '''Getting token to access prometheus api'''
 # Invokes a given command and returns the stdout
@@ -146,15 +119,7 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
         for r in results:
             # print(r)
             if "ovnkube_controller_pod_event_latency_seconds_bucket" in promQL:
-               #metricName="ovnkube_controller_pod_event_latency_seconds_bucket"
                metricEvent=r['metric']['event']
-            #    print(metricEvent)
-            # else:
-            #     metricName=promQL
-            # elif "max_over_time" in promQL:
-            #    metricName=promQL
-            # else:
-            #    metricName=r['metric']['__name__']
 
             #metricName=promQL
             podName=r['metric']['pod']
@@ -190,11 +155,6 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
         except IOError as e:
            print(f"An error occurred: {e}")
         
-        # #save to elasticsearch
-        # if es_server != None:
-        #    currentTime=datetime.now()
-        #    payload["timestamp"] = currentTime
-        #    index_result(payload)
         return payload
 
 def generatedPayload():
