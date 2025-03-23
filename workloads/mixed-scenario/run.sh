@@ -342,12 +342,19 @@ EOF
             exit 1
         fi
 
-        if [[ $IF_DEPLOY_CUSTOMIZED_DASHBOARD == "true" ]];then
-                DITTYBOPPER_PARAMS="-i customized-workloads/customized-ovn-dashboard.json"
-                git clone https://github.com/cloud-bulldozer/performance-dashboards.git
-                performance-dashboards/dittybopper/deploy.sh $DITTYBOPPER_PARAMS
-        fi
+        #TBD, with issue when import dashboard json file
+        # if [[ $IF_DEPLOY_CUSTOMIZED_DASHBOARD == "true" ]];then
+        #         DITTYBOPPER_PARAMS="-i customized-workloads/customized-ovn-dashboard.json"
+        #         git clone https://github.com/cloud-bulldozer/performance-dashboards.git
+        #         performance-dashboards/dittybopper/deploy.sh $DITTYBOPPER_PARAMS
+        
+        #         dittybopper_route=$(oc -n dittybopper get route dittybopper  -o jsonpath="{.spec.host}")
 
+        #         dashboard_request="{\"dashboard\": ${dashboard}, \"overwrite\": true}"
+        #         response_code=$(curl -Ss -w "%{http_code}" -X POST -H "Content-Type: application/json" -H "Accept: application/json" -d "${dashboard_request}" \
+        #         "http://admin:admin@${dittybopper_route}/api/dashboards/db" -o /tmp/resp.txt)
+                
+        # fi  
 
 fi
 
