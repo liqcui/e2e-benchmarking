@@ -61,14 +61,6 @@ download_binary(){
 
 download_binary
 
-# if [[ ${WORKLOAD} =~ "index" ]]; then
-#   cmd="${KUBE_DIR}/kube-burner-ocp index --uuid=${UUID} --start=$START_TIME --end=$((END_TIME + 600)) --metrics-profile=$METRICS_PROFILE --log-level ${LOG_LEVEL}"
-#   JOB_START=$(date -u -d "@$START_TIME" +"%Y-%m-%dT%H:%M:%SZ")
-#   JOB_END=$(date -u -d "@$((END_TIME + 600))" +"%Y-%m-%dT%H:%M:%SZ")
-# else
-#   cmd="${KUBE_DIR}/kube-burner-ocp ${WORKLOAD} --log-level=${LOG_LEVEL} --qps=${QPS} --burst=${BURST} --gc=${GC} --uuid ${UUID}"
-# fi
-
 echo "###############################################"
 if [[ ${PPROF_COLLECTION} == "true" ]] ; then
   delete_pprof_secrets
@@ -262,7 +254,7 @@ EOF
 
         waiting_for_during_each_phase "Phase II" 1800 "after creating large scale ANP/NetworkPolicy/EgressFirewall"
 
-        JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
+        JOB_END=$(date -u +"%Y-%m-%dT%H:%M:%SZ");
         env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
         echo
        
@@ -292,7 +284,7 @@ EOF
         
         cat /tmp/system_resource_info.csv
 
-        JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
+        JOB_END=$(date -u +"%Y-%m-%dT%H:%M:%SZ");
         env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
         
         START_TIME=$(date -d "$JOB_START" +%s)

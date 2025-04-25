@@ -1863,10 +1863,10 @@ function waiting_for_during_each_phase(){
              echo "$PHASE: Waiting for $SLEEP_TIME seconds $PROMPT_MESSAGE"
              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
              sleep $SLEEP_TIME
+             END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+             echo "Generated Report after $PHASE: Waiting for $SLEEP_TIME seconds"
+             generate_sys_resource_usage_report $START_TIME $END_TIME false             
     fi            
-    END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    echo "Generated Report after $PHASE: Waiting for $SLEEP_TIME seconds"
-    generate_sys_resource_usage_report $START_TIME $END_TIME false
     get_ovn_node_system_usage_info   
 }
 
@@ -2023,7 +2023,7 @@ function generate_sys_resource_usage_report(){
         IF_SAVE_TO_ES=$3
         >/tmp/final-summary.csv
         python3 -m pip install elasticsearch requests urllib3
-
+        echo "Duration: From $JOB_START to $JOB_END"
         echo -e "Test Scenario - Mixed Scenario:">>/tmp/final-summary.csv
         awk 'BEGIN{for(c=0;c<80;c++) printf "="; printf "\n"}'>>/tmp/final-summary.csv
         format_output_align_columns false "Testing Items" "Value">>/tmp/final-summary.csv
