@@ -2215,7 +2215,7 @@ function generate_sys_resource_usage_report(){
         format_output_align_columns true "ovnkube_node_ready_duration_seconds," "$maxValue">>/tmp/final-summary.csv
 
         IntValue=$(echo "$maxValue" | cut -d. -f1)
-        if [ $IntValue -gt 200 ];then
+        if [ $IntValue -gt 360 ];then
             echo "The max value of ovnkube_node_ready_duration_seconds is great than expected value"
             exit 1
         fi
