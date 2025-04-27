@@ -32,9 +32,9 @@ export POD_NODE_SELECTOR=${POD_NODE_SELECTOR:-'{node-role.kubernetes.io/worker: 
 export WORKER_NODE_LABEL=${WORKER_NODE_LABEL:-"node-role.kubernetes.io/worker"}
 export WORKLOAD_POD_NODE_SELECTOR=${WORKLOAD_POD_NODE_SELECTOR:-'{node-role.kubernetes.io/workload: }'}
 export BACKEND_POD_NODE_SELECTOR=${BACKEND_POD_NODE_SELECTOR:-'{node-role.kubernetes.io/backend: }'}
-export ENABLE_INGRESS_CONTROLLER=${ENABLE_INGRESS_CONTROLLER:="false"}
+#export ENABLE_INGRESS_CONTROLLER=${ENABLE_INGRESS_CONTROLLER:="false"}
 export MAX_UNAVAILABLE=${MAX_UNAVAILABLE:=1}
-export IF_SLEEP_WAIT_IN_EACH_PHASE=${IF_SLEEP_WAIT_IN_EACH_PHASE:="true"}
+export IF_SLEEP_WAIT_IN_EACH_PHASE=${IF_SLEEP_WAIT_IN_EACH_PHASE:="false"}
 # Pprof #Required
 export PPROF_COLLECTION=${PPROF_COLLECTION:-false}
 export PPROF_COLLECTION_INTERVAL=${PPROF_COLLECTION_INTERVAL:-5m}
@@ -79,7 +79,7 @@ echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Wo
 if [[ $WORKLOAD == "mixed-scenario" ]];then
 #if [[ $WORKLOAD == "cluster-density-v2" ]];then
         
-        waiting_for_during_each_phase "Phase I" 900 "before creating large scale pods"
+        waiting_for_during_each_phase "Phase I" 900 "before creating large scale pods" false
 
         #Prepare Testing Environment
         if [[ $IF_ENABLE_SCALE_METRIC == "true" ]];then
@@ -252,7 +252,7 @@ EOF
         fi
         cd ..  
 
-        waiting_for_during_each_phase "Phase II" 1800 "after creating large scale ANP/NetworkPolicy/EgressFirewall"
+        waiting_for_during_each_phase "Phase II" 1800 "after creating large scale ANP/NetworkPolicy/EgressFirewall" false
 
         JOB_END=$(date -u +"%Y-%m-%dT%H:%M:%SZ");
         env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
@@ -263,17 +263,17 @@ EOF
         
         if [[ ${IF_SCALE_NODE_TESTING} == "true" ]];then
             scale_out_down_nodes
-            waiting_for_during_each_phase "Scaling Out/Down Phase" 900 "after recycle node pods"
+            waiting_for_during_each_phase "Scaling Out/Down Phase" 900 "after recycle node pods" true
         fi
         
         if [[ ${IF_RECYCLE_NODE_TESTING} == "true" ]];then
             recycle_worker_node
-            waiting_for_during_each_phase "Recycle Node Phase" 900 "after recycle worker node" 
+            waiting_for_during_each_phase "Recycle Node Phase" 900 "after recycle worker node" true
         fi
 
         if [[ ${RESTART_OVN_PODS} == "true" ]];then
             restartOVNPODs
-            waiting_for_during_each_phase "Restart OVN Pods Phase" 900 "after restart OVN pods" 
+            waiting_for_during_each_phase "Restart OVN Pods Phase" 900 "after restart OVN pods" true
         fi
 
         if [[ ${IF_NETPOL_SYNC_CHECKING} == "true" ]];then

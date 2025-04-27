@@ -1857,7 +1857,9 @@ function waiting_for_during_each_phase(){
     PHASE=$1
     SLEEP_TIME=$2
     PROMPT_MESSAGE=$3
+    IF_SLEEP_WAIT_IN_EACH_PHASE=$4    
     START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
     if [[ ${IF_SLEEP_WAIT_IN_EACH_PHASE} == "true" ]];then
              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
              echo "$PHASE: Waiting for $SLEEP_TIME seconds $PROMPT_MESSAGE"
