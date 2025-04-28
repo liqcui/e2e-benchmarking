@@ -298,6 +298,11 @@ EOF
         generate_sys_resource_usage_report $JOB_START $JOB_END true
         get_ovn_node_system_usage_info
         
+        #Rollback 
+        oc scale deployment cluster-version-operator -n openshift-cluster-version --replicas=1
+        oc scale deployment network-operator -n openshift-network-operator --replicas=1
+        waiting_for_during_each_phase "Final Phase:" 300 "after rollback cluster-version-operator and network-operator" false
+
         #ovnkube_controller_admin_network_policies
         #sum by(action, direction, pod) (ovnkube_controller_admin_network_policies_rules)
 
