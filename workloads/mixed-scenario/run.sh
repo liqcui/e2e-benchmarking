@@ -300,7 +300,9 @@ EOF
         
         #Rollback 
         oc scale deployment cluster-version-operator -n openshift-cluster-version --replicas=1
+        oc -n openshift-cluster-version wait --timeout=120s --for=condition=Ready pod -l k8s-app=cluster-version-operator
         oc scale deployment network-operator -n openshift-network-operator --replicas=1
+        oc -n openshift-network-operator wait --timeout=120s --for=condition=Ready pod -l name=network-operator
         waiting_for_during_each_phase "Final Phase:" 300 "after rollback cluster-version-operator and network-operator" false
 
         #ovnkube_controller_admin_network_policies
