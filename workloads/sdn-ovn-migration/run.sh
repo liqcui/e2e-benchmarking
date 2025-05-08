@@ -230,10 +230,10 @@ EOF
                   sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
                   sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
                   #service number
-                  sed -i 's/replicas: 5/replicas: 3/' cluster-density-v2.yml
+                  sed -i 's/replicas: 5/replicas: 6/' cluster-density-v2.yml
                   sed -i 's/replicas: 10/replicas: 5/' cluster-density-v2.yml
                   #service number
-                  sed -i 's/randInt 1 6/randInt 1 2/'  deployment-client.yml                
+                  #sed -i 's/randInt 1 6/randInt 1 2/'  deployment-client.yml                
                   # #Remove Network Policy
                   # sed -i '/np-deny-all.yml/, +9d' cluster-density-v2.yml
                   # sed -i '/np-deny-all.yml/{N;N;d;}' cluster-density-v2.yml
