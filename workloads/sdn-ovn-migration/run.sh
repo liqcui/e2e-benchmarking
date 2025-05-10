@@ -252,7 +252,11 @@ EOF
               echo "---------------------------------------------------"
               $cmd
               cd ..
-      fi
+              echo  
+              JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
+              env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
+              echo                      
+fi
 
 
 #Execute limited sdn to ovn live migration
