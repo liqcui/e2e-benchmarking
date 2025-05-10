@@ -1320,5 +1320,40 @@ INDEX=$(( $INDEX + 1 ))
 done
 }
 
+function post_check_after_migration(){
 
+    INIT=1
+    MAX_RETRY=${MAX_RETRY:=7200}
+    DETECT_INTERVAL=${DETECT_INTERVAL:=10}
+    echo The max retry is $MAX_RETRY
+    echo "Start to detect if the service broken during the second reboot of OVN live migration ...."
+    
+    DETECT_ROUTE_NAME=`oc get route -A|grep keepalive-detect | awk '{print $3}'`
+    while true;
+    do
+          echo "Check OVN Pods Status"
+          awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
+          oc -n openshift-ovn-kubernetes get pods
+          
+          echo "Get latest 50 event"
+          awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
+          oc get event -A | sort -n -k2 | grep -v openshift-marketplace| head -50
+
+          echo "Get API Logs"
+          for apipod in `oc -n openshift-kube-apiserver get pods -l app=openshift-kube-apiserver |grep -v NAME | awk '{print $1}'`
+          do
+              echo
+              echo $apipod
+              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+              oc -n openshift-kube-apiserver logs $apipod --since=60s
+          done
+
+          INIT=$(( $INIT + 1 ))
+          if [[ $INIT -ge $MAX_RETRY ]];then
+              echo "The max retry has been reached, exit post_check_after_migration"
+              exit 1
+          fi
+          sleep $DETECT_INTERVAL
+    done
+}
 

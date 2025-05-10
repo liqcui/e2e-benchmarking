@@ -384,6 +384,7 @@ EOF
            env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
            echo                        
            echo "Limited SDN to OVN Live Migration Completed"
+           post_check_after_migration
 fi
 
 exit_code=$?
