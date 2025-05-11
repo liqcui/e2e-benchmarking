@@ -1322,9 +1322,11 @@ done
 
 function post_check_after_migration(){
     python3 -m pip install elasticsearch requests urllib3
+    export ITERATIONS=${ITERATIONS:=4500}
     INIT=1
     MAX_RETRY=${MAX_RETRY:=7200}
     DETECT_INTERVAL=${DETECT_INTERVAL:=30}
+    
     echo The max retry is $MAX_RETRY
     while true;
     do
