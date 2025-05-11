@@ -142,7 +142,7 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
             promQL = "topk(10, sum by(node) (max_over_time({}[{}])))".format(metricName, timeDuration)
         elif promQLOperation == "topAvgOverTimeSumByNode":
             promQL = "topk(10, sum by(node) (avg_over_time({}[{}])))".format(metricName, timeDuration)
-        elif promQLOperation == "getInfo" or promQLOperation == "bucket":
+        elif promQLOperation == "getInfo" or promQLOperation == "bucket" or promQLOperation == "fullQL":
             promQL = "{}".format(metricName)
         elif promQLOperation == "rate":
             promQL = "topk(100,rate({}[5m]))".format(metricName)
@@ -180,6 +180,8 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
         elif promQLOperation == "getInfo":
             if "kube_pod_status_phase" in promQL:
                 reportTitle=("Metric Name","Phase","Value")
+            elif "apiserver_request_duration_seconds" in promQL:
+                reportTitle=("Metric Name","Metric Group","Value")
             else:
                 reportTitle=("Metric Name","Value")
         else:
@@ -201,12 +203,30 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
             if promQLOperation == "getInfo":
                if "kube_pod_status_phase" in promQL:
                    phase=r['metric']['phase']
+               elif "apiserver_request_duration_seconds" in promQL:
+                  metricName="Slowest Requests (P90) - 5min"
+                  metric1=""
+                  if "group" in r['metric']:
+                    metric1=r['metric']['group']
+                  metric3=r['metric']['resource']
+                  metric2=r['metric']['scope']
+                  metric4=r['metric']['verb']
+                  metricGroup=metric1+":"+metric2+":"+metric3+":"+metric4
+            elif promQLOperation == "fullQL":
+               if "ALERTS" in promQL:
+                  metric1=r['metric']['alertname']
+                  metric2=r['metric']['severity']
+                  metricGroup="alertname:"+metric1+":"+metric2
             elif promQLOperation == "bucket":
                if "rest_client_request_duration_seconds_bucket" in promQL:
                    metricName="rest_client_request_duration_seconds_bucket"
                    service=r['metric']['service']
                    verb=r['metric']['verb']
                    metricGroup=service+":"+verb
+               elif "ovnkube_node_cni_request_duration_seconds_bucket" in promQL:
+                   metric1=r['metric']['pod']
+                   metric2=r['metric']['command']
+                   metricGroup=metric1+":"+metric2
             elif promQLOperation == "rate":
                if "apiserver_cache_list_total" in promQL:
                   resourcePrefix=r['metric']['resource_prefix']
@@ -247,6 +267,15 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
                   metric3=r['metric']['operation']
                   metric2=r['metric']['type']
                   metricGroup=metric1+":"+metric2+":"+metric3
+               elif "kube_state_metrics_watch_total" in promQL:
+                  metric1=r['metric']['instance']
+                  metric3=r['metric']['resource']
+                  metric2=r['metric']['result']
+                  metricGroup=metric1+":"+metric3+":"+metric2
+               elif "apiserver_watch_cache_events_received_total" in promQL or "apiserver_watch_cache_events_dispatched_total" in promQL:
+                  metric1=r['metric']['instance']
+                  metric2=r['metric']['resource']
+                  metricGroup=metric1+":"+metric2
             else:
                podName=r['metric']['pod']
 
@@ -263,9 +292,11 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
             if promQLOperation == "getInfo":
                if "kube_pod_status_phase" in promQL:
                    payload[phase]=metricValue
+               elif "apiserver_request_duration_seconds" in promQL:
+                   payload[metricGroup]=metricValue
                else:
                    payload["total"]=metricValue
-            elif promQLOperation == "rate" or promQLOperation == "bucket":
+            elif promQLOperation == "rate" or promQLOperation == "bucket" or promQLOperation == "fullQL":
                if "apiserver_cache_list_total" in promQL:
                    payload[resourcePrefix]=metricValue
                else:
@@ -277,7 +308,7 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
             if (promQLOperation == "topMaxOverTime" or promQLOperation == "topAvgOverTime") and "ovn_db_db_size_bytes" not in promQL  :
                #print("No."+str(i)+" "+metricName+',    '+nodeName+',    '+podName+',    '+str(metricValue))
                metricRow=("No."+str(i)+" "+metricName,nodeName,podName,str(metricValue))
-            elif promQLOperation == "rate" or promQLOperation == "bucket":
+            elif promQLOperation == "rate" or promQLOperation == "bucket" or promQLOperation == "fullQL":
                 if "apiserver_cache_list_total" in promQL:
                    metricRow=("No."+str(i)+" "+metricName,resourcePrefix,str(metricValue))
                 else:
@@ -286,7 +317,7 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
             elif promQLOperation == "getInfo":
                 if "kube_pod_status_phase" in promQL:
                    metricRow=("No."+str(i)+" "+metricName,phase,str(metricValue))
-                elif "rest_client_request_duration_seconds_bucket" in promQL:
+                elif "rest_client_request_duration_seconds_bucket" in promQL or "apiserver_request_duration_seconds" in promQL:
                    metricRow=("No."+str(i)+" "+metricName,metricGroup,str(metricValue))
                 else:
                    metricRow=("No."+str(i)+" "+metricName,str(metricValue))
@@ -305,7 +336,7 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
            #else:
            #   format_output_alligin_colums(reportData,3)
         elif promQLOperation == "getInfo":
-           if "kube_pod_status_phase" in promQL or "rest_client_request_duration_seconds_bucket" in promQL:
+           if "kube_pod_status_phase" in promQL or "rest_client_request_duration_seconds_bucket" in promQL or "apiserver_request_duration_seconds" in promQL:
               format_output_alligin_colums(reportData,3)
            else:
               format_output_alligin_colums(reportData,2)

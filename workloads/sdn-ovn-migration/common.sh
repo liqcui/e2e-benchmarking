@@ -1321,17 +1321,14 @@ done
 }
 
 function post_check_after_migration(){
-    START_TIME=$1
-    END_TIME=$2
+    
     INIT=1
     MAX_RETRY=${MAX_RETRY:=7200}
-    DETECT_INTERVAL=${DETECT_INTERVAL:=10}
+    DETECT_INTERVAL=${DETECT_INTERVAL:=30}
     echo The max retry is $MAX_RETRY
-    echo "Start to detect if the service broken during the second reboot of OVN live migration ...."
-    
-    DETECT_ROUTE_NAME=`oc get route -A|grep keepalive-detect | awk '{print $3}'`
     while true;
     do
+          START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           echo "Check OVN Pods Status"
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
           oc -n openshift-ovn-kubernetes get pods
@@ -1346,9 +1343,16 @@ function post_check_after_migration(){
               echo
               echo $apipod
               awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-              oc -n openshift-kube-apiserver logs $apipod --since=60s
+              oc -n openshift-kube-apiserver logs $apipod --since=120s
           done
 
+          INIT=$(( $INIT + 1 ))
+          if [[ $INIT -ge $MAX_RETRY ]];then
+              echo "The max retry has been reached, exit post_check_after_migration"
+              exit 1
+          fi
+          sleep $DETECT_INTERVAL
+          END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           python3 get_prom_metrics.py -q 'apiserver_cache_list_total{job="apiserver"}' -s $START_TIME -e $END_TIME -t rate
           python3 get_prom_metrics.py -q 'apiserver_request_total{job="apiserver", system_client!="",resource!=""}' -s $START_TIME -e $END_TIME -t rate
           python3 get_prom_metrics.py -q 'ovnkube_node_workqueue_adds_total' -s $START_TIME -e $END_TIME -t rate
@@ -1359,13 +1363,12 @@ function post_check_after_migration(){
           python3 get_prom_metrics.py -q 'ovnkube_controller_workqueue_retries_total' -s $START_TIME -e $END_TIME -t rate
           python3 get_prom_metrics.py -q 'etcd_requests_total' -s $START_TIME -e $END_TIME -t rate
           python3 get_prom_metrics.py -q 'sum by(command, pod) (rate(ovnkube_node_cni_request_duration_seconds_bucket[5m]))' -s $START_TIME -e $END_TIME -t bucket
-          
-          INIT=$(( $INIT + 1 ))
-          if [[ $INIT -ge $MAX_RETRY ]];then
-              echo "The max retry has been reached, exit post_check_after_migration"
-              exit 1
-          fi
-          sleep $DETECT_INTERVAL
+          python3 get_prom_metrics.py -q 'kube_state_metrics_watch_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'apiserver_watch_cache_events_received_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'apiserver_watch_cache_events_dispatched_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'topk(10,sum(ALERTS{severity!="none"}) by (alertname, severity))' -s $START_TIME -e $END_TIME -t fullQL
+          python3 get_prom_metrics.py -q 'sum(kube_pod_status_phase{}) by (phase)' -s $START_TIME -e $END_TIME -t getInfo
+          python3 get_prom_metrics.py -q 'topk(15, cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.9", subresource=""})' -s $START_TIME -e $END_TIME -t getInfo
     done
 }
 
