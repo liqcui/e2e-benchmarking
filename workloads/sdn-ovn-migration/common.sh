@@ -1321,7 +1321,8 @@ done
 }
 
 function post_check_after_migration(){
-
+    START_TIME=$1
+    END_TIME=$2
     INIT=1
     MAX_RETRY=${MAX_RETRY:=7200}
     DETECT_INTERVAL=${DETECT_INTERVAL:=10}
@@ -1347,6 +1348,16 @@ function post_check_after_migration(){
               awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
               oc -n openshift-kube-apiserver logs $apipod --since=60s
           done
+
+          python3 get_request_total.py -q 'apiserver_cache_list_total{job="apiserver"}' -s $START_TIME -e $END_TIME -t rate
+          python3 get_request_total.py -q 'apiserver_request_total{job="apiserver", system_client!="",resource!=""}' -s $START_TIME -e $END_TIME -t rate
+          python3 get_request_total.py -q 'ovnkube_node_workqueue_adds_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_request_total.py -q 'ovnkube_controller_resource_update_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_request_total.py -q 'histogram_quantile(0.99, sum by(le, service, verb) (rate(rest_client_request_duration_seconds_bucket{job=~"kube-controller-manager|scheduler|check-endpoints|kubelet"}[5m])))' -s $START_TIME -e $END_TIME -t bucket
+          python3 get_request_total.py -q 'kubelet_http_requests_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_request_total.py -q 'apiserver_watch_events_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_request_total.py -q 'ovnkube_controller_workqueue_retries_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_request_total.py -q 'etcd_requests_total' -s $START_TIME -e $END_TIME -t rate
 
           INIT=$(( $INIT + 1 ))
           if [[ $INIT -ge $MAX_RETRY ]];then
