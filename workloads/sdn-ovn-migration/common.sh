@@ -1333,6 +1333,7 @@ function post_check_after_migration(){
           START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           echo
           awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}' 
+          awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'           
           echo "Check OVN Pods Status"
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
           oc -n openshift-ovn-kubernetes get pods
