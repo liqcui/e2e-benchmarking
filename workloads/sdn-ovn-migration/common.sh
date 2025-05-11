@@ -1349,16 +1349,17 @@ function post_check_after_migration(){
               oc -n openshift-kube-apiserver logs $apipod --since=60s
           done
 
-          python3 get_request_total.py -q 'apiserver_cache_list_total{job="apiserver"}' -s $START_TIME -e $END_TIME -t rate
-          python3 get_request_total.py -q 'apiserver_request_total{job="apiserver", system_client!="",resource!=""}' -s $START_TIME -e $END_TIME -t rate
-          python3 get_request_total.py -q 'ovnkube_node_workqueue_adds_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_request_total.py -q 'ovnkube_controller_resource_update_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_request_total.py -q 'histogram_quantile(0.99, sum by(le, service, verb) (rate(rest_client_request_duration_seconds_bucket{job=~"kube-controller-manager|scheduler|check-endpoints|kubelet"}[5m])))' -s $START_TIME -e $END_TIME -t bucket
-          python3 get_request_total.py -q 'kubelet_http_requests_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_request_total.py -q 'apiserver_watch_events_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_request_total.py -q 'ovnkube_controller_workqueue_retries_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_request_total.py -q 'etcd_requests_total' -s $START_TIME -e $END_TIME -t rate
-
+          python3 get_prom_metrics.py -q 'apiserver_cache_list_total{job="apiserver"}' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'apiserver_request_total{job="apiserver", system_client!="",resource!=""}' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'ovnkube_node_workqueue_adds_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'ovnkube_controller_resource_update_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'histogram_quantile(0.99, sum by(le, service, verb) (rate(rest_client_request_duration_seconds_bucket{job=~"kube-controller-manager|scheduler|check-endpoints|kubelet"}[5m])))' -s $START_TIME -e $END_TIME -t bucket
+          python3 get_prom_metrics.py -q 'kubelet_http_requests_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'apiserver_watch_events_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'ovnkube_controller_workqueue_retries_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'etcd_requests_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'sum by(command, pod) (rate(ovnkube_node_cni_request_duration_seconds_bucket[5m]))' -s $START_TIME -e $END_TIME -t bucket
+          
           INIT=$(( $INIT + 1 ))
           if [[ $INIT -ge $MAX_RETRY ]];then
               echo "The max retry has been reached, exit post_check_after_migration"
