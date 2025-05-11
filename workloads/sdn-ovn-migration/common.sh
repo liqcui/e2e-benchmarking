@@ -1348,7 +1348,7 @@ function post_check_after_migration(){
               echo
               echo $apipod
               awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-              oc -n openshift-kube-apiserver logs $apipod --since=120s
+              oc -n openshift-kube-apiserver logs $apipod --since=60s
           done
 
           INIT=$(( $INIT + 1 ))

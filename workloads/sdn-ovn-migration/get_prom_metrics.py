@@ -145,7 +145,7 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
         elif promQLOperation == "getInfo" or promQLOperation == "bucket" or promQLOperation == "fullQL":
             promQL = "{}".format(metricName)
         elif promQLOperation == "rate":
-            promQL = "topk(100,rate({}[5m]))".format(metricName)
+            promQL = "topk(60,rate({}[5m]))".format(metricName)
         else:
             print("Unsupported promQL operations, support type is: topMaxOverTime,topAvgOverTime,topMaxOverTimeSumByPod,topAvgOverTimeSumByPod,topMaxOverTimeSumByNode")
             exit(1)
