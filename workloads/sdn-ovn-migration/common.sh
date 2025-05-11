@@ -1358,22 +1358,25 @@ function post_check_after_migration(){
           fi
           sleep $DETECT_INTERVAL
           END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          python3 get_prom_metrics.py -q 'apiserver_cache_list_total{job="apiserver"}' -s $START_TIME -e $END_TIME -t rate
-          python3 get_prom_metrics.py -q 'apiserver_request_total{job="apiserver", system_client!="",resource!=""}' -s $START_TIME -e $END_TIME -t rate
-          python3 get_prom_metrics.py -q 'ovnkube_node_workqueue_adds_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_prom_metrics.py -q 'ovnkube_controller_resource_update_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'topk(15, cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.9", subresource=""})' -s $START_TIME -e $END_TIME -t getInfo
           python3 get_prom_metrics.py -q 'histogram_quantile(0.99, sum by(le, service, verb) (rate(rest_client_request_duration_seconds_bucket{job=~"kube-controller-manager|scheduler|check-endpoints|kubelet"}[5m])))' -s $START_TIME -e $END_TIME -t bucket
-          python3 get_prom_metrics.py -q 'kubelet_http_requests_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'apiserver_request_total{job="apiserver", system_client!="",resource!=""}' -s $START_TIME -e $END_TIME -t rate
           python3 get_prom_metrics.py -q 'apiserver_watch_events_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_prom_metrics.py -q 'ovnkube_controller_workqueue_retries_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_prom_metrics.py -q 'etcd_requests_total' -s $START_TIME -e $END_TIME -t rate
-          python3 get_prom_metrics.py -q 'sum by(command, pod) (rate(ovnkube_node_cni_request_duration_seconds_bucket[5m]))' -s $START_TIME -e $END_TIME -t bucket
-          python3 get_prom_metrics.py -q 'kube_state_metrics_watch_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'apiserver_cache_list_total{job="apiserver"}' -s $START_TIME -e $END_TIME -t rate
           python3 get_prom_metrics.py -q 'apiserver_watch_cache_events_received_total' -s $START_TIME -e $END_TIME -t rate
           python3 get_prom_metrics.py -q 'apiserver_watch_cache_events_dispatched_total' -s $START_TIME -e $END_TIME -t rate
+
+          python3 get_prom_metrics.py -q 'ovnkube_node_workqueue_adds_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'ovnkube_controller_workqueue_retries_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'ovnkube_controller_resource_update_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'sum by(command, pod) (rate(ovnkube_node_cni_request_duration_seconds_bucket[5m]))' -s $START_TIME -e $END_TIME -t bucket
+
+          python3 get_prom_metrics.py -q 'kubelet_http_requests_total' -s $START_TIME -e $END_TIME -t rate 
+          python3 get_prom_metrics.py -q 'etcd_requests_total' -s $START_TIME -e $END_TIME -t rate
+          python3 get_prom_metrics.py -q 'kube_state_metrics_watch_total' -s $START_TIME -e $END_TIME -t rate   
           python3 get_prom_metrics.py -q 'topk(10,sum(ALERTS{severity!="none"}) by (alertname, severity))' -s $START_TIME -e $END_TIME -t fullQL
           python3 get_prom_metrics.py -q 'sum(kube_pod_status_phase{}) by (phase)' -s $START_TIME -e $END_TIME -t getInfo
-          python3 get_prom_metrics.py -q 'topk(15, cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.9", subresource=""})' -s $START_TIME -e $END_TIME -t getInfo
+
     done
 }
 
