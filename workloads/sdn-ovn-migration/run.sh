@@ -231,14 +231,14 @@ EOF
                   sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
                   #service number
                   sed -i 's/replicas: 5/replicas: 6/' cluster-density-v2.yml
-                  #sed -i 's/replicas: 10/replicas: 5/' cluster-density-v2.yml
+                  sed -i 's/replicas: 10/replicas: 5/' cluster-density-v2.yml
                   #service number
                   #sed -i 's/randInt 1 6/randInt 1 4/'  deployment-client.yml  
 
                   #Remove configmap/secret
                   sed -i '106,111d' deployment-client.yml
                   sed -i '94,99d' deployment-client.yml
-                  sed -i '67,71d' deployment-client.yml
+                  sed -i '68,71d' deployment-client.yml
                   sed -i '60,63d' deployment-client.yml
                   cat deployment-client.yml
                   sed -i '95,100d' deployment-server.yml
