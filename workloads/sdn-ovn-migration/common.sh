@@ -1359,6 +1359,9 @@ function post_check_after_migration(){
               awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
               oc -n openshift-kube-controller-manager logs $kubectrpod -c kube-controller-manager --since=60s
           done
+          echo
+          awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+          oc -n openshift-kube-controller-manager get event | tail -20
 
           INIT=$(( $INIT + 1 ))
           if [[ $INIT -ge $MAX_RETRY ]];then
