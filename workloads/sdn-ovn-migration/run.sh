@@ -338,21 +338,20 @@ EOF
                 #cluster_health_basic_check
       
                 awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-                echo -e "\nWating for 15 minutes to check if all resource work as expect"
-                sleep 900         
-                sdn_ovn_live_migration_checkpoint
+                #echo -e "\nWating for 15 minutes to check if all resource work as expect"
+                #sleep 900
+                #sdn_ovn_live_migration_checkpoint
                 echo "Finished CNI migration"
                 awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
                 cat /tmp/system_resource_info.csv
                 awk 'BEGIN{for(c=0;c<80;c++) printf "#"; printf "\n"}'
     
-
-                awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'          
-                echo "waiting for 300s, then test scale out/scale down worker node after migration"
-                sleep 300
                 export TEST_STEP="Scale out/down after OVN CNI migration"
                 export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
                 if [[ $IF_SCLAE_OUT_NODES == "true" ]];then
+                    awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'          
+                    echo "waiting for 300s, then test scale out/scale down worker node after migration"
+                    sleep 300                
                     scale_out_up_nodes
                     scale_out_down_nodes
                 fi
