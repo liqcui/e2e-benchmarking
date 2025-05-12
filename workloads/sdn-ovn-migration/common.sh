@@ -1338,9 +1338,9 @@ function post_check_after_migration(){
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
           oc -n openshift-ovn-kubernetes get pods
           
-          echo "Get latest 100 event"
+          echo "Get latest 20 event"
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
-          oc get event -A | sort -n -k2 | grep -v openshift-marketplace| head -100
+          oc get event | sort -n -k1 -r| tail -20
 
           echo "Get API Logs"
           for apipod in `oc -n openshift-kube-apiserver get pods -l app=openshift-kube-apiserver |grep -v NAME | awk '{print $1}'`
