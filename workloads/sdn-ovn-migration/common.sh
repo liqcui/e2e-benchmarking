@@ -1351,6 +1351,15 @@ function post_check_after_migration(){
               oc -n openshift-kube-apiserver logs $apipod --since=60s
           done
 
+          echo "Get kube-controller Logs"
+          for kubectrpod in `oc -n openshift-kube-controller-manager get pods -lapp=kube-controller-manager| grep -v NAME| awk '{print $1}'`
+          do
+              echo
+              echo $kubectrpod
+              awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+              oc -n openshift-kube-controller-manager logs $kubectrpod -c kube-controller-manager --since=60s
+          done
+
           INIT=$(( $INIT + 1 ))
           if [[ $INIT -ge $MAX_RETRY ]];then
               echo "The max retry has been reached, exit post_check_after_migration"
