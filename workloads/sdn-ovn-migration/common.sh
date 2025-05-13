@@ -1324,7 +1324,7 @@ function post_check_after_migration(){
     python3 -m pip install elasticsearch requests urllib3
     export ITERATIONS=${ITERATIONS:=4500}
     INIT=1
-    MAX_RETRY=${MAX_RETRY:=7200}
+    MAX_RETRY=${MAX_RETRY:=720}
     DETECT_INTERVAL=${DETECT_INTERVAL:=30}
     
     echo The max retry is $MAX_RETRY
@@ -1336,7 +1336,7 @@ function post_check_after_migration(){
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'           
           echo "Check OVN Pods Status"
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-          oc -n openshift-ovn-kubernetes get pods
+          oc -n openshift-ovn-kubernetes get pods | grep -v '8/8'
           
           echo "Get latest 20 event"
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
@@ -1362,6 +1362,43 @@ function post_check_after_migration(){
           echo
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
           oc -n openshift-kube-controller-manager get event | tail -20
+
+          awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+          oc get mcp | awk '{print $1" "$3"\t"$4"\t"$5"\t "$6"\t"$7"\t"$7"\t"$9}'
+
+          echo "----------------------TOP 10 Usage of Containers---------------------------"
+          oc -n openshift-ovn-kubernetes adm top pods --containers| sort -n -r -k4 | head -10
+       
+          infraNodeNames=`oc get nodes |grep -E 'infra' |awk '{print $1}' | tr -s '\n' '|'`
+       
+          masterNodeNames=`oc get nodes |grep -E 'master' |awk '{print $1}' | tr -s '\n' '|'`
+          masterNodeNames=${masterNodeNames:0:-1}
+          echo "----------------------TOP Usage of Infra Node---------------------------"
+          if [[ -n $infraNodeNames ]];then
+             infraNodeNames=${infraNodeNames:0:-1}
+             oc adm top nodes | grep -i -E "$infraNodeNames|NAME"  |sort -n -k5 
+          else
+             infraNodeNames="none"
+          fi
+          echo
+       
+          echo "----------------------TOP Usage of Master/ControlPlane Node---------------------------"
+          oc adm top nodes | grep -i -E "$masterNodeNames|NAME" |sort -n -k5 
+          echo
+       
+          echo "----------------------TOP 10 Usage of Worker Node---------------------------"
+          oc adm top node | grep NAME
+          oc adm top nodes | grep -i -E -v "$masterNodeNames|$infraNodeNames" | sort -k5 -nr | head -10
+          echo "----------------------The Max 3 RAM Usage of Worker Node---------------------------"
+          oc adm top node | grep NAME | awk '{print $1"\t\t\t\t\t"$4"\t"$5}'
+          oc adm top nodes | grep -i -E -v "$masterNodeNames|$infraNodeNames|NAME" | sort -k5 -n | awk '{print $1"\t"$4"\t"$5}'| tail -3
+          echo "----------------------The Max 3 CPU Usage of Worker Node---------------------------"
+          oc adm top node | grep NAME | awk '{print $1"\t\t\t\t\t"$2"\t"$3}'
+          oc adm top nodes | grep -i -E -v "$masterNodeNames|$infraNodeNames|NAME" | sort -k3 -n | awk '{print $1"\t"$2"\t"$3}'| tail -3
+          echo "----------------------`date`-------------------------------"
+          echo
+          oc get node | grep -v -w Ready
+          echo
 
           INIT=$(( $INIT + 1 ))
           if [[ $INIT -ge $MAX_RETRY ]];then
