@@ -1318,6 +1318,21 @@ INDEX=$(( $INDEX + 1 ))
 done
 }
 
+function format_output_align_columns(){
+        IF_APPEND=$1
+        COL1=$2
+        COL2=$3
+        COL3=$4
+        COL4=$5
+        
+        if [[ $IF_APPEND == "false" ]];then
+            printf "%-60s %-20s %-20s %-20s\n" "$2" "$3" "$4" "$5"
+            awk 'BEGIN{for(c=0;c<120;c++) printf "-"; printf "\n"}'
+        else
+            printf "%-60s %-20s %-20s %-20s\n" "$2" "$3" "$4" "$5"
+        fi
+}
+
 function post_check_after_migration(){
     python3 -m pip install elasticsearch requests urllib3
     export ITERATIONS=${ITERATIONS:=4500}
@@ -1332,6 +1347,43 @@ function post_check_after_migration(){
     # echo "Object Size of ETCD"
     # oc exec -n openshift-etcd -c etcdctl ${ETCD_POD_NAME} -- sh -c "etcdctl get / --prefix --keys-only  | grep -oE '^/[a-z|.]+/[a-z|.|8]*' | sort | uniq -c | sort -rn" | while read KEY; do printf "$KEY\t" && oc exec -n openshift-etcd ${ETCD_POD_NAME} -c etcdctl -- etcdctl get ${KEY##* } --prefix --write-out=json | jq '[.kvs[].value | length] | add ' | numfmt --to=iec ; done | sort -k3 -hr | column -t
 
+    echo -e "Test Scenario - Limited SDN to OVN Migration:">>/tmp/final-summary.csv
+    awk 'BEGIN{for(c=0;c<80;c++) printf "="; printf "\n"}'>>/tmp/final-summary.csv
+    format_output_align_columns false "Testing Items" "Value">>/tmp/final-summary.csv
+    totalMasterNodes=`oc get nodes |grep -E 'master' |wc -l`
+    format_output_align_columns true "MasterNodes," $totalMasterNodes>>/tmp/final-summary.csv
+    totalInfraNodes=`oc get nodes |grep -E 'infra' |wc -l`
+    format_output_align_columns true "InfraNodes," $totalInfraNodes>>/tmp/final-summary.csv
+    totalWorkNodes=`oc get nodes |grep -E 'worker' |wc -l`
+    format_output_align_columns true "WorkNodes," $totalWorkNodes>>/tmp/final-summary.csv
+    totalNS=`oc get ns |wc -l`
+    format_output_align_columns true "totalNS," $totalNS>>/tmp/final-summary.csv
+    totalANPs=`oc get anp |grep -v NAME|wc -l` 
+    format_output_align_columns true "ANPs," $totalANPs>>/tmp/final-summary.cs
+    anpNS1=`oc get ns |grep anp| awk '{print $1}'| head -1`
+    networkPolicyPerNS=`oc -n $anpNS1 get networkpolicy |wc -l`
+    totalNetworkPolicy=$(( $totalNS * $networkPolicyPerNS ))
+    format_output_align_columns true "NetworkPolicy," $totalNetworkPolicy>>/tmp/final-summary.csv
+    python3 get_prom_metrics.py -q 'ovnkube_controller_num_egress_firewall_rules' -s $JOB_STAR-e $JOB_END -t getInfo| tee metric_result.txt
+    maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`  
+    format_output_align_columns true "EgressFirewallRules," $maxValue>>/tmp/final-summary.cs
+    python3 get_prom_metrics.py -q 'sum(kube_pod_status_phase{}) by (phase)' -s $JOB_START -$JOB_END -t getInfo| tee metric_result.txt
+    maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '` 
+    python3 get_prom_metrics.py -q 'count(kube_secret_info{})' -s $JOB_START -e $JOB_END -getInfo| tee metric_result.txt
+    maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`
+    format_output_align_columns true "Secret," $maxValue>>/tmp/final-summary.cs
+    python3 get_prom_metrics.py -q 'count(kube_configmap_info{})' -s $JOB_START -e $JOB_END -getInfo| tee metric_result.txt
+    maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`
+    format_output_align_columns true "ConfigMap," $maxValue>>/tmp/final-summary.csv
+    
+    python3 get_prom_metrics.py -q 'count(kube_service_info{})' -s $JOB_START -e $JOB_END -getInfo| tee metric_result.txt
+    maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`
+    format_output_align_columns true "Service," $maxValue>>/tmp/final-summary.cs
+    python3 get_prom_metrics.py -q 'count(openshift_route_info{})' -s $JOB_START -e $JOB_END -getInfo| tee metric_result.txt
+    maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`
+    format_output_align_columns true "Route," $maxValue>>/tmp/final-summary.csv
+    
+    cat /tmp/final-summary.csv
     while true;
     do
           START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
