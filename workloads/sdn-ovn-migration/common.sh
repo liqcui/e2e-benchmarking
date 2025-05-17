@@ -1359,16 +1359,19 @@ function post_check_after_migration(){
           done
           echo
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+          echo oc -n openshift-kube-controller-manager get event
           oc -n openshift-kube-controller-manager get event | tail -20
 
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
           oc get mcp | awk '{print $1" "$3"\t"$4"\t"$5"\t "$6"\t"$7"\t"$7"\t"$9}'
 
-          echo "----------------------TOP 10 Usage of Containers---------------------------"
+          echo "----------------------TOP 10 Usage of Containers of OVN Pods---------------------------"
           oc -n openshift-ovn-kubernetes adm top pods --containers| sort -n -r -k4 | head -10
+
+          echo "----------------------TOP 10 Usage of Containers of API Pods---------------------------"
+          oc adm -n openshift-kube-apiserver top pod| grep -v guard
        
-          infraNodeNames=`oc get nodes |grep -E 'infra' |awk '{print $1}' | tr -s '\n' '|'`
-       
+          infraNodeNames=`oc get nodes |grep -E 'infra' |awk '{print $1}' | tr -s '\n' '|'`       
           masterNodeNames=`oc get nodes |grep -E 'master' |awk '{print $1}' | tr -s '\n' '|'`
           masterNodeNames=${masterNodeNames:0:-1}
           echo "----------------------TOP Usage of Infra Node---------------------------"
@@ -1405,6 +1408,7 @@ function post_check_after_migration(){
           fi
           sleep $DETECT_INTERVAL
           END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          python3 get_prom_metrics.py -q 'container_memory_rss{container=~"kube-apiserver|kube-apiserver-cert-regeneration-controller|kube-apiserver-cert-syncer", pod=~"kube-apiserver.*", namespace="openshift-kube-apiserver"}' -s $START_TIME -e $END_TIME -t fullQL
           python3 get_prom_metrics.py -q 'topk(15, cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.9", subresource=""})' -s $START_TIME -e $END_TIME -t getInfo
           python3 get_prom_metrics.py -q 'histogram_quantile(0.99, sum by(le, service, verb) (rate(rest_client_request_duration_seconds_bucket{job=~"kube-controller-manager|scheduler|check-endpoints|kubelet"}[5m])))' -s $START_TIME -e $END_TIME -t bucket
           python3 get_prom_metrics.py -q 'apiserver_request_total{job="apiserver", system_client!="",resource!=""}' -s $START_TIME -e $END_TIME -t rate
