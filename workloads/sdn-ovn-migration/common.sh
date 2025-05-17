@@ -1346,7 +1346,7 @@ function post_check_after_migration(){
               echo
               echo $apipod
               awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-              oc -n openshift-kube-apiserver logs $apipod --since=60s
+              oc -n openshift-kube-apiserver logs $apipod --since=90s
           done
 
           echo "Get kube-controller Logs"
@@ -1357,7 +1357,12 @@ function post_check_after_migration(){
               awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
               oc -n openshift-kube-controller-manager logs $kubectrpod -c kube-controller-manager --since=60s
           done
-          echo
+
+          machineControllerPod=`oc -n openshift-machine-config-operator get pods |grep machine-config-controller| awk '{print $1}'`
+          echo "Get machine-config-controller Logs"
+          awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+          oc -n openshift-machine-config-operator logs $machineControllerPod -c machine-config-controller --since=90s
+          echo 
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
           echo oc -n openshift-kube-controller-manager get event
           oc -n openshift-kube-controller-manager get event | tail -20
