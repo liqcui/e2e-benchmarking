@@ -217,6 +217,17 @@ def get_ovn_metrics(metricName, start_time, end_time, promQLOperation):
                   metric1=r['metric']['alertname']
                   metric2=r['metric']['severity']
                   metricGroup="alertname:"+metric1+":"+metric2
+               if "container_memory_rss" in promQL:
+                  metricName="container_memory_rss"
+                  metric1=r['metric']['pod']
+                  metric2=r['metric']['container']
+                  metricGroup=metric1+":"+metric2
+               if "apiserver_watch_events_sizes_sum" in promQL:
+                  metric1=""
+                  if "group" in r['metric']:
+                    metric1=r['metric']['group']
+                  metric2=r['metric']['kind']
+                  metricGroup=metric1+":"+metric2
             elif promQLOperation == "bucket":
                if "rest_client_request_duration_seconds_bucket" in promQL:
                    metricName="rest_client_request_duration_seconds_bucket"
@@ -449,3 +460,4 @@ if __name__ == "__main__":
     unixEndTime=convertStr2Time(args.end_time)
 
     get_ovn_metrics(args.query,int(unixStartTime), int(unixEndTime),args.metric_operations)
+    

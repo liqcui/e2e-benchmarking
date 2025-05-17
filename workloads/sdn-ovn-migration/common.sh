@@ -1347,6 +1347,8 @@ function post_check_after_migration(){
     # echo "Object Size of ETCD"
     # oc exec -n openshift-etcd -c etcdctl ${ETCD_POD_NAME} -- sh -c "etcdctl get / --prefix --keys-only  | grep -oE '^/[a-z|.]+/[a-z|.|8]*' | sort | uniq -c | sort -rn" | while read KEY; do printf "$KEY\t" && oc exec -n openshift-etcd ${ETCD_POD_NAME} -c etcdctl -- etcdctl get ${KEY##* } --prefix --write-out=json | jq '[.kvs[].value | length] | add ' | numfmt --to=iec ; done | sort -k3 -hr | column -t
 
+    # oc exec -n openshift-etcd -c etcdctl ${ETCD_POD_NAME} -- sh -c "etcdctl get / --prefix --keys-only  | grep -oE '^/[a-z|.]+/[a-z|.|8]*' | sort | uniq -c | sort -rn| grep -E 'configmap|secrets|events|pods|deployments|serviceaccounts|rolebindings|services|routes|networkpolicies|endpointslices'"|while read KEY; do printf "$KEY\t" && oc exec -n openshift-etcd ${ETCD_POD_NAME} -c etcdctl -- etcdctl get ${KEY##* } --prefix --write-out=json | jq '[.kvs[].value | length] | add ' | numfmt --to=iec ; done
+
     echo -e "Test Scenario - Limited SDN to OVN Migration:">>/tmp/final-summary.csv
     awk 'BEGIN{for(c=0;c<80;c++) printf "="; printf "\n"}'>>/tmp/final-summary.csv
     format_output_align_columns false "Testing Items" "Value">>/tmp/final-summary.csv
@@ -1471,6 +1473,7 @@ function post_check_after_migration(){
           fi
           sleep $DETECT_INTERVAL
           END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          python3 get_prom_metrics.py -q 'topk(15,group_kind:apiserver_watch_events_sizes_sum:rate1m)' -s $START_TIME -e $END_TIME -t fullQ
           python3 get_prom_metrics.py -q 'container_memory_rss{container=~"kube-apiserver|kube-apiserver-cert-regeneration-controller|kube-apiserver-cert-syncer", pod=~"kube-apiserver.*", namespace="openshift-kube-apiserver"}' -s $START_TIME -e $END_TIME -t fullQL
           python3 get_prom_metrics.py -q 'topk(15, cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.9", subresource=""})' -s $START_TIME -e $END_TIME -t getInfo
           python3 get_prom_metrics.py -q 'histogram_quantile(0.99, sum by(le, service, verb) (rate(rest_client_request_duration_seconds_bucket{job=~"kube-controller-manager|scheduler|check-endpoints|kubelet"}[5m])))' -s $START_TIME -e $END_TIME -t bucket
