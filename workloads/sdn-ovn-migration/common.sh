@@ -1360,15 +1360,15 @@ function post_check_after_migration(){
     format_output_align_columns true "InfraNodes," $totalInfraNodes>>/tmp/final-summary.csv
     totalWorkNodes=`oc get nodes |grep -E 'worker' |wc -l`
     format_output_align_columns true "WorkNodes," $totalWorkNodes>>/tmp/final-summary.csv
-    totalNS=`oc get ns |wc -l`
+    totalNS=`oc get ns| grep cluster-density-v2 |wc -l`
     format_output_align_columns true "totalNS," $totalNS>>/tmp/final-summary.csv
-    totalANPs=`oc get cluster-density-v2 |grep -v NAME|wc -l` 
+    totalANPs=`oc get anp |grep -v NAME|wc -l` 
     format_output_align_columns true "ANPs," $totalANPs>>/tmp/final-summary.cs
     anpNS1=`oc get ns |grep cluster-density-v2| awk '{print $1}'| head -1`
     networkPolicyPerNS=`oc -n $anpNS1 get networkpolicy |wc -l`
     totalNetworkPolicy=$(( $totalNS * $networkPolicyPerNS ))
     format_output_align_columns true "NetworkPolicy," $totalNetworkPolicy>>/tmp/final-summary.csv
-    python3 get_prom_metrics.py -q 'ovnkube_controller_num_egress_firewall_rules' -s $JOB_START -e $JOB_END -t getInfo| tee metric_result.txt
+    python3 get_prom_metrics.py -q 'ovnkube_controller_num_egress_firewall_rules' -s $JOB_START -e $JOB_END -t getInfo| head -15 | tee metric_result.txt
     maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`  
     format_output_align_columns true "EgressFirewallRules," $maxValue>>/tmp/final-summary.cs
     python3 get_prom_metrics.py -q 'sum(kube_pod_status_phase{}) by (phase)' -s $JOB_START -e $JOB_END -t getInfo| tee metric_result.txt
