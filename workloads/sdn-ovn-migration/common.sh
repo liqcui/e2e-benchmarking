@@ -1396,7 +1396,7 @@ function post_check_after_migration(){
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'           
           echo "Check OVN Pods Status"
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'       
-          oc -n openshift-ovn-kubernetes get pods | grep -v '8/8'
+          oc -n openshift-ovn-kubernetes get pods | grep -v -E '8/8|2/2'
           
           echo "Get latest 20 event"
           awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'   
@@ -1419,6 +1419,21 @@ function post_check_after_migration(){
               awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
               oc -n openshift-kube-controller-manager logs $kubectrpod -c kube-controller-manager --since=60s
           done
+
+          oc get co|grep 'True        True          False'
+          if [[ $? -eq 0 ]];then
+               coNames=`oc get co|grep 'True        True          False'| awk '{print $1}'`
+               for coName in $coNames
+               do
+               oc get co $coName -oyaml
+               done       
+          fi
+          
+          echo
+          apiOperatorPOd=`oc -n openshift-kube-apiserver-operator get pods |grep kube-apiserver-operator | awk '{print $1}'`
+          echo "Get $apiOperatorPOd Logs"
+          awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+          oc -n openshift-kube-apiserver-operator logs $apiOperatorPOd --since=90s
 
           machineControllerPod=`oc -n openshift-machine-config-operator get pods |grep machine-config-controller| awk '{print $1}'`
           echo "Get machine-config-controller Logs"
@@ -1475,7 +1490,7 @@ function post_check_after_migration(){
           fi
           sleep $DETECT_INTERVAL
           END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          python3 get_prom_metrics.py -q 'topk(15,group_kind:apiserver_watch_events_sizes_sum:rate1m)' -s $START_TIME -e $END_TIME -t fullQ
+          python3 get_prom_metrics.py -q 'topk(15,group_kind:apiserver_watch_events_sizes_sum:rate1m)' -s $START_TIME -e $END_TIME -t fullQL
           python3 get_prom_metrics.py -q 'container_memory_rss{container=~"kube-apiserver|kube-apiserver-cert-regeneration-controller|kube-apiserver-cert-syncer", pod=~"kube-apiserver.*", namespace="openshift-kube-apiserver"}' -s $START_TIME -e $END_TIME -t fullQL
           python3 get_prom_metrics.py -q 'topk(15, cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{job="apiserver",quantile="0.9", subresource=""})' -s $START_TIME -e $END_TIME -t getInfo
           python3 get_prom_metrics.py -q 'histogram_quantile(0.99, sum by(le, service, verb) (rate(rest_client_request_duration_seconds_bucket{job=~"kube-controller-manager|scheduler|check-endpoints|kubelet"}[5m])))' -s $START_TIME -e $END_TIME -t bucket

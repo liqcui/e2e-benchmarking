@@ -398,6 +398,7 @@ EOF
            echo "Limited SDN to OVN Live Migration Completed"
            echo "Start to post check after migration"
            post_check_after_migration $JOB_START $JOB_END
+           #oc patch kubeapiserver/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $(date --rfc-3339=ns) to make message unique\"}}"
 fi
 
 exit_code=$?
