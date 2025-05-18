@@ -1368,7 +1368,7 @@ function post_check_after_migration(){
     networkPolicyPerNS=`oc -n $anpNS1 get networkpolicy |wc -l`
     totalNetworkPolicy=$(( $totalNS * $networkPolicyPerNS ))
     format_output_align_columns true "NetworkPolicy," $totalNetworkPolicy>>/tmp/final-summary.csv
-    python3 get_prom_metrics.py -q 'ovnkube_controller_num_egress_firewall_rules' -s $JOB_START -e $JOB_END -t getInfo| tee metric_result.txt
+    python3 get_prom_metrics.py -q 'ovnkube_controller_num_egress_firewall_rules' -s $JOB_START -e $JOB_END -t getInfo| head -2 | tee metric_result.txt
     maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`  
     format_output_align_columns true "EgressFirewallRules," $maxValue>>/tmp/final-summary.cs
     python3 get_prom_metrics.py -q 'sum(kube_pod_status_phase{}) by (phase)' -s $JOB_START -e $JOB_END -t getInfo| tee metric_result.txt
