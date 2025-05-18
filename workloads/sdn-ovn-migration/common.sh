@@ -1371,7 +1371,7 @@ function post_check_after_migration(){
     python3 get_prom_metrics.py -q 'ovnkube_controller_num_egress_firewall_rules' -s $JOB_START -e $JOB_END -t getInfo| tee metric_result.txt
     maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`  
     format_output_align_columns true "EgressFirewallRules," $maxValue>>/tmp/final-summary.cs
-    python3 get_prom_metrics.py -q 'sum(kube_pod_status_phase{}) by (phase)' -s $JOB_START -$JOB_END -t getInfo| tee metric_result.txt
+    python3 get_prom_metrics.py -q 'sum(kube_pod_status_phase{}) by (phase)' -s $JOB_START -e $JOB_END -t getInfo| tee metric_result.txt
     maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '` 
     python3 get_prom_metrics.py -q 'count(kube_secret_info{})' -s $JOB_START -e $JOB_END -getInfo| tee metric_result.txt
     maxValue=`cat metric_result.txt |grep -w No.1| awk '{print  $NF}'| tr -d ' '`
