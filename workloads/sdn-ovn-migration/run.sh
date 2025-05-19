@@ -236,15 +236,15 @@ EOF
                   #sed -i 's/randInt 1 6/randInt 1 4/'  deployment-client.yml  
 
                   #Remove configmap/secret
-                  sed -i '106,111d' deployment-client.yml
-                  sed -i '94,99d' deployment-client.yml
-                  sed -i '68,71d' deployment-client.yml
-                  sed -i '60,63d' deployment-client.yml
+                  sed -i '109,111d' deployment-client.yml
+                  sed -i '97,99d' deployment-client.yml
+                  sed -i '70,71d' deployment-client.yml
+                  sed -i '62,63d' deployment-client.yml
                   cat deployment-client.yml
-                  sed -i '95,100d' deployment-server.yml
-                  sed -i '83,88d' deployment-server.yml
-                  sed -i '54,57d' deployment-server.yml
-                  sed -i '46,49d' deployment-server.yml
+                  sed -i '98,100d' deployment-server.yml
+                  sed -i '86,88d' deployment-server.yml
+                  sed -i '56,57d' deployment-server.yml
+                  sed -i '48,49d' deployment-server.yml
                   cat deployment-server.yml               
                   # #Remove Network Policy
 
