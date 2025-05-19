@@ -231,21 +231,21 @@ EOF
                   sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
                   #service number
                   sed -i 's/replicas: 5/replicas: 6/' cluster-density-v2.yml
-                  sed -i 's/replicas: 10/replicas: 6/' cluster-density-v2.yml
+                  sed -i 's/replicas: 10/replicas: 5/' cluster-density-v2.yml
                   #service number
                   #sed -i 's/randInt 1 6/randInt 1 4/'  deployment-client.yml  
 
                   #Remove configmap/secret
-                  # sed -i '109,111d' deployment-client.yml
-                  # sed -i '97,99d' deployment-client.yml
-                  # sed -i '70,71d' deployment-client.yml
-                  # sed -i '62,63d' deployment-client.yml
-                  # cat deployment-client.yml
-                  # sed -i '98,100d' deployment-server.yml
-                  # sed -i '86,88d' deployment-server.yml
-                  # sed -i '56,57d' deployment-server.yml
-                  # sed -i '48,49d' deployment-server.yml
-                  # cat deployment-server.yml               
+                  sed -i '106,111d' deployment-client.yml
+                  sed -i '94,99d' deployment-client.yml
+                  sed -i '68,71d' deployment-client.yml
+                  sed -i '60,63d' deployment-client.yml
+                  cat deployment-client.yml
+                  sed -i '95,100d' deployment-server.yml
+                  sed -i '83,88d' deployment-server.yml
+                  sed -i '54,57d' deployment-server.yml
+                  sed -i '46,49d' deployment-server.yml
+                  cat deployment-server.yml               
                   # #Remove Network Policy
 
                   # sed -i '/np-deny-all.yml/, +9d' cluster-density-v2.yml
