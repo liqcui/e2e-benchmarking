@@ -230,23 +230,23 @@ EOF
                   sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
                   sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
                   #service number
-                  sed -i 's/replicas: 5/replicas: 5/' cluster-density-v2.yml
+                  sed -i 's/replicas: 5/replicas: 3/' cluster-density-v2.yml
                   #service number
-                  sed -i 's/randInt 1 6/randInt 1 5/'  deployment-client.yml
+                  sed -i 's/randInt 1 6/randInt 1 3/'  deployment-client.yml
 
                   #secret/configmap number 
-                  # sed -i 's/replicas: 10/replicas: 8/' cluster-density-v2.yml
+                  sed -i 's/replicas: 10/replicas: 5/' cluster-density-v2.yml
                   #Remove configmap/secret with 1 configmap/secret
-                  # sed -i '103,111d' deployment-client.yml
-                  # sed -i '91,99d' deployment-client.yml
-                  # sed -i '66,71d' deployment-client.yml
-                  # sed -i '58,63d' deployment-client.yml
-                  # cat deployment-client.yml
-                  # sed -i '92,100d' deployment-server.yml
-                  # sed -i '80,88d' deployment-server.yml
-                  # sed -i '52,57d' deployment-server.yml
-                  # sed -i '44,49d' deployment-server.yml
-                  # cat deployment-server.yml           
+                  sed -i '103,111d' deployment-client.yml
+                  sed -i '91,99d' deployment-client.yml
+                  sed -i '66,71d' deployment-client.yml
+                  sed -i '58,63d' deployment-client.yml
+                  cat deployment-client.yml
+                  sed -i '92,100d' deployment-server.yml
+                  sed -i '80,88d' deployment-server.yml
+                  sed -i '52,57d' deployment-server.yml
+                  sed -i '44,49d' deployment-server.yml
+                  cat deployment-server.yml           
 
                   #Remove configmap/secret with two configmap/secret
                   # sed -i '106,111d' deployment-client.yml
