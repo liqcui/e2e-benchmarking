@@ -277,12 +277,12 @@ EOF
               echo "---------------------------------------------------"
               $cmd
               cd ..
-              for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -1500`
-              do
-                      echo delete $INIT
-                      oc  -n $ns delete EgressNetworkPolicy default
-                      INIT=$(( $INIT + 1 ))
-              done
+              # for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -1500`
+              # do
+              #         echo delete $INIT
+              #         oc  -n $ns delete EgressNetworkPolicy default
+              #         INIT=$(( $INIT + 1 ))
+              # done
               echo  
               JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
               env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
