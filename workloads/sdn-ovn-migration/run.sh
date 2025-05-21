@@ -40,7 +40,7 @@ export KUBE_BURNER_POD_REPLICAS=${KUBE_BURNER_POD_REPLICAS:="1"}
 export PPROF_COLLECTION=${PPROF_COLLECTION:-false}
 export PPROF_COLLECTION_INTERVAL=${PPROF_COLLECTION_INTERVAL:-5m}
 export IF_SCLAE_OUT_NODES=${IF_SCLAE_OUT_NODES:="false"}
-export ONLY_POST_CHECKING=${ONLY_POST_CHECKING:="true"}
+export ONLY_POST_CHECKING=${ONLY_POST_CHECKING:="false"}
 export EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM=${EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM:=52}
 
 download_binary(){
@@ -230,22 +230,23 @@ EOF
                   sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
                   sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
                   #service number
-                  sed -i 's/replicas: 5/replicas: 3/' cluster-density-v2.yml
-                  sed -i 's/replicas: 10/replicas: 6/' cluster-density-v2.yml
+                  sed -i 's/replicas: 5/replicas: 5/' cluster-density-v2.yml
                   #service number
-                  sed -i 's/randInt 1 6/randInt 1 3/'  deployment-client.yml  
+                  sed -i 's/randInt 1 6/randInt 1 5/'  deployment-client.yml
 
+                  #secret/configmap number 
+                  # sed -i 's/replicas: 10/replicas: 8/' cluster-density-v2.yml
                   #Remove configmap/secret with 1 configmap/secret
-                  sed -i '103,111d' deployment-client.yml
-                  sed -i '91,99d' deployment-client.yml
-                  sed -i '66,71d' deployment-client.yml
-                  sed -i '58,63d' deployment-client.yml
-                  cat deployment-client.yml
-                  sed -i '92,100d' deployment-server.yml
-                  sed -i '80,88d' deployment-server.yml
-                  sed -i '52,57d' deployment-server.yml
-                  sed -i '44,49d' deployment-server.yml
-                  cat deployment-server.yml           
+                  # sed -i '103,111d' deployment-client.yml
+                  # sed -i '91,99d' deployment-client.yml
+                  # sed -i '66,71d' deployment-client.yml
+                  # sed -i '58,63d' deployment-client.yml
+                  # cat deployment-client.yml
+                  # sed -i '92,100d' deployment-server.yml
+                  # sed -i '80,88d' deployment-server.yml
+                  # sed -i '52,57d' deployment-server.yml
+                  # sed -i '44,49d' deployment-server.yml
+                  # cat deployment-server.yml           
 
                   #Remove configmap/secret with two configmap/secret
                   # sed -i '106,111d' deployment-client.yml
@@ -257,8 +258,21 @@ EOF
                   # sed -i '83,88d' deployment-server.yml
                   # sed -i '54,57d' deployment-server.yml
                   # sed -i '46,49d' deployment-server.yml
-                  # cat deployment-server.yml                      
-                  # #Remove Network Policy
+                  # cat deployment-server.yml
+
+                  #Remove configmap/secret with 3 configmap/secret
+                  # sed -i '109,111d' deployment-client.yml
+                  # sed -i '97,99d' deployment-client.yml
+                  # sed -i '70,71d' deployment-client.yml
+                  # sed -i '62,63d' deployment-client.yml
+                  # cat deployment-client.yml
+                  # sed -i '98,100d' deployment-server.yml
+                  # sed -i '86,88d' deployment-server.yml
+                  # sed -i '56,57d' deployment-server.yml
+                  # sed -i '48,49d' deployment-server.yml
+                  # cat deployment-server.yml 
+
+                  #Remove Network Policy
 
                   # sed -i '/np-deny-all.yml/, +9d' cluster-density-v2.yml
                   # sed -i '/np-deny-all.yml/{N;N;d;}' cluster-density-v2.yml
@@ -404,7 +418,7 @@ EOF
                 recycle_worker_node
            else 
                 echo "Only post check for limited sdn to ovn live migration"
-                #sdn-ovn-live-migration-keepalive-detect-phaseII
+                sdn-ovn-live-migration-keepalive-detect-phaseII
                 if [[ ${EnableIndex} == "true" ]];then
                     enable_kube_burner_index
                 fi
