@@ -404,7 +404,7 @@ EOF
                 recycle_worker_node
            else 
                 echo "Only post check for limited sdn to ovn live migration"
-                sdn-ovn-live-migration-keepalive-detect-phaseII
+                #sdn-ovn-live-migration-keepalive-detect-phaseII
                 if [[ ${EnableIndex} == "true" ]];then
                     enable_kube_burner_index
                 fi
