@@ -358,6 +358,7 @@ EOF
                 createAutoscaler
                 fi
                  
+                create_api_flowcontrol
                 if [[ ${IF_SLEEP_WAIT_IN_EACH_PHASE} == "true" ]];then
                  echo "Sleep 15 minutes after executing the kube-burner-ocp and creating all resources..."  
                  sleep 900

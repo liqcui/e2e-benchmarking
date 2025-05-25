@@ -1514,3 +1514,47 @@ function post_check_after_migration(){
     done
 }
 
+function create_api_flowcontrol(){
+oc apply -f-<<EOF  
+apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+kind: FlowSchema
+metadata:
+  name: ovn-fairness
+spec:
+  distinguisherMethod:
+    type: ByUser
+  matchingPrecedence: 1000
+  priorityLevelConfiguration:
+    name: ovn-fairness
+  rules:
+    - resourceRules:
+        - apiGroups:
+            - "k8s.ovn.org"
+          namespaces:
+            - "*"
+          resources:
+            - "egressfirewalls"
+          verbs:
+            - "list"
+      subjects:
+        - group:
+            name: system:ovn-nodes
+          kind: Group
+EOF
+oc apply -f-<<EOF
+apiVersion: flowcontrol.apiserver.k8s.io/v1beta1
+kind: PriorityLevelConfiguration
+metadata:
+  name: ovn-fairness
+spec:
+  type: Limited
+  limited:
+    assuredConcurrencyShares: 5
+    limitResponse:
+      queuing:
+        handSize: 4
+        queueLengthLimit: 50
+        queues: 16
+      type: Queue
+EOF
+}
