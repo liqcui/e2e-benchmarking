@@ -1541,6 +1541,7 @@ spec:
             name: system:ovn-nodes
           kind: Group
 EOF
+
 oc apply -f-<<EOF
 apiVersion: flowcontrol.apiserver.k8s.io/v1
 kind: PriorityLevelConfiguration
@@ -1557,4 +1558,5 @@ spec:
         queues: 16
       type: Queue
 EOF
+
 }
