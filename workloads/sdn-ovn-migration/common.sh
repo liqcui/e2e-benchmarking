@@ -1517,13 +1517,31 @@ function post_check_after_migration(){
 function create_api_flowcontrol(){
 oc apply -f-<<EOF  
 apiVersion: flowcontrol.apiserver.k8s.io/v1
+kind: PriorityLevelConfiguration
+metadata:
+  name: ovn-fairness
+spec:
+  type: Limited
+  limited:
+    nominalConcurrencyShares: 1
+    borrowingLimitPercent: 0
+    limitResponse:
+      queuing:
+        handSize: 4
+        queueLengthLimit: 50
+        queues: 16
+      type: Queue
+EOF
+ 
+oc apply -f-<<EOF
+apiVersion: flowcontrol.apiserver.k8s.io/v1
 kind: FlowSchema
 metadata:
   name: ovn-fairness
 spec:
   distinguisherMethod:
     type: ByUser
-  matchingPrecedence: 1000
+  matchingPrecedence: 1
   priorityLevelConfiguration:
     name: ovn-fairness
   rules:
@@ -1540,23 +1558,6 @@ spec:
         - group:
             name: system:ovn-nodes
           kind: Group
-EOF
- 
-oc apply -f-<<EOF
-apiVersion: flowcontrol.apiserver.k8s.io/v1
-kind: PriorityLevelConfiguration
-metadata:
-  name: ovn-fairness
-spec:
-  type: Limited
-  limited:
-    assuredConcurrencyShares: 5
-    limitResponse:
-      queuing:
-        handSize: 4
-        queueLengthLimit: 50
-        queues: 16
-      type: Queue
 EOF
 
 }
