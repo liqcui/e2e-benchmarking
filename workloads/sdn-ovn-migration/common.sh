@@ -1541,23 +1541,24 @@ metadata:
 spec:
   distinguisherMethod:
     type: ByUser
-  matchingPrecedence: 1
+  matchingPrecedence: 2
   priorityLevelConfiguration:
     name: ovn-fairness
   rules:
-    - resourceRules:
-        - apiGroups:
-            - "k8s.ovn.org"
-          namespaces:
-            - "*"
-          resources:
-            - "egressfirewalls"
-          verbs:
-            - "list"
-      subjects:
-        - group:
-            name: system:ovn-nodes
-          kind: Group
+  - resourceRules:
+    - apiGroups:
+      - k8s.ovn.org
+      clusterScope: true
+      namespaces:
+      - '*'
+      resources:
+      - egressfirewalls
+      verbs:
+      - list
+    subjects:
+    - group:
+        name: system:ovn-nodes
+      kind: Group
 EOF
 
 }
