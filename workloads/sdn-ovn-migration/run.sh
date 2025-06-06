@@ -291,6 +291,7 @@ EOF
               echo "---------------------------------------------------"
               $cmd
               cd ..
+              create_api_flowcontrol
               # for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -1500`
               # do
               #         echo delete $INIT
@@ -358,7 +359,7 @@ EOF
                 createAutoscaler
                 fi
                  
-                create_api_flowcontrol
+                
                 if [[ ${IF_SLEEP_WAIT_IN_EACH_PHASE} == "true" ]];then
                  echo "Sleep 15 minutes after executing the kube-burner-ocp and creating all resources..."  
                  sleep 900
