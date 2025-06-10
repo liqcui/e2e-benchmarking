@@ -291,11 +291,11 @@ EOF
               echo "---------------------------------------------------"
               $cmd
               cd ..
-              create_api_flowcontrol
+              #create_api_flowcontrol
               for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -500`
               do
                       echo delete $INIT
-                      oc  -n $ns delete EgressNetworkPolicy default
+                      oc  -n $ns delete egressfirewall default
                       INIT=$(( $INIT + 1 ))
               done
               echo  
