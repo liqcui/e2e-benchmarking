@@ -261,16 +261,16 @@ EOF
                   # cat deployment-server.yml
 
                   #Remove configmap/secret with 3 configmap/secret
-                  sed -i '109,111d' deployment-client.yml
-                  sed -i '97,99d' deployment-client.yml
-                  sed -i '70,71d' deployment-client.yml
-                  sed -i '62,63d' deployment-client.yml
-                  cat deployment-client.yml
-                  sed -i '98,100d' deployment-server.yml
-                  sed -i '86,88d' deployment-server.yml
-                  sed -i '56,57d' deployment-server.yml
-                  sed -i '48,49d' deployment-server.yml
-                  cat deployment-server.yml 
+                  # sed -i '109,111d' deployment-client.yml
+                  # sed -i '97,99d' deployment-client.yml
+                  # sed -i '70,71d' deployment-client.yml
+                  # sed -i '62,63d' deployment-client.yml
+                  # cat deployment-client.yml
+                  # sed -i '98,100d' deployment-server.yml
+                  # sed -i '86,88d' deployment-server.yml
+                  # sed -i '56,57d' deployment-server.yml
+                  # sed -i '48,49d' deployment-server.yml
+                  # cat deployment-server.yml 
 
                   #Remove Network Policy
 
