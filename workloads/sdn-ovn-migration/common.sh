@@ -1527,9 +1527,9 @@ spec:
     borrowingLimitPercent: 0
     limitResponse:
       queuing:
-        handSize: 4
-        queueLengthLimit: 50
-        queues: 16
+        handSize: 4            #This means that 4 queues are randomly selected from the 16 queues each time, and the request is placed in the shortest one.
+        queueLengthLimit: 50   #Indicates that each queue can hold a maximum of 50 requests
+        queues: 16             #total 16 queues
       type: Queue
 EOF
  
