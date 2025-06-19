@@ -232,7 +232,7 @@ EOF
                   #service number
                   sed -i 's/replicas: 5/replicas: 5/' cluster-density-v2.yml
                   #service number
-                  sed -i 's/randInt 1 6/randInt 1 5/'  deployment-client.yml
+                  sed -i 's/randInt 1 6/randInt 1 4/'  deployment-client.yml
 
                   #secret/configmap number 
                   # sed -i 's/replicas: 10/replicas: 8/' cluster-density-v2.yml
@@ -305,7 +305,8 @@ EOF
               echo  
               JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
               env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
-              echo                   
+              echo
+              echo oc patch machineconfigpool/worker --type=\'merge\' -p=\'\{\"spec\":\{\"maxUnavailable\": $MAX_UNAVAILABLE }}\' | envsubst| bash  
 fi
 
 
