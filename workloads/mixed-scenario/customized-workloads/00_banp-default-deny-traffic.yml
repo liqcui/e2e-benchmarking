@@ -10,6 +10,11 @@ spec:
         operator: In
         values: ["anp-restricted","anp-cidr","anp-pcidr","anp-node"]          
   ingress:
+  - name: "deny-all-ingress-from-any-ns"
+    action: "Deny"
+    from:
+    - namespaces:
+        namespaceSelector: {}
   # - name: "deny-all-ingress-from-anp-open"
   #   action: "Deny"
   #   from:
@@ -19,23 +24,8 @@ spec:
   #           anplabel: anp-open
   #       podSelector:
   #         matchLabels:
-  #           anplabel: anp-open
-  - name: "deny-all-ingress-from-any-ns"
-    action: "Deny"
-    from:
-    - namespaces:
-        namespaceSelector: {}       
+  #           anplabel: anp-open             
   egress:
-  # - name: "deny-all-egress-to-anp-open"
-  #   action: "Deny"
-  #   to:
-  #   - pods:
-  #       namespaceSelector:
-  #         matchLabels:
-  #           anplabel: anp-open
-  #       podSelector:
-  #         matchLabels:
-  #           anplabel: anp-open
   - name: egress-deny-all-traffic-to-any-network
     action: Deny
     to:
@@ -48,3 +38,13 @@ spec:
         matchExpressions:
         - key: kubernetes.io/hostname
           operator: Exists
+  # - name: "deny-all-egress-to-anp-open"
+  #   action: "Deny"
+  #   to:
+  #   - pods:
+  #       namespaceSelector:
+  #         matchLabels:
+  #           anplabel: anp-open
+  #       podSelector:
+  #         matchLabels:
+  #           anplabel: anp-open          
