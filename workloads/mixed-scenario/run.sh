@@ -76,8 +76,8 @@ set +e
 echo -e "Test Step,Create Time, Query Time, Max Master CPU,Max Master RAM,Max Worker CPU,Max Worker RAM,ACL,Match ACL,Port Group,Address Set,lflow-list, DumpFlows" > /tmp/system_resource_info.csv
 
 #Excute customized kube-burner-ocp workload, will change the WORKLOAD to mixed-scenario later
-if [[ $WORKLOAD == "mixed-scenario" ]];then
-#if [[ $WORKLOAD == "cluster-density-v2" ]];then
+#if [[ $WORKLOAD == "mixed-scenario" ]];then
+if [[ $WORKLOAD == "cluster-density-v2" ]];then
         
         waiting_for_during_each_phase "Phase I" 900 "before creating large scale pods" false
 

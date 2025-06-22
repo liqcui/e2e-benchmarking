@@ -1869,7 +1869,7 @@ function waiting_for_during_each_phase(){
              echo "Generated Report after $PHASE: Waiting for $SLEEP_TIME seconds"
              generate_sys_resource_usage_report $START_TIME $END_TIME false             
     fi            
-    get_ovn_node_system_usage_info   
+    get_ovn_node_system_usage_info
 }
 
 function enable_anp_audit_logging_level(){
