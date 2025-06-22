@@ -1245,7 +1245,7 @@ function recycle_worker_node(){
          echo "Gracefully reboot worker node"    
          export TEST_STEP="Gracefully reboot worker node"
          export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`               
-         for workerNode in `oc get nodes |grep worker | awk '{print $1}'|head -30`
+         for workerNode in `oc get nodes |grep worker | awk '{print $1}'|head -15`
          do
          	  echo  oc -n openshift-ovn-kubernetes debug node/$workerNode -q -- chroot /host reboot
          	  oc -n openshift-ovn-kubernetes debug node/$workerNode -q -- chroot /host reboot&
