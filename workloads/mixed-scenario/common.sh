@@ -1305,7 +1305,7 @@ function generate_cidr_selector_anp_multipolicy_with_multi_rules_multi_ips_byten
             fi
 
             if [[ $IF_NEW_TENANT -eq 0 ]];then                   
-cat>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml<<EOF
+cat>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml<<EOF
 apiVersion: policy.networking.k8s.io/v1alpha1
 kind: AdminNetworkPolicy
 metadata:
