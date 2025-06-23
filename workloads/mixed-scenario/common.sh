@@ -1374,11 +1374,11 @@ EOF
                      if [[ $IF_NEW_APP_RULE -eq 0 ]];then
                         echo APP_RULE_INDEX is $APP_RULE_INDEX
                         APP_RULE_INDEX=$(( $APP_RULE_INDEX + 1 )) 
-                        echo -e "  - name: \"allow-egress-to-anp-open-network-${APP_RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                        echo -e "  - name: \"allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                    
                      fi
 
-                     sed -i "/allow-egress-to-anp-open-network-${APP_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${APP_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                     sed -i "/allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${APP_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                  
                      APP_POD_INIT=$(( $APP_POD_INIT + 1 ))
                  elif [[ $podType == "perfdb" ]];then
@@ -1397,10 +1397,10 @@ EOF
                         echo DB_RULE_INDEX is $DB_RULE_INDEX
                         DB_RULE_INDEX=$(( $DB_RULE_INDEX + 1 ))
 
-                        echo -e "  - name: \"deny-egress-to-anp-open-network-${DB_RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                        echo -e "  - name: \"deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                      fi
 
-                     sed -i "/deny-egress-to-anp-open-network-${DB_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${DB_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                     sed -i "/deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${DB_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
               
                      DB_POD_INIT=$(( $DB_POD_INIT + 1 ))
                  else
