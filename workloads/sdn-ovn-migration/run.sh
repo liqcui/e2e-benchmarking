@@ -291,7 +291,7 @@ EOF
               echo "---------------------------------------------------"
               $cmd
               cd ..
-              #create_api_flowcontrol
+              create_api_flowcontrol
               #Create Customized Ingress Controller 
               if [[ ${ENABLE_INGRESS_CONTROLLER} == "true" ]]; then             
                       create_ingress_controller               
