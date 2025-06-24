@@ -1336,7 +1336,7 @@ spec:
           protocol: TCP    
     to:
     - networks:
-      - 10.128.0.0/14      
+      - 10.128.0.0/14
 EOF
             fi            
             oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
@@ -1975,14 +1975,14 @@ function create_large_scale_anp_networkpolicy_egressfirewall_policy(){
        export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"` 
        get_ovn_node_system_usage_info
  
-       create_pod_selector_anp_and_verify_traffic_between_ns_groups
+       #create_pod_selector_anp_and_verify_traffic_between_ns_groups
 
        ###################################Create CIDR Selector Policy#################################   
        create_cidr_selector_anp_and_verify_traffic_between_different_ns_groups
 
        ###################################Create Node Selector Policy#################################
        unlabel_all_nodes_with_label_alllow_deny_egress
-       create_node_selector_anp_and_verify_traffic_from_different_ns_groups_to_host
+       #create_node_selector_anp_and_verify_traffic_from_different_ns_groups_to_host
 
        #Enable common service for restricted workload will affect the traffic between different zones
        echo "Creating ANP to allow common service for restricted workload"

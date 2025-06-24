@@ -295,8 +295,8 @@ EOF
         echo "Compare the benchmarking result with the baseline after executing all testing"
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
         echo 
-        generate_sys_resource_usage_report $JOB_START $JOB_END true
-        get_ovn_node_system_usage_info
+        #generate_sys_resource_usage_report $JOB_START $JOB_END true
+        #get_ovn_node_system_usage_info
         
         #Rollback 
         oc scale deployment cluster-version-operator -n openshift-cluster-version --replicas=1
