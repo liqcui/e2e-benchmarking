@@ -1374,7 +1374,7 @@ EOF
                      if [[ $IF_NEW_APP_RULE -eq 0 ]];then
                         echo APP_RULE_INDEX is $APP_RULE_INDEX
                         APP_RULE_INDEX=$(( $APP_RULE_INDEX + 1 )) 
-                        echo -e "  - name: \"allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-cidr-open-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                        echo -e "  - name: \"allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                    
                      fi
 
