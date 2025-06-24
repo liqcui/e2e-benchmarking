@@ -215,7 +215,7 @@ UUID: ${UUID}
 JOB_START: ${JOB_START}
 ###############################################
 EOF
-
+              create_api_flowcontrol
               cd customized-workload
               EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
               generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
@@ -291,7 +291,7 @@ EOF
               echo "---------------------------------------------------"
               $cmd
               cd ..
-              create_api_flowcontrol
+              
               #Create Customized Ingress Controller 
               if [[ ${ENABLE_INGRESS_CONTROLLER} == "true" ]]; then             
                       create_ingress_controller               
