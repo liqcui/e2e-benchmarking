@@ -1750,7 +1750,7 @@ function create_cidr_selector_anp_and_verify_traffic_between_different_ns_groups
     
     WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
     SOURCE_NS_FILTER="anp-cidr"
-    TARGET_NS_FILTER="anp-open"
+    TARGET_NS_FILTER="anp-pcidr"
  
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     echo "Creating CIDR Selector ANP Egress/Ingress Policy[Min]"
@@ -1779,7 +1779,7 @@ function create_cidr_selector_anp_and_verify_traffic_between_different_ns_groups
     #CIDR Selector ANP to allow ip segment to OCP network
     #But we try to create more ANPs, so limited each POD IP as rules
     export CREATE_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
-    generate_cidr_selector_anp_multipolicy_with_multi_rules_multi_ips_bytenant anp-cidr anp-open
+    generate_cidr_selector_anp_multipolicy_with_multi_rules_multi_ips_bytenant anp-cidr anp-pcidr
 
     echo "---------------------------------------------------------------------------------"
     oc get anp | grep allow-traffic-cidr-anp-open-network-tenant

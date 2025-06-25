@@ -8,7 +8,7 @@ spec:
       matchExpressions:
       - key: anplabel
         operator: In
-        values: ["anp-restricted","anp-cidr","anp-pcidr","anp-node"]          
+        values: ["anp-restricted","anp-cidr","anp-node"]          
   ingress:
   - name: "deny-all-ingress-from-any-ns"
     action: "Deny"
