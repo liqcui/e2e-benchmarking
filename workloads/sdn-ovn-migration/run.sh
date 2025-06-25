@@ -41,7 +41,7 @@ export PPROF_COLLECTION=${PPROF_COLLECTION:-false}
 export PPROF_COLLECTION_INTERVAL=${PPROF_COLLECTION_INTERVAL:-5m}
 export IF_SCLAE_OUT_NODES=${IF_SCLAE_OUT_NODES:="false"}
 export ONLY_POST_CHECKING=${ONLY_POST_CHECKING:="false"}
-export EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM=${EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM:=52}
+export EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM=${EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM:=60}
 
 download_binary(){
   KUBE_BURNER_URL="https://github.com/kube-burner/kube-burner-ocp/releases/download/v${KUBE_BURNER_VERSION}/kube-burner-ocp-V${KUBE_BURNER_VERSION}-linux-x86_64.tar.gz"
@@ -296,12 +296,12 @@ EOF
               if [[ ${ENABLE_INGRESS_CONTROLLER} == "true" ]]; then             
                       create_ingress_controller               
               fi                 
-              # for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -500`
-              # do
-              #         echo delete $INIT
-              #         oc  -n $ns delete egressfirewall default
-              #         INIT=$(( $INIT + 1 ))
-              # done
+              for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -500`
+              do
+                      echo delete $INIT
+                      oc  -n $ns delete egressfirewall default
+                      INIT=$(( $INIT + 1 ))
+              done
               echo  
               JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
               env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
