@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: perfweb-ingress-traffic-service
+  name: perfapp-ingress-traffic-service
 spec:
   selector:
-    trafficapp: perfweb
+    trafficapp: perfapp
   ports:
   - protocol: TCP
     port: 8080

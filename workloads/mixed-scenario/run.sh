@@ -156,9 +156,9 @@ EOF
              append_customized_workload4Service $ns perfapp-clusterip-service.yml
             #  append_customized_workload4Service $ns perfapp-nodeport-service.yml
              append_customized_workload4Pods $ns egress-traffic-app.yml
-             append_customized_workload4Pods $ns perfweb-deployment.yml
-             append_customized_workload4Service $ns perfweb-ingress-service.yml
-             append_customized_workload_without_inputvar perfweb-ingress-route.yaml
+             #append_customized_workload4Pods $ns perfweb-deployment.yml
+             append_customized_workload4Service $ns perfapp-ingress-service.yml
+             append_customized_workload_without_inputvar perfapp-ingress-route.yaml
 
 
              if [[ ${ENABLE_NETWORK_POLICY} == "true" && ${NO_VERIFY_ANP} == "true" && ${IF_ONLY_ANP} == "false" ]];then
@@ -194,9 +194,9 @@ EOF
              append_customized_workload4Pods $ns perfapp-deployment.yml
              append_customized_workload4Service $ns perfapp-clusterip-service.yml
              append_customized_workload4Pods $ns egress-traffic-app.yml
-             append_customized_workload4Pods $ns perfweb-deployment.yml
-             append_customized_workload4Service $ns perfweb-ingress-service.yml
-             append_customized_workload_without_inputvar perfweb-ingress-route.yaml
+             #append_customized_workload4Pods $ns perfweb-deployment.yml
+             append_customized_workload4Service $ns perfapp-ingress-service.yml
+             append_customized_workload_without_inputvar perfapp-ingress-route.yaml
 
 
              if [[ ${ENABLE_NETWORK_POLICY} == "true" && ${NO_VERIFY_ANP} == "true" && ${IF_ONLY_ANP} == "false" ]];then

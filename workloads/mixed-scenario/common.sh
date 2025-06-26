@@ -2253,3 +2253,102 @@ function generate_sys_resource_usage_report(){
         awk 'BEGIN{for(c=0;c<120;c++) printf "-"; printf "\n"}'
         cat /tmp/final-summary.csv
 }
+
+function create_pod_reader(){
+oc apply -f-<<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-reader
+EOF
+
+oc -n default apply -f-<<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-pod-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+EOF
+
+oc -n default apply -f-<<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-pod-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: pod-reader
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-pod-reader
+  apiGroup: rbac.authorization.k8s.io
+EOF
+oc -n default apply -f-<<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workload-tool
+  labels:
+    app: workload-tool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workload-tool
+  template:
+    metadata:
+      labels:
+        app: workload-tool
+    spec:
+      serviceAccountName: pod-reader
+      containers:
+      - name: keepalive
+        image: quay.io/openshift-psap-qe/nginx-alpine:multiarch
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false
+          #runAsUser: 1000800000
+          capabilities:
+            drop:
+            - ALL
+        ports:
+          - name: http-port
+            containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+EOF
+curl --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -H"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default.svc/api/v1/namespaces/default/pods
+curl --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -H"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default.svc/api/v1/namespaces/anp-pcidr-0/pods | jq -r '.items[] | .metadata.name + ": " + .status.podIP'
+
+cat pod.json | jq -r '.items[] | .metadata.name + ": " + .status.podIP'
+anp-pcidr-0-app-1-7d994f975b-swpt7: 10.130.0.49
+anp-pcidr-0-db-1-557f49bffb-828rf: 10.131.0.45
+anp-pcidr-0-perfweb-1-687fb4d846-fqsql: 10.129.0.55
+anp-pcidr-0-reqegress-1-dd8f6fbc7-tl6dg: 10.131.0.46
+
+jq -r '.items[] | .metadata.name + ": " + .status.podIP + " (" + (.spec.containers[] | .name + ":" + (.ports[] | .containerPort | tostring)) + ")"' <<< "$PODS"
+
+jq -r '.items[] | .metadata.name + ": " + .status.podIP + ":" + (.spec.containers[] | .name + ":" + (.ports[] | .containerPort | tostring))' <<< "$PODS"
+
+cat pod.json | jq -r '.items[] | .metadata.name + ": " + .status.podIP + ":" + (.spec.containers[] |(.ports[] | .containerPort | tostring))'
+cat pod.json | jq -r '.items[] | .metadata.name + ":" + .status.podIP + ":" + (.spec.containers[] |(.ports[] | .containerPort | tostring))'
+ podList=`cat pod.json | jq -r '.items[] | .metadata.name + ";" + .status.podIP + ":" + (.spec.containers[] |(.ports[] | .containerPort | tostring))'`
+ for pod in $podList; do echo network connection testing - `echo $pod| awk -F";" '{print $1}'`; echo "nc -vz `echo $pod| awk -F";" '{print $2}'| tr ":" " "`"; done
+ 
+
+}
