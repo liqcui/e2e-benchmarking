@@ -1331,7 +1331,16 @@ spec:
     - namespaces:
         namespaceSelector:
           matchLabels:
-            kubernetes.io/metadata.name: openshift-dns                          
+            kubernetes.io/metadata.name: openshift-dns
+  - name: "allow-egress-to-kubernetes-default-svc"
+    action: "Allow"
+    ports:
+      - portNumber:
+          port: 443
+          protocol: TCP
+    to:
+    - networks:
+      - 172.30.0.0/16                                    
   - name: "pass-egress-to-cluster-network"
     action: "Pass"
     ports:
