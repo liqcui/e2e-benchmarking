@@ -1324,37 +1324,7 @@ spec:
         # namespaceSelector:
         matchLabels:
           customer_tenat: tenant${TENANT_ID}
-  egress:
-  - action: Allow
-    name: allow-egress-to-dns
-    to:
-    - namespaces:
-        namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: openshift-dns
-  - action: Allow
-    name: allow-egress-to-kubernetes-default-svc
-    ports:
-    - portNumber:
-        port: 443
-        protocol: TCP
-    to:
-    - networks:
-      - 172.30.0.0/16
-  - action: Allow
-    name: allow-egress-to-kube-apiserver
-    ports:
-    - portNumber:
-        port: 6443
-        protocol: TCP
-    - portNumber:
-        port: 443
-        protocol: TCP
-    to:
-    - namespaces:
-        namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: openshift-kube-apiserver                                
+  egress:                              
   - name: "pass-egress-to-cluster-network"
     action: "Pass"
     ports:
@@ -1437,7 +1407,8 @@ EOF
                     echo "Invalid Pod Type ..."
                     exit 1
                  fi
-                
+            echo -e "- action: Allow\n    name: allow-egress-to-dns\n    to:\n    - namespaces:\n        namespaceSelector:\n          matchLabels:\n            kubernetes.io/metadata.name: openshift-dns"
+            echo -e "- action: Allow\n    name: allow-to-kube-apiserver\n    to:\n    - nodes:\n       matchExpressions:\n       - key: node-role.kubernetes.io/control-plane\n         operator: Exists\n    ports:\n    - portNumber:\n        port: 6443\        protocol: TCP"             
             done
             NS_INIT=$(( $NS_INIT + 1 ))
     done

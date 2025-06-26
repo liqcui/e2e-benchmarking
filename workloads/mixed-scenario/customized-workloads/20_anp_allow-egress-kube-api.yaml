@@ -19,4 +19,4 @@ spec:
     ports:
     - portNumber:
         port: 6443
-        protocol: TCP   
+        protocol: TCP 
