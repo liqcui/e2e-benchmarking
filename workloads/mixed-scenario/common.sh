@@ -1325,22 +1325,37 @@ spec:
         matchLabels:
           customer_tenat: tenant${TENANT_ID}    
   egress:
-  - name: "allow-egress-to-dns"
-    action: "Allow"
+  egress:
+  - action: Allow
+    name: allow-egress-to-dns
     to:
     - namespaces:
         namespaceSelector:
           matchLabels:
             kubernetes.io/metadata.name: openshift-dns
-  - name: "allow-egress-to-kubernetes-default-svc"
-    action: "Allow"
+  - action: Allow
+    name: allow-egress-to-kubernetes-default-svc
     ports:
-      - portNumber:
-          port: 443
-          protocol: TCP
+    - portNumber:
+        port: 443
+        protocol: TCP
     to:
     - networks:
-      - 172.30.0.0/16                                    
+      - 172.30.0.0/16
+  - action: Allow
+    name: allow-egress-to-kube-apiserver
+    ports:
+    - portNumber:
+        port: 6443
+        protocol: TCP
+    - portNumber:
+        port: 443
+        protocol: TCP
+    to:
+    - namespaces:
+        namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: openshift-kube-apiserver                                
   - name: "pass-egress-to-cluster-network"
     action: "Pass"
     ports:
