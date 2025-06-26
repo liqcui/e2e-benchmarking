@@ -1323,8 +1323,7 @@ spec:
     - namespaces:
         # namespaceSelector:
         matchLabels:
-          customer_tenat: tenant${TENANT_ID}    
-  egress:
+          customer_tenat: tenant${TENANT_ID}
   egress:
   - action: Allow
     name: allow-egress-to-dns
