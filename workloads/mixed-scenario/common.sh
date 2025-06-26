@@ -1325,6 +1325,13 @@ spec:
         matchLabels:
           customer_tenat: tenant${TENANT_ID}    
   egress:
+  - name: "allow-egress-to-dns"
+    action: "Allow"
+    to:
+    - namespaces:
+        namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: openshift-dns                          
   - name: "pass-egress-to-cluster-network"
     action: "Pass"
     ports:
@@ -2349,6 +2356,6 @@ cat pod.json | jq -r '.items[] | .metadata.name + ": " + .status.podIP + ":" + (
 cat pod.json | jq -r '.items[] | .metadata.name + ":" + .status.podIP + ":" + (.spec.containers[] |(.ports[] | .containerPort | tostring))'
  podList=`cat pod.json | jq -r '.items[] | .metadata.name + ";" + .status.podIP + ":" + (.spec.containers[] |(.ports[] | .containerPort | tostring))'`
  for pod in $podList; do echo network connection testing - `echo $pod| awk -F";" '{print $1}'`; echo "nc -vz `echo $pod| awk -F";" '{print $2}'| tr ":" " "`"; done
- 
+
 
 }
