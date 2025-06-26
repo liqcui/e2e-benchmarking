@@ -140,41 +140,41 @@ EOF
         echo "Creating large scale workload for ANP/NetPol/EgressFirewall Testing"
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
-        ANP_NS="anp-restricted anp-open anp-unknown anp-test anp-node"
+        # ANP_NS="anp-restricted anp-open anp-unknown anp-test anp-node"
 
-        for ns in $ANP_NS
-        do
-            #  export CUSTOMIZED_WORKLOAD_FILE=./customized-workload.yml
-             #POD_SECLECTOR_ANP_NS_NUM will create 5 X ITERATION NS for pod selctor ANP.
-             #We define 4 group of NS for pod selector ANP, each NS will have 4 pods, 4 service, 1 route by default
-             export CUSTOMIZED_ITERATIONS=$ITERATIONS
+        # for ns in $ANP_NS
+        # do
+        #     #  export CUSTOMIZED_WORKLOAD_FILE=./customized-workload.yml
+        #      #POD_SECLECTOR_ANP_NS_NUM will create 5 X ITERATION NS for pod selctor ANP.
+        #      #We define 4 group of NS for pod selector ANP, each NS will have 4 pods, 4 service, 1 route by default
+        #      export CUSTOMIZED_ITERATIONS=$ITERATIONS
   
-             create_customized_workload $ns workload
-             append_customized_workload4Pods $ns postgres-deployment.yml
-             append_customized_workload4Service $ns postgres-service.yml
-             append_customized_workload4Pods $ns perfapp-deployment.yml
-             append_customized_workload4Service $ns perfapp-clusterip-service.yml
-            #  append_customized_workload4Service $ns perfapp-nodeport-service.yml
-             append_customized_workload4Pods $ns egress-traffic-app.yml
-             #append_customized_workload4Pods $ns perfweb-deployment.yml
-             append_customized_workload4Service $ns perfapp-ingress-service.yml
-             append_customized_workload_without_inputvar perfapp-ingress-route.yaml
+        #      create_customized_workload $ns workload
+        #      append_customized_workload4Pods $ns postgres-deployment.yml
+        #      append_customized_workload4Service $ns postgres-service.yml
+        #      append_customized_workload4Pods $ns perfapp-deployment.yml
+        #      append_customized_workload4Service $ns perfapp-clusterip-service.yml
+        #     #  append_customized_workload4Service $ns perfapp-nodeport-service.yml
+        #      append_customized_workload4Pods $ns egress-traffic-app.yml
+        #      #append_customized_workload4Pods $ns perfweb-deployment.yml
+        #      append_customized_workload4Service $ns perfapp-ingress-service.yml
+        #      append_customized_workload_without_inputvar perfapp-ingress-route.yaml
 
 
-             if [[ ${ENABLE_NETWORK_POLICY} == "true" && ${NO_VERIFY_ANP} == "true" && ${IF_ONLY_ANP} == "false" ]];then
-                 create_large_scale_network_policy $ns true
-             fi
+        #      if [[ ${ENABLE_NETWORK_POLICY} == "true" && ${NO_VERIFY_ANP} == "true" && ${IF_ONLY_ANP} == "false" ]];then
+        #          create_large_scale_network_policy $ns true
+        #      fi
                           
-             if [[ ${ENABLE_EGRESS_FIREWALL_POLICY} == "true" ]];then
-                   EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
-                   generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
-                   cat ./egress-firewall-policy.yml
-                   append_customized_workload_without_inputvar egress-firewall-policy.yml
-             fi
-             cat $CUSTOMIZED_WORKLOAD_FILE
-             echo  ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} --config=customized-workload.yml
-             ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} --config=customized-workload.yml       
-        done
+        #      if [[ ${ENABLE_EGRESS_FIREWALL_POLICY} == "true" ]];then
+        #            EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
+        #            generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
+        #            cat ./egress-firewall-policy.yml
+        #            append_customized_workload_without_inputvar egress-firewall-policy.yml
+        #      fi
+        #      cat $CUSTOMIZED_WORKLOAD_FILE
+        #      echo  ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} --config=customized-workload.yml
+        #      ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} --config=customized-workload.yml       
+        # done
 
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
         echo "Create Pods for CIDR Selector ANP"
