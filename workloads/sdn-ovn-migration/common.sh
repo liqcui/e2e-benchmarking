@@ -646,7 +646,11 @@ function sdn-ovn-live-migration-keepalive-detect-phaseI(){
     echo "Start to OVN live migration ...."
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     #oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"unsupported-red-hat-internal-testing": "true"}}}'
-    oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"network.openshift.io/network-type-migration":""}},"spec":{"networkType":"OVNKubernetes"}}'
+    
+    #Manually Execute
+    echo oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"network.openshift.io/network-type-migration":""}},"spec":{"networkType":"OVNKubernetes"}}'
+    #oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"network.openshift.io/network-type-migration":""}},"spec":{"networkType":"OVNKubernetes"}}'
+    
     #4.15 oc patch Network.operator.openshift.io cluster --type='merge' --patch '{ "spec": { "migration": {"networkType": "OVNKubernetes" } } }'
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     export NW_MIGRATION_START=$(date +%s)
