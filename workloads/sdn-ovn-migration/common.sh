@@ -646,7 +646,7 @@ function sdn-ovn-live-migration-keepalive-detect-phaseI(){
     echo "Start to OVN live migration ...."
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     #oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"unsupported-red-hat-internal-testing": "true"}}}'
-    
+  
     sleep 300
     #Manually Execute
     echo oc patch Network.config.openshift.io cluster --type='merge' --patch '{"metadata":{"annotations":{"network.openshift.io/network-type-migration":""}},"spec":{"networkType":"OVNKubernetes"}}'
