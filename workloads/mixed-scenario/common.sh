@@ -1396,7 +1396,6 @@ EOF
                      if [[ $IF_NEW_DB_RULE -eq 0 ]];then
                         echo DB_RULE_INDEX is $DB_RULE_INDEX
                         DB_RULE_INDEX=$(( $DB_RULE_INDEX + 1 ))
-
                         echo -e "  - name: \"deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                      fi
 
@@ -1407,9 +1406,9 @@ EOF
                     echo "Invalid Pod Type ..."
                     exit 1
                  fi
-            echo -e "- action: Allow\n    name: allow-egress-to-dns\n    to:\n    - namespaces:\n        namespaceSelector:\n          matchLabels:\n            kubernetes.io/metadata.name: openshift-dns" >> ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-            echo -e "- action: Allow\n    name: allow-to-kube-apiserver\n    to:\n    - nodes:\n       matchExpressions:\n       - key: node-role.kubernetes.io/control-plane\n         operator: Exists\n    ports:\n    - portNumber:\n        port: 6443\n        protocol: TCP" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml          
             done
+            echo -e "- action: Allow\n    name: allow-egress-to-dns\n    to:\n    - namespaces:\n        namespaceSelector:\n          matchLabels:\n            kubernetes.io/metadata.name: openshift-dns" >> ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+            echo -e "- action: Allow\n    name: allow-to-kube-apiserver\n    to:\n    - nodes:\n       matchExpressions:\n       - key: node-role.kubernetes.io/control-plane\n         operator: Exists\n    ports:\n    - portNumber:\n        port: 6443\n        protocol: TCP" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml                      
             NS_INIT=$(( $NS_INIT + 1 ))
     done
 
