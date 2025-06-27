@@ -651,7 +651,7 @@ function sdn-ovn-live-migration-keepalive-detect-phaseI(){
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     export NW_MIGRATION_START=$(date +%s)
     echo "Start to delect if businees/service down in phase I of OVN live migration ...."
-    DETECT_ROUTE_NAME=`oc get route -A|grep keepalive-detect | awk '{print $3}'`
+    DETECT_ROUTE_NAME=`oc get route -n sdn-ovn-migration-0 |grep keepalive-detect | awk '{print $2}'`
     isPrompted=false
     while true;
     do
@@ -770,7 +770,7 @@ function sdn-ovn-live-migration-keepalive-detect-phaseII(){
     echo The max retry is $MAX_RETRY
     echo "Start to detect if the service broken during the second reboot of OVN live migration ...."
     
-    DETECT_ROUTE_NAME=`oc get route -A|grep keepalive-detect | awk '{print $3}'`
+    DETECT_ROUTE_NAME=`oc get route -n sdn-ovn-migration-0 |grep keepalive-detect | awk '{print $2}'`
     while true;
     do
                 if [[ $EnableAutoScaler == "true" ]];then
