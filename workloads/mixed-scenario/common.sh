@@ -1289,7 +1289,7 @@ function generate_cidr_selector_anp_multipolicy_with_multi_rules_multi_ips_byten
             echo $sns $tns>>${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst
             # 4 ns per tenant
             IF_NEW_TENANT=$(( $NS_INIT % $TOTAL_NS_BY_TA ))
-            TENANT_STEP=$(( $NS_INIT / $TOTAL_NS_BY_TA ))
+            # TENANT_STEP=$(( $NS_INIT / $TOTAL_NS_BY_TA ))
             if [[ $IF_NEW_TENANT -eq 0 ]];then
                   TENANT_ID=$(( $TENANT_ID + 1 ))
                   PRIORITY=$(( $PRIORITY + 1 ))
@@ -1324,7 +1324,7 @@ spec:
         # namespaceSelector:
         matchLabels:
           customer_tenat: tenant${TENANT_ID}
-  egress:                              
+  egress:                           
   - name: "pass-egress-to-cluster-network"
     action: "Pass"
     ports:
@@ -1375,7 +1375,7 @@ EOF
                         echo APP_RULE_INDEX is $APP_RULE_INDEX
                         APP_RULE_INDEX=$(( $APP_RULE_INDEX + 1 )) 
                         echo -e "  - name: \"allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-                   
+                        
                      fi
 
                      sed -i "/allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${APP_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
@@ -1397,6 +1397,8 @@ EOF
                         echo DB_RULE_INDEX is $DB_RULE_INDEX
                         DB_RULE_INDEX=$(( $DB_RULE_INDEX + 1 ))
                         echo -e "  - name: \"deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                        echo -e "  - name: allow-egress-to-dns\n    action: Allow\n    to:\n    - namespaces:\n        namespaceSelector:\n          matchLabels:\n            kubernetes.io/metadata.name: openshift-dns\n" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                        echo -e "  - name: allow-to-kube-apiserver\n    action: Allow\n    to:\n    - nodes:\n       matchExpressions:\n       - key: node-role.kubernetes.io/control-plane\n         operator: Exists\n    ports:\n    - portNumber:\n        port: 6443\n        protocol: TCP" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                      fi
 
                      sed -i "/deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${DB_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
@@ -1407,8 +1409,6 @@ EOF
                     exit 1
                  fi
             done
-            echo -e "- action: Allow\n    name: allow-egress-to-dns\n    to:\n    - namespaces:\n        namespaceSelector:\n          matchLabels:\n            kubernetes.io/metadata.name: openshift-dns" >> ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-            echo -e "- action: Allow\n    name: allow-to-kube-apiserver\n    to:\n    - nodes:\n       matchExpressions:\n       - key: node-role.kubernetes.io/control-plane\n         operator: Exists\n    ports:\n    - portNumber:\n        port: 6443\n        protocol: TCP" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml                      
             NS_INIT=$(( $NS_INIT + 1 ))
     done
 
