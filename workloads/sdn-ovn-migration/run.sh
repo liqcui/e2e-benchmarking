@@ -228,7 +228,7 @@ EOF
                   sed -i "s/podReplicas: 2/podReplicas: ${KUBE_BURNER_POD_REPLICAS}/" cluster-density-v2.yml
                   sed -i 's/replicas: 3/replicas: 11/' cluster-density-v2.yml
                   sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
-                  sed -i 's/replicas: 11/replicas: 1/' cluster-density-v2.yml
+                  sed -i 's/replicas: 11/replicas: 5/' cluster-density-v2.yml
                   #sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
                   #service number
                   sed -i 's/replicas: 5/replicas: 5/' cluster-density-v2.yml
@@ -333,14 +333,14 @@ EOF
                 JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
                 env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
                 echo
-                # echo "Delete some egress network policy"
-                # INIT=1
-                # for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -500`
-                # do
-                #       echo delete $INIT
-                #       oc  -n $ns delete EgressNetworkPolicy default
-                #       INIT=$(( $INIT + 1 ))
-                # done
+                echo "Delete some egress network policy"
+                INIT=1
+                for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -500`
+                do
+                      echo delete $INIT
+                      oc  -n $ns delete EgressNetworkPolicy default
+                      INIT=$(( $INIT + 1 ))
+                done
 
                 cd customized-workload
                 LABEL_NODE=`oc get nodes |grep worker | awk '{print $1}' | head -1`
@@ -354,9 +354,9 @@ EOF
                       export NETWORKPOLICY_RPLICAS=$POD_RPLICAS
                 fi
 
-                # echo  ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} -c case-sdn-ovn-networkpolicy-egress-restricted.yml
-                # ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} -c case-sdn-ovn-networkpolicy-egress-restricted.yml
-                # awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
+                echo  ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} -c case-sdn-ovn-networkpolicy-egress-restricted.yml
+                ${KUBE_DIR}/kube-burner-ocp init --uuid=${UUID} --qps=${QPS} --burst=${BURST} --gc=${GC} --churn=${CHURN} -c case-sdn-ovn-networkpolicy-egress-restricted.yml
+                awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
                 echo -e "\nCreating pods in sdn-ovn-migration-x"
                 awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
