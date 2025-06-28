@@ -1376,7 +1376,7 @@ EOF
                         
                      fi
 
-                     sed -i "/allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${APP_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                     sed -i "/allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${APP_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                  
                      APP_POD_INIT=$(( $APP_POD_INIT + 1 ))
                 elif [[ $podName == *${TARGET_NS_DENY_POD}* ]];then
@@ -1399,7 +1399,7 @@ EOF
                         echo -e "  - name: allow-to-kube-apiserver\n    action: Allow\n    to:\n    - nodes:\n       matchExpressions:\n       - key: node-role.kubernetes.io/control-plane\n         operator: Exists\n    ports:\n    - portNumber:\n        port: 6443\n        protocol: TCP" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                      fi
 
-                     sed -i "/deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${DB_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                     sed -i "/deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${DB_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
               
                      DB_POD_INIT=$(( $DB_POD_INIT + 1 ))
                  else
