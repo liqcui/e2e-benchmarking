@@ -1290,7 +1290,7 @@ function generate_cidr_selector_anp_multipolicy_with_multi_rules_multi_ips_byten
     #NODE_INDEX=1
     for sns in $SOURCE_NS
     do      
-            tns=`echo $sns | sed "s/${SOURCE_NS_PREFIX}/${TARGET_NS_PREFIX}/"`
+            tns=$TARGET_NS_PREFIX
             echo $sns $tns>>${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst
             # 4 ns per tenant
             IF_NEW_TENANT=$(( $NS_INIT % $TOTAL_NS_BY_TA ))
