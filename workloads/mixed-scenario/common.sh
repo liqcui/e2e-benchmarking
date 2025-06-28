@@ -1355,7 +1355,10 @@ EOF
 
             for podName in `oc -n $tns get pods -oname --no-headers |grep -w -E 'prometheus-k8s|node-exporter'`
             do
-                 if [[ $podName == *$TARGET_NS_ALLOW_POD* ]];then
+                echo podName is $podName
+                # Test if podName contains the substring in TARGET_NS_ALLOW_POD or TARGET_NS_DENY_POD
+      
+                if [[ $podName == *${TARGET_NS_ALLOW_POD}* ]];then
                      APP_POD_IP=`oc -n $tns get $podName -ojsonpath='{.status.podIP}'`
                      echo ===================================
                      echo ------------------------------------
@@ -1376,7 +1379,7 @@ EOF
                      sed -i "/allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${APP_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
                  
                      APP_POD_INIT=$(( $APP_POD_INIT + 1 ))
-                 elif [[ $podName == *$TARGET_NS_DENY_POD* ]];then
+                elif [[ $podName == *${TARGET_NS_DENY_POD}* ]];then
                      DB_POD_IP=`oc -n $tns get $podName -ojsonpath='{.status.podIP}'`
                     
                      echo ===================================                    
