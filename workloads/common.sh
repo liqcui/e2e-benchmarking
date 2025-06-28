@@ -454,7 +454,7 @@ function live-migration-keepalive-detect(){
                      oc -n openshift-machine-api get machineset
                 else
                      awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-                     oc get mcp | awk '{print $1" "$3"\t"$4"\t"$5"\t "$6"\t"$7"\t"$7"\t"$9}' 
+                     oc get mcp | awk '{print $1" "$3"\t"$4"\t"$5"\t "$6"\t"$7"\t"$8"\t"$9}' 
                      oc -n openshift-apiserver get pods | grep apiserver >/dev/null
                 fi        
                 RC1=$?
