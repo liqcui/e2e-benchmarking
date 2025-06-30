@@ -1761,8 +1761,8 @@ function create_cidr_selector_anp_and_verify_traffic_between_different_ns_groups
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 9100 false
     format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 9091 false
 
-    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 9100 false
-    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 9091 false
+    # format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 9100 false
+    # format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 9091 false
 
     echo "#########################################################################"
     echo "#        Dely traffic $SOURCE_NS_FILTER to internet zones               #"
