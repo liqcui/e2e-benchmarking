@@ -179,8 +179,34 @@ EOF
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
         echo "Create Pods for CIDR Selector ANP"
         awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
-        ANP_NS="anp-cidr anp-pcidr"
+        ANP_NS="anp-cidr"
 
+        #Creating pod-reader cluster-role and cluter-role-binding
+        oc  apply -f-<<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-pod-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+EOF
+
+        oc apply -f-<<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-pod-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: pod-reader
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-pod-reader
+  apiGroup: rbac.authorization.k8s.io
+EOF
         for ns in $ANP_NS
         do
             #  export CUSTOMIZED_WORKLOAD_FILE=./customized-workload.yml
@@ -197,6 +223,7 @@ EOF
              #append_customized_workload4Pods $ns perfweb-deployment.yml
              append_customized_workload4Service $ns perfapp-ingress-service.yml
              append_customized_workload_without_inputvar perfapp-ingress-route.yaml
+             append_customized_workload_without_inputvar pod-reader-sa.yml
 
 
              if [[ ${ENABLE_NETWORK_POLICY} == "true" && ${NO_VERIFY_ANP} == "true" && ${IF_ONLY_ANP} == "false" ]];then

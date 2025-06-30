@@ -16,6 +16,7 @@ spec:
         type: {{.anplabel}}-{{.Iteration}}-reqegress-{{.Replica}}
         anplabel: {{.anplabel}}
     spec:
+      serviceAccountName: pod-reader    
       nodeSelector: {{.nodeSelector}}    
       containers:
       - name: keepalive

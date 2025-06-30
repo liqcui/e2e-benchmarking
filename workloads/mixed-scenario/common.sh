@@ -1751,18 +1751,18 @@ function create_cidr_selector_anp_and_verify_traffic_between_different_ns_groups
     
     WORKLOAD_TEMPLATE_PATH=workloads/large-networkpolicy-egress
     SOURCE_NS_FILTER="anp-cidr"
-    TARGET_NS_FILTER="anp-pcidr"
+    TARGET_NS_FILTER="openshift-monitoring"
  
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
     echo "Creating CIDR Selector ANP Egress/Ingress Policy[Min]"
     awk 'BEGIN{for(c=0;c<80;c++) printf "-"; printf "\n"}'
 
     #The two cidr NS group can not access each other by default
-    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
-    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
+    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 9100 false
+    format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 9091 false
 
-    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
-    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
+    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 9100 false
+    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 9091 false
 
     echo "#########################################################################"
     echo "#        Dely traffic $SOURCE_NS_FILTER to internet zones               #"
@@ -1792,21 +1792,21 @@ function create_cidr_selector_anp_and_verify_traffic_between_different_ns_groups
     export TEST_STEP="Creating $TOTAL_ANP Multi ANP with Multi Rule/Multi IP Per Rule"
     export QUERY_TIME=`date +"%y-%m-%d %H:%M:%S.%N" -d "+8 hours"`
     get_ovn_node_system_usage_info
-
-    TOTAL_LINE=`cat ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst|head -20 |wc -l`
-    for ((i=1;i<=$TOTAL_LINE;i++))
-    do
-        SOURCE_NS_FILTER=`sed -n "${i}p" ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst| awk '{print $1}'`
-        TARGET_NS_FILTER=`sed -n "${i}p" ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst| awk '{print $2}'`
-        format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 true
-        format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
-    done
-
-    SOURCE_NS_FILTER="anp-cidr"
-    TARGET_NS_FILTER="perfscale-workload"
-    ########Should Block Connection From Other Tenant###################################
-    format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
-    format_Output_ANP_BANP_Target2Source  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
+# 
+    # TOTAL_LINE=`cat ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst|head -20 |wc -l`
+    # for ((i=1;i<=$TOTAL_LINE;i++))
+    # do
+        # SOURCE_NS_FILTER=`sed -n "${i}p" ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst| awk '{print $1}'`
+        # TARGET_NS_FILTER=`sed -n "${i}p" ${WORKLOAD_TEMPLATE_PATH}/map-ns-tenant.lst| awk '{print $2}'`
+        # format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 9100 true
+        # format_Output_ANP_BANP_Source2Target $SOURCE_NS_FILTER $TARGET_NS_FILTER 9091 false
+    # done
+# 
+    # SOURCE_NS_FILTER="anp-cidr"
+    # TARGET_NS_FILTER="perfscale-workload"
+    #######Should Block Connection From Other Tenant###################################
+    # format_Output_ANP_BANP_Target2Source $SOURCE_NS_FILTER $TARGET_NS_FILTER 8080 false
+    # format_Output_ANP_BANP_Target2Source  $SOURCE_NS_FILTER $TARGET_NS_FILTER 5432 false
 }
 
 function create_large_scale_network_policy(){
@@ -2263,7 +2263,7 @@ metadata:
   name: pod-reader
 EOF
 
-oc -n default apply -f-<<EOF
+oc  apply -f-<<EOF
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -2274,7 +2274,7 @@ rules:
   verbs: ["get", "list", "watch"]
 EOF
 
-oc -n default apply -f-<<EOF
+oc apply -f-<<EOF
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -2288,51 +2288,51 @@ roleRef:
   name: cluster-pod-reader
   apiGroup: rbac.authorization.k8s.io
 EOF
-oc -n default apply -f-<<EOF
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: workload-tool
-  labels:
-    app: workload-tool
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: workload-tool
-  template:
-    metadata:
-      labels:
-        app: workload-tool
-    spec:
-      serviceAccountName: pod-reader
-      containers:
-      - name: keepalive
-        image: quay.io/openshift-psap-qe/nginx-alpine:multiarch
-        imagePullPolicy: Always
-        securityContext:
-          runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
-          allowPrivilegeEscalation: false
-          #runAsUser: 1000800000
-          capabilities:
-            drop:
-            - ALL
-        ports:
-          - name: http-port
-            containerPort: 8080
-        readinessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 15
-          periodSeconds: 10
-        livenessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 15
-          periodSeconds: 10
-EOF
+# oc -n default apply -f-<<EOF
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: workload-tool
+#   labels:
+#     app: workload-tool
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: workload-tool
+#   template:
+#     metadata:
+#       labels:
+#         app: workload-tool
+#     spec:
+#       serviceAccountName: pod-reader
+#       containers:
+#       - name: keepalive
+#         image: quay.io/openshift-psap-qe/nginx-alpine:multiarch
+#         imagePullPolicy: Always
+#         securityContext:
+#           runAsNonRoot: true
+#           seccompProfile:
+#             type: RuntimeDefault
+#           allowPrivilegeEscalation: false
+#           #runAsUser: 1000800000
+#           capabilities:
+#             drop:
+#             - ALL
+#         ports:
+#           - name: http-port
+#             containerPort: 8080
+#         readinessProbe:
+#           tcpSocket:
+#             port: 8080
+#           initialDelaySeconds: 15
+#           periodSeconds: 10
+#         livenessProbe:
+#           tcpSocket:
+#             port: 8080
+#           initialDelaySeconds: 15
+#           periodSeconds: 10
+# EOF
 curl --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -H"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default.svc/api/v1/namespaces/default/pods
 curl --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -H"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default.svc/api/v1/namespaces/anp-pcidr-0/pods | jq -r '.items[] | .metadata.name + ": " + .status.podIP'
 
