@@ -5,6 +5,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: pod-reader
+  namespace: anp-cidr-{{.Iteration}}
 roleRef:
   kind: ClusterRole
   name: cluster-pod-reader
