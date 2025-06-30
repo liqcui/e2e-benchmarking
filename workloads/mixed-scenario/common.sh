@@ -2282,7 +2282,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: pod-reader
-  namespace: default
+  namespace: anp-cidr-0
 roleRef:
   kind: ClusterRole
   name: cluster-pod-reader
@@ -2346,6 +2346,7 @@ jq -r '.items[] | .metadata.name + ": " + .status.podIP + " (" + (.spec.containe
 
 jq -r '.items[] | .metadata.name + ": " + .status.podIP + ":" + (.spec.containers[] | .name + ":" + (.ports[] | .containerPort | tostring))' <<< "$PODS"
 
+curl --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -H"Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default.svc/api/v1/namespaces/openshift-monitoring/pods | jq -r '.items[] | .metadata.name + ": " + .status.podIP'
 cat pod.json | jq -r '.items[] | .metadata.name + ": " + .status.podIP + ":" + (.spec.containers[] |(.ports[] | .containerPort | tostring))'
 cat pod.json | jq -r '.items[] | .metadata.name + ":" + .status.podIP + ":" + (.spec.containers[] |(.ports[] | .containerPort | tostring))'
  podList=`cat pod.json | jq -r '.items[] | .metadata.name + ";" + .status.podIP + ":" + (.spec.containers[] |(.ports[] | .containerPort | tostring))'`
