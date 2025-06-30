@@ -1308,6 +1308,10 @@ function generate_cidr_selector_anp_multipolicy_with_multi_rules_multi_ips_byten
                        PRIORITY=1
                   fi
             fi
+            oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
+            echo oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
+            # oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
+            # echo oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
 
             if [[ $IF_NEW_TENANT -eq 0 ]];then                   
 cat>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml<<EOF
@@ -1343,70 +1347,69 @@ spec:
     - networks:
       - 10.128.0.0/14
 EOF
-            fi            
-            oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
-            echo oc label ns $sns customer_tenat=tenant${TENANT_ID}  --overwrite
-            # oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
-            # echo oc label ns $tns customer_tenat=tenant${TENANT_ID}  --overwrite
 
-            if [[ -z $tns ]];then
+
+              if [[ -z $tns ]];then
                  echo "No target ns was found inside generate_cidr_selector_anp_multipolicy_with_multi_rules_multi_ips_bytenant, please check"
-            fi             
+              fi             
 
-            for podName in `oc -n $tns get pods -oname --no-headers |grep -w -E 'prometheus-k8s|node-exporter'`
-            do
-                echo podName is $podName
-                # Test if podName contains the substring in TARGET_NS_ALLOW_POD or TARGET_NS_DENY_POD
-      
-                if [[ $podName == *${TARGET_NS_ALLOW_POD}* ]];then
-                     APP_POD_IP=`oc -n $tns get $podName -ojsonpath='{.status.podIP}'`
-                     echo ===================================
-                     echo ------------------------------------
-                     echo  APP_POD_IP is $APP_POD_IP                     
-                     echo  APP_POD_INIT is $APP_POD_INIT
-                     echo ------------------------------------                     
-                     IF_NEW_APP_RULE=$(( $APP_POD_INIT % $TOTAL_IP_BLOCK_NUM_BY_RULE ))
-                     echo ------------------------------------
-                     echo  IF_NEW_APP_RULE is $IF_NEW_APP_RULE 
-                     echo ------------------------------------
-                     if [[ $IF_NEW_APP_RULE -eq 0 ]];then
-                        echo APP_RULE_INDEX is $APP_RULE_INDEX
-                        APP_RULE_INDEX=$(( $APP_RULE_INDEX + 1 )) 
-                        echo -e "  - name: \"allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: $TARGET_NS_ALLOW_PORT\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-                        
-                     fi
+              for podName in `oc -n $tns get pods -oname --no-headers |grep -w -E 'prometheus-k8s|node-exporter'`
+              do
+                  echo podName is $podName
+                  # Test if podName contains the substring in TARGET_NS_ALLOW_POD or TARGET_NS_DENY_POD
+        
+                  if [[ $podName == *${TARGET_NS_ALLOW_POD}* ]];then
+                       APP_POD_IP=`oc -n $tns get $podName -ojsonpath='{.status.podIP}'`
+                       echo ===================================
+                       echo ------------------------------------
+                       echo  APP_POD_IP is $APP_POD_IP                     
+                       echo  APP_POD_INIT is $APP_POD_INIT
+                       echo ------------------------------------                     
+                       IF_NEW_APP_RULE=$(( $APP_POD_INIT % $TOTAL_IP_BLOCK_NUM_BY_RULE ))
+                       echo ------------------------------------
+                       echo  IF_NEW_APP_RULE is $IF_NEW_APP_RULE 
+                       echo ------------------------------------
+                       if [[ $IF_NEW_APP_RULE -eq 0 ]];then
+                          echo APP_RULE_INDEX is $APP_RULE_INDEX
+                          APP_RULE_INDEX=$(( $APP_RULE_INDEX + 1 )) 
+                          echo -e "  - name: \"allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}\"\n    action: \"Allow\"\n    ports:\n      - portNumber:\n          port: $TARGET_NS_ALLOW_PORT\n      - portNumber:\n          port: 8080\n          protocol: TCP\n      - portRange:\n          start: 9201\n          end: 9205\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                          
+                       fi
+  
+                       sed -i "/allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${APP_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                   
+                       APP_POD_INIT=$(( $APP_POD_INIT + 1 ))
+                  elif [[ $podName == *${TARGET_NS_DENY_POD}* ]];then
+                       DB_POD_IP=`oc -n $tns get $podName -ojsonpath='{.status.podIP}'`
+                      
+                       echo ===================================                    
+                       echo ------------------------------------
+                       echo  DB_POD_IP is $DB_POD_IP
+                       echo  DB_POD_INIT is $DB_POD_INIT
+                       echo ------------------------------------
+                       IF_NEW_DB_RULE=$(( $DB_POD_INIT % $TOTAL_IP_BLOCK_NUM_BY_RULE ))
+                       echo ------------------------------------
+                       echo  IF_NEW_DB_RULE is $IF_NEW_DB_RULE 
+                       echo ------------------------------------
+                       if [[ $IF_NEW_DB_RULE -eq 0 ]];then
+                          echo DB_RULE_INDEX is $DB_RULE_INDEX
+                          DB_RULE_INDEX=$(( $DB_RULE_INDEX + 1 ))
+                          echo -e "  - name: \"deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: $TARGET_NS_DENY_PORT\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                          echo -e "  - name: allow-egress-to-dns\n    action: Allow\n    to:\n    - namespaces:\n        namespaceSelector:\n          matchLabels:\n            kubernetes.io/metadata.name: openshift-dns\n" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                          echo -e "  - name: allow-to-kube-apiserver\n    action: Allow\n    to:\n    - nodes:\n       matchExpressions:\n       - key: node-role.kubernetes.io/control-plane\n         operator: Exists\n    ports:\n    - portNumber:\n        port: 6443\n        protocol: TCP" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                       fi
+  
+                       sed -i "/deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${DB_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
+                
+                       DB_POD_INIT=$(( $DB_POD_INIT + 1 ))
+                   else
+                      echo "Invalid Pod Type ..."
+                      exit 1
+                   fi
+              done
 
-                     sed -i "/allow-egress-to-${TARGET_NS_PREFIX}-network-${APP_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${APP_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-                 
-                     APP_POD_INIT=$(( $APP_POD_INIT + 1 ))
-                elif [[ $podName == *${TARGET_NS_DENY_POD}* ]];then
-                     DB_POD_IP=`oc -n $tns get $podName -ojsonpath='{.status.podIP}'`
-                    
-                     echo ===================================                    
-                     echo ------------------------------------
-                     echo  DB_POD_IP is $DB_POD_IP
-                     echo  DB_POD_INIT is $DB_POD_INIT
-                     echo ------------------------------------
-                     IF_NEW_DB_RULE=$(( $DB_POD_INIT % $TOTAL_IP_BLOCK_NUM_BY_RULE ))
-                     echo ------------------------------------
-                     echo  IF_NEW_DB_RULE is $IF_NEW_DB_RULE 
-                     echo ------------------------------------
-                     if [[ $IF_NEW_DB_RULE -eq 0 ]];then
-                        echo DB_RULE_INDEX is $DB_RULE_INDEX
-                        DB_RULE_INDEX=$(( $DB_RULE_INDEX + 1 ))
-                        echo -e "  - name: \"deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}\"\n    action: \"Deny\"\n    ports:\n      - portNumber:\n          port: $TARGET_NS_DENY_PORT\n      - portNumber:\n          port: 5432\n          protocol: TCP\n      - portNumber:\n          port: 60000\n          protocol: TCP\n      - portNumber:\n          port: 9099\n          protocol: TCP\n      - portNumber:\n          port: 9393\n          protocol: TCP\n    to:\n    - networks:">>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-                        echo -e "  - name: allow-egress-to-dns\n    action: Allow\n    to:\n    - namespaces:\n        namespaceSelector:\n          matchLabels:\n            kubernetes.io/metadata.name: openshift-dns\n" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-                        echo -e "  - name: allow-to-kube-apiserver\n    action: Allow\n    to:\n    - nodes:\n       matchExpressions:\n       - key: node-role.kubernetes.io/control-plane\n         operator: Exists\n    ports:\n    - portNumber:\n        port: 6443\n        protocol: TCP" >>${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-                     fi
+            fi            
 
-                     sed -i "/deny-egress-to-${TARGET_NS_PREFIX}-network-${DB_RULE_INDEX}/{n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;n;s/$/\n      - ${DB_POD_IP}\/32/;}" ${WORKLOAD_TEMPLATE_PATH}/18_anp_allow-traffic-${SOURCE_NS_PREFIX}-to-${TARGET_NS_PREFIX}-network-tenant${TENANT_ID}-p${PRIORITY}.yaml
-              
-                     DB_POD_INIT=$(( $DB_POD_INIT + 1 ))
-                 else
-                    echo "Invalid Pod Type ..."
-                    exit 1
-                 fi
-            done
             NS_INIT=$(( $NS_INIT + 1 ))
     done
 
