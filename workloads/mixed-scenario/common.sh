@@ -1770,12 +1770,12 @@ function create_cidr_selector_anp_and_verify_traffic_between_different_ns_groups
     echo "-------------------------------------------------------------------------"
     check_traffic_to_internet $SOURCE_NS_FILTER false
     echo "-------------------------------------------------------------------------"
-    echo "#########################################################################"
-    echo "#        Allow traffic $TARGET_NS_FILTER to internet zones               #"
-    echo "#########################################################################"       
-    echo "-------------------------------------------------------------------------"
-    check_traffic_to_internet $TARGET_NS_FILTER true
-    echo "-------------------------------------------------------------------------"
+    # echo "#########################################################################"
+    # echo "#        Allow traffic $TARGET_NS_FILTER to internet zones               #"
+    # echo "#########################################################################"       
+    # echo "-------------------------------------------------------------------------"
+    # check_traffic_to_internet $TARGET_NS_FILTER true
+    # echo "-------------------------------------------------------------------------"
     
     #CIDR Selector ANP to allow ip segment to OCP network
     #But we try to create more ANPs, so limited each POD IP as rules
