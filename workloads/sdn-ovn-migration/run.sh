@@ -333,14 +333,14 @@ EOF
                 JOB_END=${JOB_END:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")};
                 env JOB_START="$JOB_START" JOB_END="$JOB_END" JOB_STATUS="$JOB_STATUS" UUID="$UUID" WORKLOAD="$WORKLOAD" ES_SERVER="$ES_SERVER" ../../utils/index.sh
                 echo
-                echo "Delete some egress network policy"
-                INIT=1
-                for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -500`
-                do
-                      echo delete $INIT
-                      oc  -n $ns delete EgressNetworkPolicy default
-                      INIT=$(( $INIT + 1 ))
-                done
+                # echo "Delete some egress network policy"
+                # INIT=1
+                # for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -500`
+                # do
+                #       echo delete $INIT
+                #       oc  -n $ns delete EgressNetworkPolicy default
+                #       INIT=$(( $INIT + 1 ))
+                # done
 
                 cd customized-workload
                 LABEL_NODE=`oc get nodes |grep worker | awk '{print $1}' | head -1`
