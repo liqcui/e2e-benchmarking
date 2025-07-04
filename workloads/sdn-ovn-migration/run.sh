@@ -217,9 +217,9 @@ JOB_START: ${JOB_START}
 EOF
               create_api_flowcontrol
               cd customized-workload
-              EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
-              generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
-              cat ./egress-firewall-policy.yml
+              #EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
+              #generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
+              #cat ./egress-firewall-policy.yml
               
               ${KUBE_DIR}/kube-burner-ocp cluster-density-v2 --extract
         
@@ -286,7 +286,7 @@ EOF
                   # sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
                   # INIT=1
               fi
-              echo -e "\n      - objectTemplate: egress-firewall-policy.yml\n        replicas: 1">>cluster-density-v2.yml 
+              #echo -e "\n      - objectTemplate: egress-firewall-policy.yml\n        replicas: 1">>cluster-density-v2.yml 
               echo "---------------------------------------------------"
               cat    cluster-density-v2.yml
               echo "---------------------------------------------------"
