@@ -335,7 +335,7 @@ EOF
                 echo
                 # echo "Delete some egress network policy"
                 # INIT=1
-                # for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -500`
+                # for ns in `oc get ns |grep cluster-density| awk '{print $1}'| tail -4500`
                 # do
                 #       echo delete $INIT
                 #       oc  -n $ns delete EgressNetworkPolicy default
