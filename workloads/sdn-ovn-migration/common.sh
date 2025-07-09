@@ -1521,7 +1521,7 @@ function post_check_after_migration(){
 
 function create_api_flowcontrol(){
 oc apply -f-<<EOF  
-apiVersion: flowcontrol.apiserver.k8s.io/v1
+apiVersion: flowcontrol.apiserver.k8s.io/v1beta3
 kind: PriorityLevelConfiguration
 metadata:
   name: ovn-fairness
@@ -1539,7 +1539,7 @@ spec:
 EOF
  
 oc apply -f-<<EOF
-apiVersion: flowcontrol.apiserver.k8s.io/v1
+apiVersion: flowcontrol.apiserver.k8s.io/v1beta3
 kind: FlowSchema
 metadata:
   name: ovn-fairness
