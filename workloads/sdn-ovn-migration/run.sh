@@ -217,7 +217,7 @@ JOB_START: ${JOB_START}
 EOF
               create_api_flowcontrol
               cd customized-workload
-              #EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
+              EGRESS_FIREWALL_POLICY_TEMPLAT_FILE_PATH=./egress-firewall-policy.yml
               generated_egress_firewall_policy $EGRESS_FIREWALL_POLICY_RULES_TOTAL_NUM
               cat ./egress-firewall-policy.yml
               
