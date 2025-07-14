@@ -1278,3 +1278,44 @@ function live-migration-post-check(){
     # export AFTER_N_TYPE=$(oc get Network.operator.openshift.io cluster  -o json | jq -r '.spec.defaultNetwork.type')
     # sdn2ovn_index_results "$BEFORE_N_TYPE" "$AFTER_N_TYPE" "$NW_MIGRATION_DURATION" "$OPENSHIFT_VERSION"
 }
+
+
+package main
+
+import (
+  "bytes"
+  "fmt"
+  "os/exec"
+  "strings"
+)
+
+func getOpenshiftMonitoringPodsInsidePod() error {
+  cmd := exec.Command("oc", "-n", "openshift-monitoring", "get", "pods", "-o", "name")
+  out, err := cmd.Output()
+  if err != nil {
+    return fmt.Errorf("failed to get pods: %v", err)
+  }
+  pods := strings.Fields(string(out))
+  for _, pod := range pods {
+    fmt.Printf("Pod: %s\n", pod)
+    execCmd := exec.Command("oc", "-n", "openshift-monitoring", "exec", pod, "--", "printenv")
+    var envOut bytes.Buffer
+    execCmd.Stdout = &envOut
+    if err := execCmd.Run(); err != nil {
+      fmt.Printf("Error exec pod %s: %v\n", pod, err)
+      continue
+    }
+    for _, line := range strings.Split(envOut.String(), "\n") {
+      if strings.HasPrefix(line, "HOSTNAME=") {
+        fmt.Println(line)
+      }
+    }
+  }
+  return nil
+}
+
+func main() {
+  if err := getOpenshiftMonitoringPodsInsidePod(); err != nil {
+    fmt.Println("Error:", err)
+  }
+}
