@@ -223,70 +223,70 @@ EOF
               
               ${KUBE_DIR}/kube-burner-ocp cluster-density-v2 --extract
         
-              if [[ $IF_CUSTOMIZED_KUBE_BURNER_WORKLOAD == "true" ]];then
+              # if [[ $IF_CUSTOMIZED_KUBE_BURNER_WORKLOAD == "true" ]];then
                  
-                  # sed -i "s/podReplicas: 2/podReplicas: ${KUBE_BURNER_POD_REPLICAS}/" cluster-density-v2.yml
-                  # sed -i 's/replicas: 3/replicas: 11/' cluster-density-v2.yml
-                  # sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
-                  # sed -i 's/replicas: 11/replicas: 3/' cluster-density-v2.yml
-                  # #sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
-                  # #service number
-                  # sed -i 's/replicas: 5/replicas: 5/' cluster-density-v2.yml
-                  # #service number
-                  # sed -i 's/randInt 1 6/randInt 1 4/'  deployment-client.yml
+              #     sed -i "s/podReplicas: 2/podReplicas: ${KUBE_BURNER_POD_REPLICAS}/" cluster-density-v2.yml
+              #     sed -i 's/replicas: 3/replicas: 11/' cluster-density-v2.yml
+              #     sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
+              #     sed -i 's/replicas: 11/replicas: 3/' cluster-density-v2.yml
+              #     #sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
+              #     #service number
+              #     sed -i 's/replicas: 5/replicas: 5/' cluster-density-v2.yml
+              #     #service number
+              #     sed -i 's/randInt 1 6/randInt 1 4/'  deployment-client.yml
 
-                  #------------------------------------------------------------
-                  #secret/configmap number 
-                  # sed -i 's/replicas: 10/replicas: 8/' cluster-density-v2.yml
-                  #Remove configmap/secret with 1 configmap/secret
-                  # sed -i '103,111d' deployment-client.yml
-                  # sed -i '91,99d' deployment-client.yml
-                  # sed -i '66,71d' deployment-client.yml
-                  # sed -i '58,63d' deployment-client.yml
-                  # cat deployment-client.yml
-                  # sed -i '92,100d' deployment-server.yml
-                  # sed -i '80,88d' deployment-server.yml
-                  # sed -i '52,57d' deployment-server.yml
-                  # sed -i '44,49d' deployment-server.yml
-                  # cat deployment-server.yml           
+              #     #------------------------------------------------------------
+              #     #secret/configmap number 
+              #     # sed -i 's/replicas: 10/replicas: 8/' cluster-density-v2.yml
+              #     #Remove configmap/secret with 1 configmap/secret
+              #     # sed -i '103,111d' deployment-client.yml
+              #     # sed -i '91,99d' deployment-client.yml
+              #     # sed -i '66,71d' deployment-client.yml
+              #     # sed -i '58,63d' deployment-client.yml
+              #     # cat deployment-client.yml
+              #     # sed -i '92,100d' deployment-server.yml
+              #     # sed -i '80,88d' deployment-server.yml
+              #     # sed -i '52,57d' deployment-server.yml
+              #     # sed -i '44,49d' deployment-server.yml
+              #     # cat deployment-server.yml           
 
-                  #Remove configmap/secret with two configmap/secret
-                  # sed -i '106,111d' deployment-client.yml
-                  # sed -i '94,99d' deployment-client.yml
-                  # sed -i '68,71d' deployment-client.yml
-                  # sed -i '60,63d' deployment-client.yml
-                  # cat deployment-client.yml
-                  # sed -i '95,100d' deployment-server.yml
-                  # sed -i '83,88d' deployment-server.yml
-                  # sed -i '54,57d' deployment-server.yml
-                  # sed -i '46,49d' deployment-server.yml
-                  # cat deployment-server.yml
+              #     #Remove configmap/secret with two configmap/secret
+              #     # sed -i '106,111d' deployment-client.yml
+              #     # sed -i '94,99d' deployment-client.yml
+              #     # sed -i '68,71d' deployment-client.yml
+              #     # sed -i '60,63d' deployment-client.yml
+              #     # cat deployment-client.yml
+              #     # sed -i '95,100d' deployment-server.yml
+              #     # sed -i '83,88d' deployment-server.yml
+              #     # sed -i '54,57d' deployment-server.yml
+              #     # sed -i '46,49d' deployment-server.yml
+              #     # cat deployment-server.yml
 
-                  #Remove configmap/secret with 3 configmap/secret
-                  # sed -i '109,111d' deployment-client.yml
-                  # sed -i '97,99d' deployment-client.yml
-                  # sed -i '70,71d' deployment-client.yml
-                  # sed -i '62,63d' deployment-client.yml
-                  # cat deployment-client.yml
-                  # sed -i '98,100d' deployment-server.yml
-                  # sed -i '86,88d' deployment-server.yml
-                  # sed -i '56,57d' deployment-server.yml
-                  # sed -i '48,49d' deployment-server.yml
-                  # cat deployment-server.yml 
+              #     #Remove configmap/secret with 3 configmap/secret
+              #     # sed -i '109,111d' deployment-client.yml
+              #     # sed -i '97,99d' deployment-client.yml
+              #     # sed -i '70,71d' deployment-client.yml
+              #     # sed -i '62,63d' deployment-client.yml
+              #     # cat deployment-client.yml
+              #     # sed -i '98,100d' deployment-server.yml
+              #     # sed -i '86,88d' deployment-server.yml
+              #     # sed -i '56,57d' deployment-server.yml
+              #     # sed -i '48,49d' deployment-server.yml
+              #     # cat deployment-server.yml 
 
-                  #Remove Network Policy
+              #     #Remove Network Policy
 
-                  # sed -i '/np-deny-all.yml/, +9d' cluster-density-v2.yml
-                  # sed -i '/np-deny-all.yml/{N;N;d;}' cluster-density-v2.yml
-                  # sed -i '/np-allow-from-clients.yml/{N;N;d;}' cluster-density-v2.yml
-                  # sed -i '/np-allow-from-ingress.yml/{N;d;}' cluster-density-v2.yml
+              #     # sed -i '/np-deny-all.yml/, +9d' cluster-density-v2.yml
+              #     # sed -i '/np-deny-all.yml/{N;N;d;}' cluster-density-v2.yml
+              #     # sed -i '/np-allow-from-clients.yml/{N;N;d;}' cluster-density-v2.yml
+              #     # sed -i '/np-allow-from-ingress.yml/{N;d;}' cluster-density-v2.yml
 
-                  # sed -i 's/replicas: 3/replicas: 11/' cluster-density-v2.yml
-                  # sed -i 's/replicas: 5/replicas: 18/' cluster-density-v2.yml
-                  # sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
-                  # sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
-                  # INIT=1
-              fi
+              #     # sed -i 's/replicas: 3/replicas: 11/' cluster-density-v2.yml
+              #     # sed -i 's/replicas: 5/replicas: 18/' cluster-density-v2.yml
+              #     # sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
+              #     # sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
+              #     # INIT=1
+              # fi
               echo -e "\n      - objectTemplate: egress-firewall-policy.yml\n        replicas: 1">>cluster-density-v2.yml 
               echo "---------------------------------------------------"
               cat    cluster-density-v2.yml
