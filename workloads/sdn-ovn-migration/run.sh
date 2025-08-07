@@ -286,8 +286,8 @@ EOF
               #     # sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
               #     # sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
               #     # INIT=1
-              # fi
-              echo -e "\n      - objectTemplate: egress-firewall-policy.yml\n        replicas: 1">>cluster-density-v2.yml 
+              fi
+              #echo -e "\n      - objectTemplate: egress-firewall-policy.yml\n        replicas: 1">>cluster-density-v2.yml 
               echo "---------------------------------------------------"
               cat    cluster-density-v2.yml
               echo "---------------------------------------------------"
