@@ -223,17 +223,17 @@ EOF
               
               ${KUBE_DIR}/kube-burner-ocp cluster-density-v2 --extract
         
-              # if [[ $IF_CUSTOMIZED_KUBE_BURNER_WORKLOAD == "true" ]];then
+              if [[ $IF_CUSTOMIZED_KUBE_BURNER_WORKLOAD == "true" ]];then
                  
-              #     sed -i "s/podReplicas: 2/podReplicas: ${KUBE_BURNER_POD_REPLICAS}/" cluster-density-v2.yml
-              #     sed -i 's/replicas: 3/replicas: 11/' cluster-density-v2.yml
-              #     sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
-              #     sed -i 's/replicas: 11/replicas: 3/' cluster-density-v2.yml
-              #     #sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
-              #     #service number
-              #     sed -i 's/replicas: 5/replicas: 5/' cluster-density-v2.yml
-              #     #service number
-              #     sed -i 's/randInt 1 6/randInt 1 4/'  deployment-client.yml
+                  sed -i "s/podReplicas: 2/podReplicas: ${KUBE_BURNER_POD_REPLICAS}/" cluster-density-v2.yml
+                  sed -i 's/replicas: 3/replicas: 11/' cluster-density-v2.yml
+                  sed -i 's/replicas: 2/replicas: 3/' cluster-density-v2.yml
+                  sed -i 's/replicas: 11/replicas: 5/' cluster-density-v2.yml
+                  #sed -i 's/replicas: 11/replicas: 2/' cluster-density-v2.yml
+                  #service number
+                  sed -i 's/replicas: 5/replicas: 5/' cluster-density-v2.yml
+                  #service number
+                  sed -i 's/randInt 1 6/randInt 1 4/'  deployment-client.yml
 
               #     #------------------------------------------------------------
               #     #secret/configmap number 
